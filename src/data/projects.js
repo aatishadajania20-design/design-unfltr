@@ -1,32 +1,42 @@
 const projects = [
   {
-    title: "Grade 2",
+    title: "Calm Down Tryst",
     category: "Album Art",
-
+    slug: "calm-down-tryst",
     image:
-      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f",
-
-    slug: "grade-2",
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350453/Copy_of_calm_down_tryst_pvpchg.png",
   },
 
   {
-    title: "Bloom",
-    category: "Visual Identity",
-
+    title: "The Arrival Affair",
+    category: "Visual Design",
+    slug: "the-arrival-affair",
     image:
-      "https://images.unsplash.com/photo-1516280440614-37939bbacd81",
-
-    slug: "bloom",
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350453/Copy_of_the_arrival_affair_rishi_gzygrm.png",
   },
 
   {
-    title: "No Signal",
-    category: "Branding",
-
+    title: "Discl (Minimal Poster)",
+    category: "Poster Design",
+    slug: "discl",
     image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350452/discl_ls0qqb.jpg",
+  },
 
-    slug: "no-signal",
+  {
+    title: "All Logos Collection",
+    category: "Brand Identity",
+    slug: "all-logos-akhil",
+    image:
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350451/Copy_of_all_logos_akhil_ovnjew.jpg",
+  },
+
+  {
+    title: "Bollywood Soirée",
+    category: "Event Branding",
+    slug: "bollywood-soiree",
+    image:
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350452/Copy_of_bollywood_soiree_20_th_july_v1.1_dlbvzg.png",
   },
 ];
 
