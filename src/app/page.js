@@ -10,6 +10,23 @@ export default function Home() {
           font-family: 'Neue Haas Grotesk Display Pro', 'Helvetica Neue', Arial, sans-serif;
         }
 
+        /* LOGO */
+        .logo-svg {
+          transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+          transform-origin: center;
+        }
+        .logo-path {
+          fill: #ffffff;
+          transition: fill 0.35s ease;
+        }
+        .brand-wrap:hover .logo-svg {
+          transform: rotate(180deg) scale(1.15);
+        }
+        .brand-wrap:hover .logo-path {
+          fill: #f97316;
+        }
+
+        /* BRAND LETTERS */
         .brand-letter {
           display: inline-block;
           transition: color 0.2s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -27,14 +44,7 @@ export default function Home() {
         }
         .brand-wrap:hover .brand-suffix { color: #ffffff; }
 
-        .logo-svg {
-          transition: filter 0.3s ease, transform 0.3s ease;
-        }
-        .brand-wrap:hover .logo-svg {
-          filter: invert(1) sepia(1) saturate(5) hue-rotate(340deg) brightness(1);
-          transform: rotate(15deg) scale(1.1);
-        }
-
+        /* CONTACT BUTTON */
         .contact-btn {
           position: relative;
           overflow: hidden;
@@ -78,8 +88,6 @@ export default function Home() {
           display: inline-flex;
           align-items: center;
           color: #f97316;
-          opacity: 1;
-          transform: translateX(0px);
           transition: color 0.3s ease, transform 0.2s ease;
           font-size: 1rem;
           line-height: 1;
@@ -89,6 +97,7 @@ export default function Home() {
           transform: translateX(2px);
         }
 
+        /* NAV ITEMS */
         .nav-item {
           position: relative;
           cursor: pointer;
@@ -138,10 +147,6 @@ export default function Home() {
           0%   { transform: translateX(0); }
           100% { transform: translateX(-50%); }
         }
-        @keyframes shimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position: 200% center; }
-        }
 
         .chat-marquee-section {
           position: relative;
@@ -155,7 +160,6 @@ export default function Home() {
         .chat-marquee-section:hover {
           background: #f97316;
         }
-
         .chat-marquee-track {
           display: flex;
           width: max-content;
@@ -165,7 +169,6 @@ export default function Home() {
         .chat-marquee-section:hover .chat-marquee-track {
           animation: marquee-scroll 10s linear infinite;
         }
-
         .chat-marquee-word {
           font-size: clamp(3rem, 6vw, 5.5rem);
           font-weight: 900;
@@ -180,7 +183,6 @@ export default function Home() {
         .chat-marquee-section:hover .chat-marquee-word {
           color: #000;
         }
-
         .chat-marquee-dot {
           color: #f97316;
           transition: color 0.4s ease;
@@ -188,13 +190,11 @@ export default function Home() {
         .chat-marquee-section:hover .chat-marquee-dot {
           color: #000;
         }
-
-        /* Arrow hint bottom right */
         .chat-cta-hint {
           position: absolute;
           right: 32px;
-          bottom: 50%;
-          transform: translateY(50%);
+          top: 50%;
+          transform: translateY(-50%);
           display: flex;
           align-items: center;
           gap: 8px;
@@ -202,14 +202,13 @@ export default function Home() {
           letter-spacing: 0.15em;
           text-transform: uppercase;
           color: #f97316;
-          opacity: 1;
           transition: color 0.4s ease, transform 0.3s ease;
           z-index: 2;
           pointer-events: none;
         }
         .chat-marquee-section:hover .chat-cta-hint {
           color: #000;
-          transform: translateY(50%) translateX(4px);
+          transform: translateY(-50%) translateX(4px);
         }
         .chat-cta-arrow {
           font-size: 1.1rem;
@@ -247,12 +246,12 @@ export default function Home() {
             >
               <g>
                 <path
+                  className="logo-path"
                   d="M87.83,30.06l-9.18-15.9-25.02,14.44V-.31h-18.36v28.96L10.17,14.16.99,30.06l25.06,14.47-8.94,5.16c1.82,2.36,3.63,4.73,5.45,7.09l-3.75,5.23c1.33,1.86,2.66,3.73,3.99,5.59l12.47-7.2v28.96h18.36v-28.91l25.02,14.44,9.18-15.9-25.06-14.46,25.06-14.47Z"
-                  fill="white"
                 />
                 <path
+                  className="logo-path"
                   d="M.99,58.99l9.18,15.9,10.68-6.16c-1.79-2.09-3.57-4.17-5.36-6.26,1.33-1.76,2.66-3.51,3.99-5.27-1.72-1.97-3.44-3.93-5.16-5.9"
-                  fill="white"
                 />
               </g>
             </svg>
@@ -275,8 +274,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-
-         {/* ACTIONS */}
+{/* ACTIONS */}
 <div className="flex items-center gap-4">
 
   <a
@@ -340,14 +338,6 @@ export default function Home() {
 }
 
 function ChatMarquee() {
-  const segment = (
-    <>
-      <span className="chat-marquee-word">
-        Let's Have A Chat <span className="chat-marquee-dot">—</span>&nbsp;
-      </span>
-    </>
-  );
-
   const repeated = Array(8).fill(null);
 
   return (
@@ -355,20 +345,13 @@ function ChatMarquee() {
       <section className="chat-marquee-section">
         <div style={{ overflow: "hidden" }}>
           <div className="chat-marquee-track">
-            {repeated.map((_, i) => (
+            {[...repeated, ...repeated].map((_, i) => (
               <span key={i} className="chat-marquee-word">
-                Let&apos;s Have A Chat <span className="chat-marquee-dot">—</span>&nbsp;
-              </span>
-            ))}
-            {repeated.map((_, i) => (
-              <span key={`b${i}`} className="chat-marquee-word">
                 Let&apos;s Have A Chat <span className="chat-marquee-dot">—</span>&nbsp;
               </span>
             ))}
           </div>
         </div>
-
-        {/* CTA hint */}
         <div className="chat-cta-hint">
           <span>Get In Touch</span>
           <span className="chat-cta-arrow">→</span>
