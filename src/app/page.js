@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Instagram as InstagramIcon } from "lucide-react";
 import PortfolioGrid from "@/components/PortfolioGrid";
 
 export default function Home() {
@@ -25,14 +24,28 @@ export default function Home() {
         {/* ACTIONS */}
         <div className="flex items-center gap-4">
 
-          {/* INSTAGRAM */}
+          {/* INSTAGRAM SVG */}
           <a
             href="https://www.instagram.com/unfltrr?igsh=MWN0Y2ozZjk4NHpubQ=="
             target="_blank"
             rel="noopener noreferrer"
             className="text-white hover:text-orange-500 transition"
           >
-            <InstagramIcon size={22} />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37a4 4 0 1 1-4.74-4.74 4 4 0 0 1 4.74 4.74z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg>
           </a>
 
           {/* CONTACT */}
