@@ -9,6 +9,7 @@ export default function Home() {
       {/* NAVBAR */}
       <nav className="sticky top-0 z-50 flex items-center justify-between px-8 py-6 backdrop-blur-md bg-black/40 border-b border-zinc-900">
 
+        {/* LOGO */}
         <h1 className="text-orange-500 text-xl font-semibold">
           UNFLTR Studio®
         </h1>
@@ -21,19 +22,20 @@ export default function Home() {
           <p>Motion</p>
         </div>
 
-        {/* RIGHT SIDE BUTTONS */}
+        {/* ACTIONS */}
         <div className="flex items-center gap-4">
 
-          {/* INSTAGRAM BUTTON */}
+          {/* INSTAGRAM */}
           <a
             href="https://www.instagram.com/unfltrr?igsh=MWN0Y2ozZjk4NHpubQ=="
             target="_blank"
+            rel="noopener noreferrer"
             className="text-white hover:text-orange-500 transition"
           >
             <Instagram size={22} />
           </a>
 
-          {/* CONTACT BUTTON */}
+          {/* CONTACT */}
           <Link href="/contact">
             <button className="border border-orange-500 text-orange-500 px-6 py-2 rounded-xl hover:bg-orange-500 hover:text-black transition">
               Contact
@@ -41,12 +43,10 @@ export default function Home() {
           </Link>
 
         </div>
-
       </nav>
 
-      {/* HERO */}
+      {/* HERO SECTION */}
       <section className="px-8 mt-24 pb-10">
-
         <p className="text-orange-500 uppercase tracking-[0.3em] text-sm">
           Creative Strategy Studio
         </p>
@@ -59,7 +59,6 @@ export default function Home() {
           UNFLTR is a multidisciplinary creative studio blending branding, strategy, marketing,
           visual identity, and digital design.
         </p>
-
       </section>
 
       {/* PORTFOLIO */}
