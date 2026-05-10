@@ -25,36 +25,66 @@ export default function Home() {
         </h1>
 
        {/* MENU */}
-<div className="hidden md:flex gap-1 text-sm">
+<div className="hidden md:flex items-center gap-2 text-sm">
+  <style>{`
+    .nav-item {
+      position: relative;
+      cursor: pointer;
+      padding: 6px 16px;
+      overflow: hidden;
+    }
+
+    /* The diagonal red slash — starts offscreen bottom-left, sweeps to top-right */
+    .nav-item::before {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: -100%;
+      width: 100%;
+      height: 2px;
+      background: #f97316;
+      transform: skewX(-20deg);
+      transition: left 0.22s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+
+    .nav-item:hover::before {
+      left: 0;
+    }
+
+    /* Dot that appears top-right corner */
+    .nav-item::after {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      font-size: 5px;
+      color: #f97316;
+      opacity: 0;
+      transform: scale(0);
+      transition: opacity 0.15s ease 0.1s, transform 0.15s ease 0.1s;
+    }
+
+    .nav-item:hover::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .nav-label {
+      display: block;
+      color: #9ca3af;
+      letter-spacing: 0.04em;
+      transition: color 0.2s ease, letter-spacing 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+
+    .nav-item:hover .nav-label {
+      color: #ffffff;
+      letter-spacing: 0.12em;
+    }
+  `}</style>
+
   {["Branding", "Strategy", "Marketing", "Motion"].map((item) => (
-    <div
-      key={item}
-      className="group relative cursor-pointer px-4 py-2 overflow-hidden"
-    >
-      {/* Background fill that sweeps up on hover */}
-      <span
-        className="absolute inset-0 bg-orange-500 translate-y-full transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]"
-        aria-hidden="true"
-      />
-
-      {/* Slot machine: current label slides up, bold clone slides in from below */}
-      <span className="relative flex flex-col h-[1.1em] overflow-hidden">
-
-        {/* Top label — normal state */}
-        <span
-          className="block text-gray-400 tracking-wide transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full"
-        >
-          {item}
-        </span>
-
-        {/* Bottom label — slides up into view on hover, black because bg turns orange */}
-        <span
-          className="absolute top-full left-0 block font-black tracking-[0.08em] uppercase text-black transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full"
-        >
-          {item}
-        </span>
-
-      </span>
+    <div key={item} className="nav-item">
+      <span className="nav-label">{item}</span>
     </div>
   ))}
 </div>
