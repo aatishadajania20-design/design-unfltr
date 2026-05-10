@@ -142,12 +142,79 @@ export default function Home() {
           transform: scale(1);
         }
 
+        /* HERO VIDEO */
+        .hero-video-wrap {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          border-radius: 1.5rem;
+          overflow: hidden;
+          background: #111;
+        }
+        .hero-video-wrap video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+        /* Subtle dark vignette over video */
+        .hero-video-wrap::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.15) 0%,
+            rgba(0,0,0,0) 40%,
+            rgba(0,0,0,0.5) 100%
+          );
+          pointer-events: none;
+        }
+        /* Grain on video */
+        .hero-video-wrap::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+          background-size: 128px 128px;
+          opacity: 0.04;
+          pointer-events: none;
+          mix-blend-mode: overlay;
+          z-index: 2;
+        }
+        /* Bottom label inside video */
+        .hero-video-label {
+          position: absolute;
+          bottom: 20px;
+          left: 24px;
+          z-index: 3;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .hero-video-label-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #f97316;
+          animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50%       { opacity: 0.4; transform: scale(0.7); }
+        }
+        .hero-video-label-text {
+          font-size: 0.7rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.7);
+        }
+
         /* FOOTER MARQUEE */
         @keyframes marquee-scroll {
           0%   { transform: translateX(0); }
           100% { transform: translateX(-50%); }
         }
-
         .chat-marquee-section {
           position: relative;
           overflow: hidden;
@@ -157,9 +224,7 @@ export default function Home() {
           padding: 28px 0;
           transition: background 0.4s ease;
         }
-        .chat-marquee-section:hover {
-          background: #f97316;
-        }
+        .chat-marquee-section:hover { background: #f97316; }
         .chat-marquee-track {
           display: flex;
           width: max-content;
@@ -180,16 +245,12 @@ export default function Home() {
           transition: color 0.4s ease;
           line-height: 1;
         }
-        .chat-marquee-section:hover .chat-marquee-word {
-          color: #000;
-        }
+        .chat-marquee-section:hover .chat-marquee-word { color: #000; }
         .chat-marquee-dot {
           color: #f97316;
           transition: color 0.4s ease;
         }
-        .chat-marquee-section:hover .chat-marquee-dot {
-          color: #000;
-        }
+        .chat-marquee-section:hover .chat-marquee-dot { color: #000; }
         .chat-cta-hint {
           position: absolute;
           right: 32px;
@@ -214,9 +275,7 @@ export default function Home() {
           font-size: 1.1rem;
           transition: transform 0.3s ease;
         }
-        .chat-marquee-section:hover .chat-cta-arrow {
-          transform: translateX(4px);
-        }
+        .chat-marquee-section:hover .chat-cta-arrow { transform: translateX(4px); }
       `}</style>
 
       <main className="bg-black text-white min-h-screen">
@@ -260,7 +319,7 @@ export default function Home() {
               {"UNFLTR".split("").map((char, i) => (
                 <span key={i} className="brand-letter">{char}</span>
               ))}
-              <span className="brand-suffix"> Studio</span>
+              <span className="brand-suffix"> Studio®</span>
             </h1>
           </div>
 
@@ -274,7 +333,8 @@ export default function Home() {
               </div>
             ))}
           </div>
-{/* ACTIONS */}
+
+         {/* ACTIONS */}
 <div className="flex items-center gap-4">
 
   <a
@@ -310,20 +370,47 @@ export default function Home() {
   </Link>
 
 </div>
-
         </nav>
 
         {/* HERO SECTION */}
-        <section className="px-8 mt-24 pb-10">
+        <section className="px-8 mt-16 pb-10">
+
           <p className="text-orange-500 uppercase tracking-[0.3em] text-sm">
             Creative Strategy Studio
           </p>
+
           <h2 className="text-6xl md:text-8xl font-bold leading-[0.95] max-w-6xl mt-6">
             Culture-First Branding For Brands That Refuse To Look Average.
           </h2>
-          <p className="text-gray-400 mt-10 max-w-3xl text-xl leading-relaxed">
+
+          <p className="text-gray-400 mt-8 max-w-3xl text-xl leading-relaxed">
             UNFLTR Is A Multidisciplinary Creative Studio Blending Branding, Marketing, Motion, And Strategy Into Culturally Relevant Brand Systems.
           </p>
+
+          {/* VIDEO EMBED */}
+          <div className="hero-video-wrap mt-12">
+            <video
+              src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1778434734/1.5_lrsfll.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              style={{ display: "block" }}
+            >
+              <source
+                src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1778434734/1.5_lrsfll.mp4"
+                type="video/mp4"
+              />
+            </video>
+
+            {/* Live indicator */}
+            <div className="hero-video-label">
+              <span className="hero-video-label-dot" />
+              <span className="hero-video-label-text">Showreel 2025</span>
+            </div>
+          </div>
+
         </section>
 
         {/* PORTFOLIO */}
@@ -338,14 +425,14 @@ export default function Home() {
 }
 
 function ChatMarquee() {
-  const repeated = Array(8).fill(null);
+  const repeated = Array(16).fill(null);
 
   return (
     <Link href="/contact">
       <section className="chat-marquee-section">
         <div style={{ overflow: "hidden" }}>
           <div className="chat-marquee-track">
-            {[...repeated, ...repeated].map((_, i) => (
+            {repeated.map((_, i) => (
               <span key={i} className="chat-marquee-word">
                 Let&apos;s Have A Chat <span className="chat-marquee-dot">—</span>&nbsp;
               </span>
