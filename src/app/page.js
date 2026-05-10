@@ -24,7 +24,7 @@ export default function Home() {
           UNFLTR Studio®
         </h1>
 
-       {/* MENU */}
+{/* MENU */}
 <div className="hidden md:flex items-center gap-2 text-sm">
   <style>{`
     .nav-item {
@@ -33,58 +33,52 @@ export default function Home() {
       padding: 6px 16px;
       overflow: hidden;
     }
-
-    /* The diagonal red slash — starts offscreen bottom-left, sweeps to top-right */
-    .nav-item::before {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: -100%;
-      width: 100%;
-      height: 2px;
-      background: #f97316;
-      transform: skewX(-20deg);
-      transition: left 0.22s cubic-bezier(0.76, 0, 0.24, 1);
-    }
-
-    .nav-item:hover::before {
-      left: 0;
-    }
-
-    /* Dot that appears top-right corner */
-    .nav-item::after {
-      content: '●';
-      position: absolute;
-      top: 2px;
-      right: 4px;
-      font-size: 5px;
-      color: #f97316;
-      opacity: 0;
-      transform: scale(0);
-      transition: opacity 0.15s ease 0.1s, transform 0.15s ease 0.1s;
-    }
-
-    .nav-item:hover::after {
-      opacity: 1;
-      transform: scale(1);
-    }
-
     .nav-label {
       display: block;
       color: #9ca3af;
       letter-spacing: 0.04em;
-      transition: color 0.2s ease, letter-spacing 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+      transition: color 0.2s ease, letter-spacing 0.35s cubic-bezier(0.76, 0, 0.24, 1);
     }
-
     .nav-item:hover .nav-label {
       color: #ffffff;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
+    }
+    .nav-slash {
+      position: absolute;
+      bottom: 2px;
+      left: 16px;
+      right: 16px;
+      height: 2px;
+      background: #f97316;
+      transform: translateX(-110%) skewX(-20deg);
+      transition: transform 0.25s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    .nav-item:hover .nav-slash {
+      transform: translateX(0%) skewX(-20deg);
+    }
+    .nav-dot {
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #f97316;
+      opacity: 0;
+      transform: scale(0);
+      transition: opacity 0.15s ease 0.12s, transform 0.15s ease 0.12s;
+    }
+    .nav-item:hover .nav-dot {
+      opacity: 1;
+      transform: scale(1);
     }
   `}</style>
 
   {["Branding", "Strategy", "Marketing", "Motion"].map((item) => (
     <div key={item} className="nav-item">
       <span className="nav-label">{item}</span>
+      <span className="nav-slash" aria-hidden="true" />
+      <span className="nav-dot" aria-hidden="true" />
     </div>
   ))}
 </div>
