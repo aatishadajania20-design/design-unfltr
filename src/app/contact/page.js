@@ -1,4 +1,4 @@
-import { Instagram } from "lucide-react";
+import { Instagram as InstagramIcon } from "lucide-react";
 
 export default function ContactPage() {
   return (
@@ -14,9 +14,10 @@ export default function ContactPage() {
         <a
           href="https://www.instagram.com/unfltrr?igsh=MWN0Y2ozZjk4NHpubQ=="
           target="_blank"
+          rel="noopener noreferrer"
           className="text-white hover:text-orange-500 transition"
         >
-          <Instagram size={28} />
+          <InstagramIcon size={28} />
         </a>
 
       </div>

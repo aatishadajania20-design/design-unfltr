@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Instagram } from "lucide-react";
+import { Instagram as InstagramIcon } from "lucide-react";
 import PortfolioGrid from "@/components/PortfolioGrid";
 
 export default function Home() {
@@ -32,7 +32,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className="text-white hover:text-orange-500 transition"
           >
-            <Instagram size={22} />
+            <InstagramIcon size={22} />
           </a>
 
           {/* CONTACT */}
@@ -47,6 +47,7 @@ export default function Home() {
 
       {/* HERO SECTION */}
       <section className="px-8 mt-24 pb-10">
+
         <p className="text-orange-500 uppercase tracking-[0.3em] text-sm">
           Creative Strategy Studio
         </p>
@@ -59,6 +60,7 @@ export default function Home() {
           UNFLTR is a multidisciplinary creative studio blending branding, strategy, marketing,
           visual identity, and digital design.
         </p>
+
       </section>
 
       {/* PORTFOLIO */}
