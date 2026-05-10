@@ -260,7 +260,7 @@ export default function Home() {
               {"UNFLTR".split("").map((char, i) => (
                 <span key={i} className="brand-letter">{char}</span>
               ))}
-              <span className="brand-suffix"> Studio®</span>
+              <span className="brand-suffix"> Studio</span>
             </h1>
           </div>
 
