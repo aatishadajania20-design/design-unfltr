@@ -199,6 +199,17 @@ export default function Home() {
           background: #f97316;
           animation: pulse-dot 2s ease-in-out infinite;
         }
+          @keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(0.7);
+  }
+}
         @keyframes pulse-dot {
           0%, 100% { opacity: 1; transform: scale(1); }
           50%       { opacity: 0.4; transform: scale(0.7); }
@@ -372,46 +383,108 @@ export default function Home() {
 </div>
         </nav>
 
-        {/* HERO SECTION */}
-        <section className="px-8 mt-16 pb-10">
+      {/* HERO SECTION */}
+<section
+  className="relative w-full overflow-hidden"
+  style={{ minHeight: "100svh" }}
+>
 
-          <p className="text-orange-500 uppercase tracking-[0.3em] text-sm">
-            Creative Strategy Studio
-          </p>
+  {/* VIDEO BACKGROUND */}
+  <video
+    src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1778434734/1.5_lrsfll.mp4"
+    autoPlay
+    muted
+    loop
+    playsInline
+    preload="auto"
+    style={{
+      position: "absolute",
+      inset: 0,
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      zIndex: 0,
+    }}
+  />
 
-          <h2 className="text-6xl md:text-8xl font-bold leading-[0.95] max-w-6xl mt-6">
-            Culture-First Branding For Brands That Refuse To Look Average.
-          </h2>
+  {/* DARK OVERLAY */}
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      background:
+        "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.75) 100%)",
+      zIndex: 1,
+    }}
+  />
 
-          <p className="text-gray-400 mt-8 max-w-3xl text-xl leading-relaxed">
-            UNFLTR Is A Multidisciplinary Creative Studio Blending Branding, Marketing, Motion, And Strategy Into Culturally Relevant Brand Systems.
-          </p>
+  {/* GRAIN */}
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      backgroundImage:
+        `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+      backgroundSize: "128px 128px",
+      opacity: 0.045,
+      mixBlendMode: "overlay",
+      zIndex: 2,
+      pointerEvents: "none",
+    }}
+  />
 
-          {/* VIDEO EMBED */}
-          <div className="hero-video-wrap mt-12">
-            <video
-              src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1778434734/1.5_lrsfll.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              style={{ display: "block" }}
-            >
-              <source
-                src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1778434734/1.5_lrsfll.mp4"
-                type="video/mp4"
-              />
-            </video>
+  {/* TEXT CONTENT */}
+  <div
+    style={{ position: "relative", zIndex: 3 }}
+    className="px-8 pt-28 pb-24 flex flex-col justify-end min-h-[100svh]"
+  >
+    <p className="text-orange-500 uppercase tracking-[0.3em] text-sm mb-6">
+      Creative Strategy Studio
+    </p>
 
-            {/* Live indicator */}
-            <div className="hero-video-label">
-              <span className="hero-video-label-dot" />
-              <span className="hero-video-label-text">Showreel 2025</span>
-            </div>
-          </div>
+    <h2 className="text-6xl md:text-8xl font-bold leading-[0.95] max-w-5xl">
+      Culture-First Branding For Brands That Refuse To Look Average.
+    </h2>
 
-        </section>
+    <p className="text-gray-300 mt-8 max-w-2xl text-xl leading-relaxed">
+      UNFLTR Is A Multidisciplinary Creative Studio Blending Branding,
+      Marketing, Motion, And Strategy Into Culturally Relevant Brand
+      Systems.
+    </p>
+
+    {/* BOTTOM META */}
+    <div className="flex items-center gap-6 mt-12">
+      <div className="flex items-center gap-2">
+        <span
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            background: "#f97316",
+            display: "inline-block",
+            animation: "pulse-dot 2s ease-in-out infinite",
+          }}
+        />
+
+        <span className="text-xs uppercase tracking-[0.18em] text-white/50">
+          Showreel 2025
+        </span>
+      </div>
+
+      <div
+        style={{
+          height: 1,
+          width: 48,
+          background: "rgba(255,255,255,0.2)",
+        }}
+      />
+
+      <span className="text-xs uppercase tracking-[0.18em] text-white/30">
+        Est. 2024
+      </span>
+    </div>
+  </div>
+</section>
 
         {/* PORTFOLIO */}
         <PortfolioGrid />
