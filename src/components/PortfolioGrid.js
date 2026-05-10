@@ -15,7 +15,7 @@ export default function PortfolioGrid() {
         .marquee-title {
           display: flex;
           width: max-content;
-          animation: scroll-title 12s linear infinite;
+          animation: scroll-title 20s linear infinite;
           white-space: nowrap;
         }
 
@@ -68,7 +68,7 @@ export default function PortfolioGrid() {
         /* Second row scrolls opposite direction */
         .marquee-title.reverse {
           animation-direction: reverse;
-          animation-duration: 16s;
+          animation-duration: 30s;
         }
 
         /* Thin divider lines between rows */
