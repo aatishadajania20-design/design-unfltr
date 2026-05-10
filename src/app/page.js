@@ -14,9 +14,7 @@ export default function Home() {
           display: inline-block;
           transition: color 0.2s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .brand-wrap:hover .brand-letter {
-          color: #ffffff;
-        }
+        .brand-wrap:hover .brand-letter { color: #ffffff; }
         .brand-wrap:hover .brand-letter:nth-child(1) { transform: translateY(-3px); transition-delay: 0ms; }
         .brand-wrap:hover .brand-letter:nth-child(2) { transform: translateY(-3px); transition-delay: 40ms; }
         .brand-wrap:hover .brand-letter:nth-child(3) { transform: translateY(-3px); transition-delay: 80ms; }
@@ -27,9 +25,7 @@ export default function Home() {
           transition: color 0.2s ease 0.24s;
           color: #f97316;
         }
-        .brand-wrap:hover .brand-suffix {
-          color: #ffffff;
-        }
+        .brand-wrap:hover .brand-suffix { color: #ffffff; }
 
         .logo-svg {
           transition: filter 0.3s ease, transform 0.3s ease;
@@ -44,7 +40,8 @@ export default function Home() {
           overflow: hidden;
           border: 1px solid #f97316;
           color: #f97316;
-          padding: 8px 24px;
+          padding: 0 24px;
+          height: 38px;
           border-radius: 4px;
           font-size: 0.8rem;
           letter-spacing: 0.12em;
@@ -53,6 +50,9 @@ export default function Home() {
           cursor: pointer;
           background: transparent;
           transition: color 0.3s ease;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
         }
         .contact-btn::before {
           content: '';
@@ -63,28 +63,30 @@ export default function Home() {
           transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
           z-index: 0;
         }
-        .contact-btn:hover::before {
-          transform: translateX(0);
-        }
-        .contact-btn:hover {
-          color: #000;
-        }
+        .contact-btn:hover::before { transform: translateX(0); }
+        .contact-btn:hover { color: #000; }
         .contact-btn-text {
           position: relative;
           z-index: 1;
           display: flex;
           align-items: center;
-          gap: 8px;
+          justify-content: center;
+          gap: 7px;
+          line-height: 1;
         }
         .contact-arrow {
-          display: inline-block;
-          opacity: 0;
-          transform: translateX(-6px);
-          transition: opacity 0.2s ease 0.1s, transform 0.2s ease 0.1s;
+          display: inline-flex;
+          align-items: center;
+          color: #f97316;
+          opacity: 1;
+          transform: translateX(0px);
+          transition: color 0.3s ease, transform 0.2s ease;
+          font-size: 1rem;
+          line-height: 1;
         }
         .contact-btn:hover .contact-arrow {
-          opacity: 1;
-          transform: translateX(0);
+          color: #000;
+          transform: translateX(2px);
         }
 
         .nav-item {
@@ -113,9 +115,7 @@ export default function Home() {
           transform: translateX(-110%) skewX(-20deg);
           transition: transform 0.25s cubic-bezier(0.76, 0, 0.24, 1);
         }
-        .nav-item:hover .nav-slash {
-          transform: translateX(0%) skewX(-20deg);
-        }
+        .nav-item:hover .nav-slash { transform: translateX(0%) skewX(-20deg); }
         .nav-dot {
           position: absolute;
           top: 4px;
@@ -133,20 +133,90 @@ export default function Home() {
           transform: scale(1);
         }
 
+        /* FOOTER MARQUEE */
         @keyframes marquee-scroll {
           0%   { transform: translateX(0); }
           100% { transform: translateX(-50%); }
         }
-        .marquee-section .marquee-track {
+        @keyframes shimmer {
+          0%   { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
+
+        .chat-marquee-section {
+          position: relative;
+          overflow: hidden;
+          cursor: pointer;
+          background: #000;
+          border-top: 1px solid #1a1a1a;
+          padding: 28px 0;
+          transition: background 0.4s ease;
+        }
+        .chat-marquee-section:hover {
+          background: #f97316;
+        }
+
+        .chat-marquee-track {
           display: flex;
           width: max-content;
-          animation: marquee-scroll 20s linear infinite;
+          animation: marquee-scroll 22s linear infinite;
+          will-change: transform;
         }
-        .marquee-section:hover .marquee-track {
+        .chat-marquee-section:hover .chat-marquee-track {
           animation: marquee-scroll 10s linear infinite;
         }
-        .marquee-section:hover {
-          filter: invert(1);
+
+        .chat-marquee-word {
+          font-size: clamp(3rem, 6vw, 5.5rem);
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: -0.02em;
+          white-space: nowrap;
+          padding-right: 3rem;
+          color: #ffffff;
+          transition: color 0.4s ease;
+          line-height: 1;
+        }
+        .chat-marquee-section:hover .chat-marquee-word {
+          color: #000;
+        }
+
+        .chat-marquee-dot {
+          color: #f97316;
+          transition: color 0.4s ease;
+        }
+        .chat-marquee-section:hover .chat-marquee-dot {
+          color: #000;
+        }
+
+        /* Arrow hint bottom right */
+        .chat-cta-hint {
+          position: absolute;
+          right: 32px;
+          bottom: 50%;
+          transform: translateY(50%);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.75rem;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: #f97316;
+          opacity: 1;
+          transition: color 0.4s ease, transform 0.3s ease;
+          z-index: 2;
+          pointer-events: none;
+        }
+        .chat-marquee-section:hover .chat-cta-hint {
+          color: #000;
+          transform: translateY(50%) translateX(4px);
+        }
+        .chat-cta-arrow {
+          font-size: 1.1rem;
+          transition: transform 0.3s ease;
+        }
+        .chat-marquee-section:hover .chat-cta-arrow {
+          transform: translateX(4px);
         }
       `}</style>
 
@@ -251,41 +321,59 @@ export default function Home() {
             Creative Strategy Studio
           </p>
           <h2 className="text-6xl md:text-8xl font-bold leading-[0.95] max-w-6xl mt-6">
-            Building brands people remember, trust, and talk about.
+            Culture-First Branding For Brands That Refuse To Look Average.
           </h2>
           <p className="text-gray-400 mt-10 max-w-3xl text-xl leading-relaxed">
-            UNFLTR is a multidisciplinary creative studio blending branding, strategy, marketing,
-            visual identity, and digital design.
+            UNFLTR Is A Multidisciplinary Creative Studio Blending Branding, Marketing, Motion, And Strategy Into Culturally Relevant Brand Systems.
           </p>
         </section>
 
         {/* PORTFOLIO */}
         <PortfolioGrid />
 
-        {/* ALL WORKS MARQUEE */}
-        <AllWorksMarquee />
+        {/* FOOTER MARQUEE */}
+        <ChatMarquee />
 
       </main>
     </>
   );
 }
 
-function AllWorksMarquee() {
-  const text = "ALL WORKS — ";
-  const repeated = Array(12).fill(text).join("");
+function ChatMarquee() {
+  const segment = (
+    <>
+      <span className="chat-marquee-word">
+        Let's Have A Chat <span className="chat-marquee-dot">—</span>&nbsp;
+      </span>
+    </>
+  );
+
+  const repeated = Array(8).fill(null);
 
   return (
-    <section className="w-full overflow-hidden border-t border-zinc-900 bg-black py-5 cursor-pointer select-none marquee-section">
-      <div className="overflow-hidden">
-        <div className="marquee-track">
-          <span className="text-5xl md:text-7xl font-black tracking-tight text-white uppercase whitespace-nowrap pr-8">
-            {repeated}
-          </span>
-          <span className="text-5xl md:text-7xl font-black tracking-tight text-white uppercase whitespace-nowrap pr-8">
-            {repeated}
-          </span>
+    <Link href="/contact">
+      <section className="chat-marquee-section">
+        <div style={{ overflow: "hidden" }}>
+          <div className="chat-marquee-track">
+            {repeated.map((_, i) => (
+              <span key={i} className="chat-marquee-word">
+                Let&apos;s Have A Chat <span className="chat-marquee-dot">—</span>&nbsp;
+              </span>
+            ))}
+            {repeated.map((_, i) => (
+              <span key={`b${i}`} className="chat-marquee-word">
+                Let&apos;s Have A Chat <span className="chat-marquee-dot">—</span>&nbsp;
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+
+        {/* CTA hint */}
+        <div className="chat-cta-hint">
+          <span>Get In Touch</span>
+          <span className="chat-cta-arrow">→</span>
+        </div>
+      </section>
+    </Link>
   );
 }
