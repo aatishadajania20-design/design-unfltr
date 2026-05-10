@@ -135,12 +135,12 @@ export default function Home() {
           </p>
 
           <h2 className="text-6xl md:text-8xl font-bold leading-[0.95] max-w-6xl mt-6">
-            Building brands people remember, trust, and talk about.
+           Building Brands People Remember, Trust, And Talk About.
           </h2>
 
           <p className="text-gray-400 mt-10 max-w-3xl text-xl leading-relaxed">
-            UNFLTR is a multidisciplinary creative studio blending branding, strategy, marketing,
-            visual identity, and digital design.
+            UNFLTR Is A Multidisciplinary Creative Studio Blending Branding, Strategy, Marketing,
+Visual Identity, And Digital Design.
           </p>
 
         </section>
