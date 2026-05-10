@@ -24,20 +24,40 @@ export default function Home() {
           UNFLTR Studio®
         </h1>
 
-        {/* MENU */}
-        <div className="hidden md:flex gap-8 text-sm text-gray-300">
-          {["Branding", "Strategy", "Marketing", "Motion"].map((item) => (
-            <div key={item} className="group relative cursor-pointer overflow-hidden py-1">
-              <span className="block transition-transform duration-150 group-hover:-translate-y-full">
-                {item}
-              </span>
-              <span className="absolute top-full left-0 block text-white font-bold tracking-widest uppercase transition-transform duration-150 group-hover:-translate-y-full">
-                {item}
-              </span>
-              <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-orange-500 transition-all duration-200 ease-in-out group-hover:w-full" />
-            </div>
-          ))}
-        </div>
+       {/* MENU */}
+<div className="hidden md:flex gap-1 text-sm">
+  {["Branding", "Strategy", "Marketing", "Motion"].map((item) => (
+    <div
+      key={item}
+      className="group relative cursor-pointer px-4 py-2 overflow-hidden"
+    >
+      {/* Background fill that sweeps up on hover */}
+      <span
+        className="absolute inset-0 bg-orange-500 translate-y-full transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]"
+        aria-hidden="true"
+      />
+
+      {/* Slot machine: current label slides up, bold clone slides in from below */}
+      <span className="relative flex flex-col h-[1.1em] overflow-hidden">
+
+        {/* Top label — normal state */}
+        <span
+          className="block text-gray-400 tracking-wide transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full"
+        >
+          {item}
+        </span>
+
+        {/* Bottom label — slides up into view on hover, black because bg turns orange */}
+        <span
+          className="absolute top-full left-0 block font-black tracking-[0.08em] uppercase text-black transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full"
+        >
+          {item}
+        </span>
+
+      </span>
+    </div>
+  ))}
+</div>
 
         {/* ACTIONS */}
         <div className="flex items-center gap-4">
