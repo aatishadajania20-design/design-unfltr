@@ -1,90 +1,74 @@
 const projects = [
   {
-    title: "Calm Down Tryst",
-    category: "Album Art",
-    slug: "calm-down-tryst",
+    title: "Talwiinder Sponsorship Deck 2024",
+    category: "Concert Deck",
+    slug: "talwiinder-sponsorship-deck-2024",
     image:
-      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350453/Copy_of_calm_down_tryst_pvpchg.png",
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778517729/Talwiinder_Sponsorship_Deck_2024_concert_fyuxcm.jpg",
   },
 
   {
-    title: "The Arrival Affair",
-    category: "Visual Design",
-    slug: "the-arrival-affair",
+    title: "Infected Mushroom 2024",
+    category: "Concert Visuals",
+    slug: "infected-mushroom-2024",
     image:
-      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350453/Copy_of_the_arrival_affair_rishi_gzygrm.png",
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778517728/Infected_Mushroom_2024_Concert__deluyq.jpg",
   },
 
   {
-    title: "Discl (Minimal Poster)",
-    category: "Poster Design",
-    slug: "discl",
+    title: "Keinemusik Artwork Concept",
+    category: "Concept Art",
+    slug: "keinemusik-artwork-concept",
     image:
-      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350452/discl_ls0qqb.jpg",
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778517729/Keinemusik_artwork_Concept_Artwork_for_Team_Innovation_avjlsk.png",
   },
 
   {
-    title: "All Logos Collection",
-    category: "Brand Identity",
-    slug: "all-logos-akhil",
+    title: "Ace Graphic Design",
+    category: "Social Media",
+    slug: "ace-graphic-design",
     image:
-      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350451/Copy_of_all_logos_akhil_ovnjew.jpg",
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778517727/Ace_Graphic_Design_For_social_Media_uisefk.jpg",
   },
 
   {
-    title: "Bollywood Soirée",
-    category: "Event Branding",
-    slug: "bollywood-soiree",
+    title: "Cosmic Fri Nights",
+    category: "Event Design",
+    slug: "cosmic-fri-nights",
     image:
-      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350452/Copy_of_bollywood_soiree_20_th_july_v1.1_dlbvzg.png",
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778517728/cosmic_fri_nights_for_Four_Seasons_Hotel_Event_2024_hhkhav.png",
   },
 
   {
-    title: "25th Friday",
-    category: "Event Poster",
-    slug: "25th-friday",
-    image:
-      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350451/25_th_friday_v3_he10dx.png",
-  },
-
-  {
-    title: "Afroboss",
-    category: "Visual Identity",
-    slug: "afroboss",
-    image:
-      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350452/Copy_of_Afroboss_kqleej.png",
-  },
-
-  {
-    title: "Ain't Bros",
-    category: "Album Art",
-    slug: "aint-bros",
-    image:
-      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778350451/Ain_t_Bros_fz3bey.jpg",
-  },
-
-  {
-    title: "Artboard One YZY",
+    title: "Daddy Cool",
     category: "Graphic Design",
-    slug: "artboard-one-yzy",
+    slug: "daddy-cool-2021",
     image:
-      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778427292/Artboard_1_yzy_gwxsmr.jpg",
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778517729/daddy_cool_Graphic_Design_2021_tyg2tq.png",
   },
 
   {
-    title: "Artboard Five",
-    category: "Digital Art",
-    slug: "artboard-five",
+    title: "Karan Aujla Concept",
+    category: "Concept Artwork",
+    slug: "karan-aujla-concept",
     image:
-      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778427292/Artboard_5_v9sncw.jpg",
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778517727/karan_Aujla_concept_artwork_for_team_innovation_dc8rj3.jpg",
   },
 
   {
-    title: "Artboard One",
-    category: "Typography",
-    slug: "artboard-one-euaaso",
+    title: "Chic Therapy Decor",
+    category: "Marketing Ad",
+    slug: "chic-therapy-decor-2025",
     image:
-      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778427292/Artboard_1_euaaso.jpg",
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778517727/Chic_Therapy_Decor_AD_Marketing_2025_ikrfkt.jpg",
+  },
+
+  {
+    title: "Afroboss London",
+    category: "Event Branding",
+    slug: "afroboss-london-2024",
+    image:
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778517727/Afroboss_event_in_london_2024__degan9.jpg",
   },
 ];
 
