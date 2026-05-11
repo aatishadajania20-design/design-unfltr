@@ -187,8 +187,8 @@ export default function ContactPage() {
           width: 100%;
           background: transparent;
           border: none;
-          border-bottom: 1px solid #222;
-          color: #fff;
+          border-bottom: 1px solid #2a2a2a;
+color: #f5f5f5;
           font-size: 1.05rem;
           padding: 18px 0 14px;
           outline: none;
@@ -197,19 +197,22 @@ export default function ContactPage() {
           resize: none;
           transition: border-color 0.3s ease;
         }
-        .brutal-field::placeholder { color: #2e2e2e; letter-spacing: 0.05em; }
+       .brutal-field::placeholder {
+  color: #6b7280;
+  letter-spacing: 0.05em;
+}
         .brutal-field:focus { border-color: transparent; }
 
         .field-wrap { position: relative; }
         .field-label {
-          display: block;
-          font-size: 0.55rem;
-          letter-spacing: 0.26em;
-          text-transform: uppercase;
-          color: #333;
-          margin-bottom: 2px;
-          transition: color 0.25s ease;
-        }
+  display: block;
+  font-size: 0.55rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #8b8b8b;
+  margin-bottom: 2px;
+  transition: color 0.25s ease;
+}
         .field-wrap.active .field-label { color: #f97316; }
         .field-bar {
           position: absolute; bottom: 0; left: 0;
