@@ -10,7 +10,6 @@ export default function Home() {
           font-family: 'Neue Haas Grotesk Display Pro', 'Helvetica Neue', Arial, sans-serif;
         }
 
-        /* LOGO */
         .logo-svg {
           transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
           transform-origin: center;
@@ -26,7 +25,6 @@ export default function Home() {
           fill: #f97316;
         }
 
-        /* BRAND LETTERS */
         .brand-letter {
           display: inline-block;
           transition: color 0.2s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -44,16 +42,15 @@ export default function Home() {
         }
         .brand-wrap:hover .brand-suffix { color: #ffffff; }
 
-        /* CONTACT BUTTON */
         .contact-btn {
           position: relative;
           overflow: hidden;
           border: 1px solid #f97316;
           color: #f97316;
-          padding: 0 24px;
-          height: 38px;
+          padding: 0 20px;
+          height: 36px;
           border-radius: 4px;
-          font-size: 0.8rem;
+          font-size: 0.75rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
           font-weight: 600;
@@ -63,6 +60,7 @@ export default function Home() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
+          white-space: nowrap;
         }
         .contact-btn::before {
           content: '';
@@ -81,7 +79,7 @@ export default function Home() {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 7px;
+          gap: 6px;
           line-height: 1;
         }
         .contact-arrow {
@@ -89,7 +87,7 @@ export default function Home() {
           align-items: center;
           color: #f97316;
           transition: color 0.3s ease, transform 0.2s ease;
-          font-size: 1rem;
+          font-size: 0.9rem;
           line-height: 1;
         }
         .contact-btn:hover .contact-arrow {
@@ -97,11 +95,10 @@ export default function Home() {
           transform: translateX(2px);
         }
 
-        /* NAV ITEMS */
         .nav-item {
           position: relative;
           cursor: pointer;
-          padding: 6px 16px;
+          padding: 6px 14px;
           overflow: hidden;
         }
         .nav-label {
@@ -117,8 +114,8 @@ export default function Home() {
         .nav-slash {
           position: absolute;
           bottom: 2px;
-          left: 16px;
-          right: 16px;
+          left: 14px;
+          right: 14px;
           height: 2px;
           background: #f97316;
           transform: translateX(-110%) skewX(-20deg);
@@ -137,91 +134,13 @@ export default function Home() {
           transform: scale(0);
           transition: opacity 0.15s ease 0.12s, transform 0.15s ease 0.12s;
         }
-        .nav-item:hover .nav-dot {
-          opacity: 1;
-          transform: scale(1);
-        }
+        .nav-item:hover .nav-dot { opacity: 1; transform: scale(1); }
 
-        /* HERO VIDEO */
-        .hero-video-wrap {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 16 / 9;
-          border-radius: 1.5rem;
-          overflow: hidden;
-          background: #111;
-        }
-        .hero-video-wrap video {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-        }
-        /* Subtle dark vignette over video */
-        .hero-video-wrap::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            to bottom,
-            rgba(0,0,0,0.15) 0%,
-            rgba(0,0,0,0) 40%,
-            rgba(0,0,0,0.5) 100%
-          );
-          pointer-events: none;
-        }
-        /* Grain on video */
-        .hero-video-wrap::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-          background-size: 128px 128px;
-          opacity: 0.04;
-          pointer-events: none;
-          mix-blend-mode: overlay;
-          z-index: 2;
-        }
-        /* Bottom label inside video */
-        .hero-video-label {
-          position: absolute;
-          bottom: 20px;
-          left: 24px;
-          z-index: 3;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-        .hero-video-label-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #f97316;
-          animation: pulse-dot 2s ease-in-out infinite;
-        }
-          @keyframes pulse-dot {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.4;
-    transform: scale(0.7);
-  }
-}
         @keyframes pulse-dot {
           0%, 100% { opacity: 1; transform: scale(1); }
           50%       { opacity: 0.4; transform: scale(0.7); }
         }
-        .hero-video-label-text {
-          font-size: 0.7rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: rgba(255,255,255,0.7);
-        }
 
-        /* FOOTER MARQUEE */
         @keyframes marquee-scroll {
           0%   { transform: translateX(0); }
           100% { transform: translateX(-50%); }
@@ -232,7 +151,7 @@ export default function Home() {
           cursor: pointer;
           background: #000;
           border-top: 1px solid #1a1a1a;
-          padding: 28px 0;
+          padding: 24px 0;
           transition: background 0.4s ease;
         }
         .chat-marquee-section:hover { background: #f97316; }
@@ -246,31 +165,28 @@ export default function Home() {
           animation: marquee-scroll 10s linear infinite;
         }
         .chat-marquee-word {
-          font-size: clamp(3rem, 6vw, 5.5rem);
+          font-size: clamp(2.2rem, 5vw, 5rem);
           font-weight: 900;
           text-transform: uppercase;
           letter-spacing: -0.02em;
           white-space: nowrap;
-          padding-right: 3rem;
+          padding-right: 2.5rem;
           color: #ffffff;
           transition: color 0.4s ease;
           line-height: 1;
         }
         .chat-marquee-section:hover .chat-marquee-word { color: #000; }
-        .chat-marquee-dot {
-          color: #f97316;
-          transition: color 0.4s ease;
-        }
+        .chat-marquee-dot { color: #f97316; transition: color 0.4s ease; }
         .chat-marquee-section:hover .chat-marquee-dot { color: #000; }
         .chat-cta-hint {
           position: absolute;
-          right: 32px;
+          right: 20px;
           top: 50%;
           transform: translateY(-50%);
           display: flex;
           align-items: center;
-          gap: 8px;
-          font-size: 0.75rem;
+          gap: 6px;
+          font-size: 0.65rem;
           letter-spacing: 0.15em;
           text-transform: uppercase;
           color: #f97316;
@@ -282,18 +198,40 @@ export default function Home() {
           color: #000;
           transform: translateY(-50%) translateX(4px);
         }
-        .chat-cta-arrow {
-          font-size: 1.1rem;
-          transition: transform 0.3s ease;
-        }
+        .chat-cta-arrow { font-size: 1rem; transition: transform 0.3s ease; }
         .chat-marquee-section:hover .chat-cta-arrow { transform: translateX(4px); }
+
+        /* MOBILE MENU BUTTON */
+        .mobile-menu-btn {
+          display: none;
+          flex-direction: column;
+          gap: 5px;
+          cursor: pointer;
+          padding: 4px;
+        }
+        .mobile-menu-btn span {
+          display: block;
+          width: 22px;
+          height: 1.5px;
+          background: #fff;
+          transition: all 0.3s ease;
+        }
+        @media (max-width: 768px) {
+          .mobile-menu-btn { display: flex; }
+        }
+
+        /* SLIDE IN ANIMATION for portfolio on mobile */
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(40px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
       `}</style>
 
       <main className="bg-black text-white min-h-screen">
 
         {/* GRAIN OVERLAY */}
         <div
-          className="fixed inset-0 z-[999] pointer-events-none opacity-[0.035]"
+          className="fixed inset-0 z-[999] pointer-events-none opacity-[0.03]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
             backgroundRepeat: "repeat",
@@ -303,30 +241,23 @@ export default function Home() {
         />
 
         {/* NAVBAR */}
-        <nav className="sticky top-0 z-50 flex items-center justify-between px-8 py-6 backdrop-blur-md bg-black/40 border-b border-zinc-900">
+        <nav className="sticky top-0 z-50 flex items-center justify-between px-5 md:px-8 py-5 backdrop-blur-md bg-black/50 border-b border-zinc-900">
 
           {/* LOGO + BRAND */}
-          <div className="brand-wrap flex items-center gap-3 cursor-pointer select-none">
+          <div className="brand-wrap flex items-center gap-2 cursor-pointer select-none">
             <svg
               className="logo-svg"
-              width="28"
-              height="28"
+              width="26"
+              height="26"
               viewBox="0 0 88.82 89.67"
               xmlns="http://www.w3.org/2000/svg"
             >
               <g>
-                <path
-                  className="logo-path"
-                  d="M87.83,30.06l-9.18-15.9-25.02,14.44V-.31h-18.36v28.96L10.17,14.16.99,30.06l25.06,14.47-8.94,5.16c1.82,2.36,3.63,4.73,5.45,7.09l-3.75,5.23c1.33,1.86,2.66,3.73,3.99,5.59l12.47-7.2v28.96h18.36v-28.91l25.02,14.44,9.18-15.9-25.06-14.46,25.06-14.47Z"
-                />
-                <path
-                  className="logo-path"
-                  d="M.99,58.99l9.18,15.9,10.68-6.16c-1.79-2.09-3.57-4.17-5.36-6.26,1.33-1.76,2.66-3.51,3.99-5.27-1.72-1.97-3.44-3.93-5.16-5.9"
-                />
+                <path className="logo-path" d="M87.83,30.06l-9.18-15.9-25.02,14.44V-.31h-18.36v28.96L10.17,14.16.99,30.06l25.06,14.47-8.94,5.16c1.82,2.36,3.63,4.73,5.45,7.09l-3.75,5.23c1.33,1.86,2.66,3.73,3.99,5.59l12.47-7.2v28.96h18.36v-28.91l25.02,14.44,9.18-15.9-25.06-14.46,25.06-14.47Z" />
+                <path className="logo-path" d="M.99,58.99l9.18,15.9,10.68-6.16c-1.79-2.09-3.57-4.17-5.36-6.26,1.33-1.76,2.66-3.51,3.99-5.27-1.72-1.97-3.44-3.93-5.16-5.9" />
               </g>
             </svg>
-
-            <h1 className="text-orange-500 text-xl font-semibold tracking-tight leading-none">
+            <h1 className="text-orange-500 text-lg md:text-xl font-semibold tracking-tight leading-none">
               {"UNFLTR".split("").map((char, i) => (
                 <span key={i} className="brand-letter">{char}</span>
               ))}
@@ -334,8 +265,8 @@ export default function Home() {
             </h1>
           </div>
 
-          {/* MENU */}
-          <div className="hidden md:flex items-center gap-2 text-sm">
+          {/* DESKTOP MENU */}
+          <div className="hidden md:flex items-center gap-1 text-sm">
             {["Branding", "Strategy", "Marketing", "Motion"].map((item) => (
               <div key={item} className="nav-item">
                 <span className="nav-label">{item}</span>
@@ -345,29 +276,48 @@ export default function Home() {
             ))}
           </div>
 
-         {/* ACTIONS */}
-<div className="flex items-center gap-4">
+{/* ACTIONS */}
+<div className="flex items-center gap-3">
 
   <a
     href="https://www.instagram.com/unfltrr?igsh=MWN0Y2ozZjk4NHpubQ=="
     target="_blank"
     rel="noopener noreferrer"
-    className="text-white hover:text-orange-500 transition"
+    className="text-white hover:text-orange-500 transition-colors duration-200"
+    aria-label="Instagram"
   >
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="22"
-      height="22"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      xmlns="http://www.w3.org/2000/svg"
     >
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-      <path d="M16 11.37a4 4 0 1 1-4.74-4.74 4 4 0 0 1 4.74 4.74z" />
-      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+      <rect
+        x="2"
+        y="2"
+        width="20"
+        height="20"
+        rx="6"
+        ry="6"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        fill="none"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="4.2"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        fill="none"
+      />
+      <circle
+        cx="17.8"
+        cy="6.2"
+        r="1.1"
+        fill="currentColor"
+      />
     </svg>
   </a>
 
@@ -381,110 +331,72 @@ export default function Home() {
   </Link>
 
 </div>
+
         </nav>
 
-      {/* HERO SECTION */}
-<section
-  className="relative w-full overflow-hidden"
-  style={{ minHeight: "100svh" }}
->
+        {/* HERO — full viewport, video background */}
+        <section className="relative w-full overflow-hidden" style={{ minHeight: "100svh" }}>
 
-  {/* VIDEO BACKGROUND */}
-  <video
-    src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1778434734/1.5_lrsfll.mp4"
-    autoPlay
-    muted
-    loop
-    playsInline
-    preload="auto"
-    style={{
-      position: "absolute",
-      inset: 0,
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      zIndex: 0,
-    }}
-  />
+          <video
+            src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1778434734/1.5_lrsfll.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              zIndex: 0,
+            }}
+          />
 
-  {/* DARK OVERLAY */}
-  <div
-    style={{
-      position: "absolute",
-      inset: 0,
-      background:
-        "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.75) 100%)",
-      zIndex: 1,
-    }}
-  />
+          {/* Overlay */}
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.72) 100%)",
+            zIndex: 1,
+          }} />
 
-  {/* GRAIN */}
-  <div
-    style={{
-      position: "absolute",
-      inset: 0,
-      backgroundImage:
-        `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-      backgroundSize: "128px 128px",
-      opacity: 0.045,
-      mixBlendMode: "overlay",
-      zIndex: 2,
-      pointerEvents: "none",
-    }}
-  />
+          {/* TEXT */}
+          <div
+            style={{ position: "relative", zIndex: 3 }}
+            className="px-5 md:px-8 pt-24 pb-16 md:pb-24 flex flex-col justify-end min-h-[100svh]"
+          >
+            <p className="text-orange-500 uppercase tracking-[0.25em] md:tracking-[0.3em] text-xs md:text-sm mb-5">
+              Creative Strategy Studio
+            </p>
 
-  {/* TEXT CONTENT */}
-  <div
-    style={{ position: "relative", zIndex: 3 }}
-    className="px-8 pt-28 pb-24 flex flex-col justify-end min-h-[100svh]"
-  >
-    <p className="text-orange-500 uppercase tracking-[0.3em] text-sm mb-6">
-      Creative Strategy Studio
-    </p>
+            <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] max-w-5xl">
+              Culture-First Branding For Brands That Refuse To Look Average.
+            </h2>
 
-    <h2 className="text-6xl md:text-8xl font-bold leading-[0.95] max-w-5xl">
-      Culture-First Branding For Brands That Refuse To Look Average.
-    </h2>
+            <p className="text-gray-300 mt-6 md:mt-8 max-w-2xl text-base md:text-xl leading-relaxed">
+              UNFLTR Is A Multidisciplinary Creative Studio Blending Branding, Marketing, Motion, And Strategy Into Culturally Relevant Brand Systems.
+            </p>
 
-    <p className="text-gray-300 mt-8 max-w-2xl text-xl leading-relaxed">
-      UNFLTR Is A Multidisciplinary Creative Studio Blending Branding,
-      Marketing, Motion, And Strategy Into Culturally Relevant Brand
-      Systems.
-    </p>
+            <div className="flex items-center gap-5 mt-8 md:mt-12">
+              <div className="flex items-center gap-2">
+                <span style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: "50%",
+                  background: "#f97316",
+                  display: "inline-block",
+                  animation: "pulse-dot 2s ease-in-out infinite",
+                }} />
+                <span className="text-xs uppercase tracking-[0.16em] text-white/50">Showreel 2025</span>
+              </div>
+              <div style={{ height: 1, width: 36, background: "rgba(255,255,255,0.18)" }} />
+              <span className="text-xs uppercase tracking-[0.16em] text-white/28">Est. 2024</span>
+            </div>
+          </div>
 
-    {/* BOTTOM META */}
-    <div className="flex items-center gap-6 mt-12">
-      <div className="flex items-center gap-2">
-        <span
-          style={{
-            width: 8,
-            height: 8,
-            borderRadius: "50%",
-            background: "#f97316",
-            display: "inline-block",
-            animation: "pulse-dot 2s ease-in-out infinite",
-          }}
-        />
-
-        <span className="text-xs uppercase tracking-[0.18em] text-white/50">
-          Showreel 2025
-        </span>
-      </div>
-
-      <div
-        style={{
-          height: 1,
-          width: 48,
-          background: "rgba(255,255,255,0.2)",
-        }}
-      />
-
-      <span className="text-xs uppercase tracking-[0.18em] text-white/30">
-        Est. 2024
-      </span>
-    </div>
-  </div>
-</section>
+        </section>
 
         {/* PORTFOLIO */}
         <PortfolioGrid />
@@ -499,7 +411,6 @@ export default function Home() {
 
 function ChatMarquee() {
   const repeated = Array(16).fill(null);
-
   return (
     <Link href="/contact">
       <section className="chat-marquee-section">
@@ -513,7 +424,7 @@ function ChatMarquee() {
           </div>
         </div>
         <div className="chat-cta-hint">
-          <span>Get In Touch</span>
+          <span className="hidden sm:inline">Get In Touch</span>
           <span className="chat-cta-arrow">→</span>
         </div>
       </section>
