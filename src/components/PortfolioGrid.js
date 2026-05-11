@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import projects from "@/data/projects";
 
 export default function PortfolioGrid() {
@@ -9,21 +9,32 @@ export default function PortfolioGrid() {
 
   useEffect(() => {
     const observers = [];
+
     cardRefs.current.forEach((el) => {
       if (!el) return;
+
+      // Reset so re-entry animates again
+      el.style.opacity = "0";
+      el.style.transform = "translateY(48px)";
+
       const obs = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
             el.style.opacity = "1";
             el.style.transform = "translateY(0)";
-            obs.unobserve(el);
+          } else {
+            // re-arm on scroll back up
+            el.style.opacity = "0";
+            el.style.transform = "translateY(48px)";
           }
         },
-        { threshold: 0.12 }
+        { threshold: 0.1 }
       );
+
       obs.observe(el);
       observers.push(obs);
     });
+
     return () => observers.forEach((o) => o.disconnect());
   }, []);
 
@@ -47,7 +58,7 @@ export default function PortfolioGrid() {
         .card-wrap {
           position: relative;
           overflow: hidden;
-          border-radius: 1.2rem;
+          border-radius: 1rem;
           background: #111;
         }
         .card-wrap img {
@@ -55,11 +66,11 @@ export default function PortfolioGrid() {
           height: 100%;
           object-fit: cover;
           display: block;
-          transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
+          transition: transform 0.9s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s ease;
         }
         .card-wrap:hover img {
           transform: scale(1.04);
-          filter: brightness(0.22) saturate(0.3);
+          filter: brightness(0.2) saturate(0.3);
         }
         .marquee-overlay {
           position: absolute;
@@ -83,79 +94,107 @@ export default function PortfolioGrid() {
         }
         .hover-badge {
           position: absolute;
-          bottom: 18px;
-          right: 18px;
+          bottom: 16px;
+          right: 16px;
           z-index: 4;
           padding: 5px 12px;
-          border: 1px solid rgba(255,255,255,0.25);
+          border: 1px solid rgba(255,255,255,0.2);
           border-radius: 999px;
-          font-size: 0.6rem;
+          font-size: 0.58rem;
           letter-spacing: 0.15em;
           text-transform: uppercase;
           color: white;
           opacity: 0;
-          transform: translateY(6px);
+          transform: translateY(8px);
           transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
         }
         .card-wrap:hover .hover-badge { opacity: 1; transform: translateY(0); }
         .hover-index {
           position: absolute;
-          top: 18px;
-          left: 20px;
+          top: 16px;
+          left: 18px;
           z-index: 4;
-          font-size: 0.65rem;
+          font-size: 0.62rem;
           letter-spacing: 0.1em;
-          color: rgba(255,255,255,0.4);
+          color: rgba(255,255,255,0.35);
           opacity: 0;
           transform: translateY(-4px);
           transition: opacity 0.4s ease 0.05s, transform 0.4s ease 0.05s;
         }
         .card-wrap:hover .hover-index { opacity: 1; transform: translateY(0); }
         .card-title-text {
-          font-size: 1.2rem;
+          font-size: 1.1rem;
           font-weight: 500;
           letter-spacing: -0.01em;
           transition: color 0.2s ease;
         }
-        @media (min-width: 768px) {
-          .card-title-text { font-size: 1.4rem; }
-        }
+        @media (min-width: 768px) { .card-title-text { font-size: 1.35rem; } }
         .card-link:hover .card-title-text { color: #f97316; }
         .card-category {
-          font-size: 0.65rem;
+          font-size: 0.6rem;
           text-transform: uppercase;
           letter-spacing: 0.18em;
           color: #f97316;
         }
-
-        /* Slide-in for mobile */
         .card-animate {
           opacity: 0;
-          transform: translateY(40px);
-          transition: opacity 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                      transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          transform: translateY(48px);
+          transition:
+            opacity 0.85s cubic-bezier(0.25,0.46,0.45,0.94),
+            transform 0.85s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        /* DESKTOP: expand card on hover */
+        @media (min-width: 768px) {
+          .portfolio-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px 16px;
+            align-items: start;
+          }
+          .card-link {
+            transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+          }
+          .card-link:hover {
+            transform: scale(1.015);
+            z-index: 2;
+          }
+        }
+        @media (max-width: 767px) {
+          .portfolio-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 28px;
+          }
         }
       `}</style>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-8 px-4 md:px-6 mt-16 md:mt-24 pb-20 md:pb-24">
+      <section className="portfolio-grid px-4 md:px-6 mt-14 md:mt-20 pb-20 md:pb-28">
         {projects.map((project, index) => {
           const repeated = Array(6).fill(`${project.title} — `).join("");
-          const cardHeight = "min(68vw, 680px)";
 
           return (
             <Link
               href={`/projects/${project.slug}`}
               key={project.slug}
               className="card-link block cursor-pointer"
+              style={{ position: "relative" }}
             >
               <div
                 className="card-animate"
                 ref={(el) => (cardRefs.current[index] = el)}
-                style={{ transitionDelay: `${(index % 2) * 80}ms` }}
+                style={{
+                  transitionDelay: `${(index % 2) * 90}ms`,
+                }}
               >
-                <div className="card-wrap" style={{ height: cardHeight }}>
+                {/* CARD IMAGE */}
+                <div
+                  className="card-wrap"
+                  style={{
+                    height: "clamp(260px, 52vw, 700px)",
+                  }}
+                >
                   <img src={project.image} alt={project.title} />
-
                   <span className="hover-index">{String(index + 1).padStart(2, "0")}</span>
 
                   <div className="marquee-overlay">
@@ -163,7 +202,7 @@ export default function PortfolioGrid() {
                       <div className="marquee-title">
                         {[0, 1].map((i) => (
                           <span key={i} style={{
-                            fontSize: "clamp(2.8rem, 7vw, 6rem)",
+                            fontSize: "clamp(2.4rem, 6.5vw, 5.5rem)",
                             fontWeight: 900,
                             lineHeight: 1.05,
                             color: "#fff",
@@ -177,18 +216,16 @@ export default function PortfolioGrid() {
                         ))}
                       </div>
                     </div>
-
                     <div className="marquee-divider" />
-
                     <div className="marquee-row">
                       <div className="marquee-title reverse">
                         {[0, 1].map((i) => (
                           <span key={i} style={{
-                            fontSize: "clamp(2.8rem, 7vw, 6rem)",
+                            fontSize: "clamp(2.4rem, 6.5vw, 5.5rem)",
                             fontWeight: 900,
                             lineHeight: 1.05,
                             color: "transparent",
-                            WebkitTextStroke: "1.5px rgba(255,255,255,0.45)",
+                            WebkitTextStroke: "1.5px rgba(255,255,255,0.4)",
                             textTransform: "uppercase",
                             letterSpacing: "-0.03em",
                             whiteSpace: "nowrap",
@@ -204,6 +241,7 @@ export default function PortfolioGrid() {
                   <span className="hover-badge">{project.category}</span>
                 </div>
 
+                {/* META */}
                 <div className="flex justify-between items-center mt-3 px-1">
                   <h2 className="card-title-text text-white">{project.title}</h2>
                   <p className="card-category">{project.category}</p>
