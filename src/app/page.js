@@ -28,64 +28,79 @@ export default function Home() {
         .brand-suffix { transition: color 0.2s ease 0.24s; color: #f97316; }
         .brand-wrap:hover .brand-suffix { color: #fff; }
 
-        /* SLASH NAV */
+        /* ─── KATANA NAV ─── */
         .nav-item {
           position: relative;
           cursor: pointer;
-          padding: 8px 16px;
-          overflow: visible;
+          padding: 10px 18px;
           user-select: none;
+          overflow: visible;
         }
 
-        /* Each word is split into top-half and bottom-half via clip-path */
-        .nav-word-top,
-        .nav-word-bottom {
+        .nav-top,
+        .nav-bottom {
           display: block;
           font-size: 0.8rem;
-          letter-spacing: 0.06em;
+          font-weight: 500;
+          letter-spacing: 0.07em;
           color: #9ca3af;
           line-height: 1;
-          transition: transform 0.3s cubic-bezier(0.76,0,0.24,1),
-                      color 0.25s ease;
           white-space: nowrap;
-          font-weight: 500;
+          transition:
+            transform 0.38s cubic-bezier(0.76, 0, 0.24, 1),
+            color 0.25s ease;
+          will-change: transform;
+          text-transform: uppercase;
         }
-        .nav-word-top {
-          clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
-          margin-bottom: 0;
+
+        /* Top half: only pixels 0→50% of the glyph height visible */
+        .nav-top {
+          clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%);
         }
-        .nav-word-bottom {
-          clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+
+        /* Bottom half: overlaid via negative margin, only 50%→100% visible */
+        .nav-bottom {
+          clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
           margin-top: -1em;
         }
-        .nav-item:hover .nav-word-top {
-          transform: translateY(-4px) skewX(-8deg);
-          color: #fff;
+
+        /* HOVER — diagonal tear */
+        .nav-item:hover .nav-top {
+          transform: translate(6px, -8px) skewX(14deg);
+          color: #ffffff;
         }
-        .nav-item:hover .nav-word-bottom {
-          transform: translateY(4px) skewX(-8deg);
-          color: #fff;
+        .nav-item:hover .nav-bottom {
+          transform: translate(-6px, 8px) skewX(14deg);
+          color: #ffffff;
         }
 
-        /* Orange slash line — always present but hidden, shows on hover */
-        .nav-slash-diag {
+        /* THE SLASH — diagonal orange blade sweeping across */
+        .nav-slash {
           position: absolute;
           top: 50%;
-          left: 0;
-          right: 0;
+          left: -6px;
+          right: -6px;
           height: 1.5px;
-          background: #f97316;
-          transform: translateY(-50%) scaleX(0) skewY(-8deg);
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            #f97316 15%,
+            #ff9a4d 50%,
+            #f97316 85%,
+            transparent 100%
+          );
+          transform: translateY(-50%) scaleX(0) rotate(-5deg);
           transform-origin: left center;
-          transition: transform 0.25s cubic-bezier(0.76,0,0.24,1);
+          transition: transform 0.32s cubic-bezier(0.76, 0, 0.24, 1);
           pointer-events: none;
-          z-index: 10;
+          z-index: 20;
+          filter: drop-shadow(0 0 3px #f97316cc);
         }
-        .nav-item:hover .nav-slash-diag {
-          transform: translateY(-50%) scaleX(1) skewY(-8deg);
+        .nav-item:hover .nav-slash {
+          transform: translateY(-50%) scaleX(1) rotate(-5deg);
         }
 
-        /* CONTACT BUTTON — brutalist stamp */
+        /* CONTACT BUTTON */
         .contact-btn {
           position: relative;
           overflow: hidden;
@@ -230,20 +245,19 @@ export default function Home() {
             </h1>
           </div>
 
-          {/* DESKTOP NAV — diagonal slice */}
+          {/* DESKTOP NAV — true katana slash */}
           <div className="hidden md:flex items-center">
             {["Branding", "Strategy", "Marketing", "Motion"].map((item) => (
               <div key={item} className="nav-item">
-                <span className="nav-word-top">{item}</span>
-                <span className="nav-word-bottom">{item}</span>
-                <span className="nav-slash-diag" aria-hidden="true" />
+                <span className="nav-top" aria-hidden="true">{item}</span>
+                <span className="nav-bottom">{item}</span>
+                <span className="nav-slash" aria-hidden="true" />
               </div>
             ))}
           </div>
 
           {/* ACTIONS */}
-         <div className="flex items-center gap-3">
-
+        <div className="flex items-center gap-3">
   <a
     href="https://www.instagram.com/unfltrr?igsh=MWN0Y2ozZjk4NHpubQ=="
     target="_blank"
@@ -277,25 +291,19 @@ export default function Home() {
         strokeWidth="1.8"
         fill="none"
       />
-      <circle
-        cx="17.8"
-        cy="6.2"
-        r="1.1"
-        fill="currentColor"
-      />
+      <circle cx="17.8" cy="6.2" r="1.1" fill="currentColor" />
     </svg>
   </a>
 
-  <Link href="/contact">
-    <button className="contact-btn">
-      <span className="contact-btn-text">
-        <span className="contact-arrow">→</span>
-        Contact
-      </span>
-    </button>
-  </Link>
-
-</div>
+            <Link href="/contact">
+              <button className="contact-btn">
+                <span className="contact-btn-text">
+                  <span className="contact-arrow">→</span>
+                  Contact
+                </span>
+              </button>
+            </Link>
+          </div>
 
         </nav>
 
@@ -338,7 +346,7 @@ export default function Home() {
         {/* PORTFOLIO */}
         <PortfolioGrid />
 
-        {/* FOOTER */}
+        {/* FOOTER MARQUEE */}
         <ChatMarquee />
 
       </main>
