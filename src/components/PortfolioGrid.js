@@ -4,16 +4,19 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import projects from "@/data/projects";
 
+const INITIAL_COUNT = 9;
+
 export default function PortfolioGrid() {
   const cardRefs = useRef([]);
+  const [showAll, setShowAll] = useState(false);
+
+  const visibleProjects = showAll ? projects : projects.slice(0, INITIAL_COUNT);
 
   useEffect(() => {
     const observers = [];
 
     cardRefs.current.forEach((el) => {
       if (!el) return;
-
-      // Reset so re-entry animates again
       el.style.opacity = "0";
       el.style.transform = "translateY(48px)";
 
@@ -23,20 +26,18 @@ export default function PortfolioGrid() {
             el.style.opacity = "1";
             el.style.transform = "translateY(0)";
           } else {
-            // re-arm on scroll back up
             el.style.opacity = "0";
             el.style.transform = "translateY(48px)";
           }
         },
         { threshold: 0.1 }
       );
-
       obs.observe(el);
       observers.push(obs);
     });
 
     return () => observers.forEach((o) => o.disconnect());
-  }, []);
+  }, [visibleProjects]);
 
   return (
     <>
@@ -144,7 +145,6 @@ export default function PortfolioGrid() {
             transform 0.85s cubic-bezier(0.25,0.46,0.45,0.94);
         }
 
-        /* DESKTOP: expand card on hover */
         @media (min-width: 768px) {
           .portfolio-grid {
             display: grid;
@@ -167,10 +167,100 @@ export default function PortfolioGrid() {
             gap: 28px;
           }
         }
+
+        /* VIEW MORE BUTTON */
+        .view-more-btn {
+          position: relative;
+          overflow: hidden;
+          background: #0a0a0a;
+          border: 1px solid #1e1e1e;
+          border-radius: 1rem;
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 16px;
+          transition: border-color 0.3s ease, background 0.3s ease;
+          height: clamp(260px, 52vw, 700px);
+          width: 100%;
+        }
+        .view-more-btn::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: #f97316;
+          transform: translateY(101%);
+          transition: transform 0.45s cubic-bezier(0.76, 0, 0.24, 1);
+          z-index: 0;
+        }
+        .view-more-btn:hover::before { transform: translateY(0); }
+        .view-more-btn:hover { border-color: #f97316; }
+        .view-more-btn:hover .vmb-label { color: #000; }
+        .view-more-btn:hover .vmb-count { color: rgba(0,0,0,0.5); }
+        .view-more-btn:hover .vmb-icon { color: #000; border-color: rgba(0,0,0,0.3); }
+        .view-more-btn:hover .vmb-corner { border-color: #000; }
+
+        .vmb-label {
+          position: relative;
+          z-index: 1;
+          font-size: clamp(1.4rem, 3vw, 2.2rem);
+          font-weight: 900;
+          letter-spacing: -0.02em;
+          text-transform: uppercase;
+          color: #fff;
+          transition: color 0.3s ease;
+          line-height: 1;
+        }
+        .vmb-count {
+          position: relative;
+          z-index: 1;
+          font-size: 0.62rem;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          color: #444;
+          transition: color 0.3s ease;
+        }
+        .vmb-icon {
+          position: relative;
+          z-index: 1;
+          width: 52px;
+          height: 52px;
+          border-radius: 50%;
+          border: 1.5px solid #2a2a2a;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.4rem;
+          color: #f97316;
+          transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+        }
+        .view-more-btn:hover .vmb-icon { transform: translateY(-4px); }
+
+        /* Corner brackets on view more */
+        .vmb-corner {
+          position: absolute;
+          width: 18px;
+          height: 18px;
+          border-color: #1e1e1e;
+          transition: border-color 0.3s ease;
+        }
+        .vmb-corner.tl { top: 14px; left: 14px; border-top: 1.5px solid; border-left: 1.5px solid; }
+        .vmb-corner.tr { top: 14px; right: 14px; border-top: 1.5px solid; border-right: 1.5px solid; }
+        .vmb-corner.bl { bottom: 14px; left: 14px; border-bottom: 1.5px solid; border-left: 1.5px solid; }
+        .vmb-corner.br { bottom: 14px; right: 14px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
+
+        /* Grid span for the button on desktop — last odd position spans full width */
+        @media (min-width: 768px) {
+          .view-more-cell {
+            grid-column: span 1;
+          }
+        }
       `}</style>
 
       <section className="portfolio-grid px-4 md:px-6 mt-14 md:mt-20 pb-20 md:pb-28">
-        {projects.map((project, index) => {
+
+        {visibleProjects.map((project, index) => {
           const repeated = Array(6).fill(`${project.title} — `).join("");
 
           return (
@@ -183,17 +273,9 @@ export default function PortfolioGrid() {
               <div
                 className="card-animate"
                 ref={(el) => (cardRefs.current[index] = el)}
-                style={{
-                  transitionDelay: `${(index % 2) * 90}ms`,
-                }}
+                style={{ transitionDelay: `${(index % 2) * 90}ms` }}
               >
-                {/* CARD IMAGE */}
-                <div
-                  className="card-wrap"
-                  style={{
-                    height: "clamp(260px, 52vw, 700px)",
-                  }}
-                >
+                <div className="card-wrap" style={{ height: "clamp(260px, 52vw, 700px)" }}>
                   <img src={project.image} alt={project.title} />
                   <span className="hover-index">{String(index + 1).padStart(2, "0")}</span>
 
@@ -203,13 +285,9 @@ export default function PortfolioGrid() {
                         {[0, 1].map((i) => (
                           <span key={i} style={{
                             fontSize: "clamp(2.4rem, 6.5vw, 5.5rem)",
-                            fontWeight: 900,
-                            lineHeight: 1.05,
-                            color: "#fff",
-                            textTransform: "uppercase",
-                            letterSpacing: "-0.03em",
-                            whiteSpace: "nowrap",
-                            paddingRight: "2.5rem",
+                            fontWeight: 900, lineHeight: 1.05, color: "#fff",
+                            textTransform: "uppercase", letterSpacing: "-0.03em",
+                            whiteSpace: "nowrap", paddingRight: "2.5rem",
                           }}>
                             {repeated}
                           </span>
@@ -222,14 +300,11 @@ export default function PortfolioGrid() {
                         {[0, 1].map((i) => (
                           <span key={i} style={{
                             fontSize: "clamp(2.4rem, 6.5vw, 5.5rem)",
-                            fontWeight: 900,
-                            lineHeight: 1.05,
+                            fontWeight: 900, lineHeight: 1.05,
                             color: "transparent",
                             WebkitTextStroke: "1.5px rgba(255,255,255,0.4)",
-                            textTransform: "uppercase",
-                            letterSpacing: "-0.03em",
-                            whiteSpace: "nowrap",
-                            paddingRight: "2.5rem",
+                            textTransform: "uppercase", letterSpacing: "-0.03em",
+                            whiteSpace: "nowrap", paddingRight: "2.5rem",
                           }}>
                             {repeated}
                           </span>
@@ -241,7 +316,6 @@ export default function PortfolioGrid() {
                   <span className="hover-badge">{project.category}</span>
                 </div>
 
-                {/* META */}
                 <div className="flex justify-between items-center mt-3 px-1">
                   <h2 className="card-title-text text-white">{project.title}</h2>
                   <p className="card-category">{project.category}</p>
@@ -250,6 +324,29 @@ export default function PortfolioGrid() {
             </Link>
           );
         })}
+
+        {/* VIEW MORE BUTTON — only shown when not all visible */}
+        {!showAll && projects.length > INITIAL_COUNT && (
+          <div className="view-more-cell">
+            <button
+              className="view-more-btn"
+              onClick={() => setShowAll(true)}
+              aria-label="View more projects"
+            >
+              <span className="vmb-corner tl" />
+              <span className="vmb-corner tr" />
+              <span className="vmb-corner bl" />
+              <span className="vmb-corner br" />
+
+              <div className="vmb-icon">↓</div>
+              <span className="vmb-label">View More</span>
+              <span className="vmb-count">
+                +{projects.length - INITIAL_COUNT} Projects
+              </span>
+            </button>
+          </div>
+        )}
+
       </section>
     </>
   );

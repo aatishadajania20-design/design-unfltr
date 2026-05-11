@@ -59,11 +59,7 @@ export default function ContactPage() {
           box-sizing: border-box;
         }
 
-        /* ── LOGO (mirrors page.js exactly) ── */
-        .c-logo-svg {
-          transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
-          transform-origin: center;
-        }
+        .c-logo-svg { transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1); transform-origin: center; }
         .c-logo-path { fill: #ffffff; transition: fill 0.35s ease; }
         .c-brand-wrap:hover .c-logo-svg { transform: rotate(180deg) scale(1.15); }
         .c-brand-wrap:hover .c-logo-path { fill: #f97316; }
@@ -82,7 +78,6 @@ export default function ContactPage() {
         .c-brand-suffix { transition: color 0.2s ease 0.24s; color: #f97316; }
         .c-brand-wrap:hover .c-brand-suffix { color: #fff; }
 
-        /* ── KATANA NAV (mirrors page.js exactly) ── */
         .c-nav-item {
           position: relative;
           cursor: pointer;
@@ -121,7 +116,6 @@ export default function ContactPage() {
         }
         .c-nav-item:hover .c-nav-slash { transform: translateY(-50%) scaleX(1) rotate(-5deg); }
 
-        /* ── CONTACT BUTTON (mirrors page.js exactly) ── */
         .c-contact-btn {
           position: relative;
           overflow: hidden;
@@ -154,18 +148,10 @@ export default function ContactPage() {
         }
         .c-contact-btn:hover::before { transform: translateX(0); }
         .c-contact-btn:hover { color: #000; }
-        .c-contact-btn-text {
-          position: relative; z-index: 1;
-          display: flex; align-items: center; gap: 6px; line-height: 1;
-        }
-        .c-contact-arrow {
-          color: #f97316;
-          transition: color 0.28s ease, transform 0.2s ease;
-          font-size: 0.85rem;
-        }
+        .c-contact-btn-text { position: relative; z-index: 1; display: flex; align-items: center; gap: 6px; line-height: 1; }
+        .c-contact-arrow { color: #f97316; transition: color 0.28s ease, transform 0.2s ease; font-size: 0.85rem; }
         .c-contact-btn:hover .c-contact-arrow { color: #000; transform: translateX(3px); }
 
-        /* ── REVEAL ── */
         .cr {
           opacity: 0;
           transform: translateY(48px);
@@ -173,7 +159,6 @@ export default function ContactPage() {
                       transform 0.9s cubic-bezier(0.25,0.46,0.45,0.94);
         }
 
-        /* ── TITLE WIPE ── */
         .title-line { display: block; overflow: hidden; }
         .title-inner {
           display: block;
@@ -182,13 +167,12 @@ export default function ContactPage() {
         }
         @keyframes wipeUp { to { transform: translateY(0); } }
 
-        /* ── BRUTAL FIELDS ── */
         .brutal-field {
           width: 100%;
           background: transparent;
           border: none;
           border-bottom: 1px solid #2a2a2a;
-color: #f5f5f5;
+          color: #f5f5f5;
           font-size: 1.05rem;
           padding: 18px 0 14px;
           outline: none;
@@ -197,22 +181,19 @@ color: #f5f5f5;
           resize: none;
           transition: border-color 0.3s ease;
         }
-       .brutal-field::placeholder {
-  color: #6b7280;
-  letter-spacing: 0.05em;
-}
+        .brutal-field::placeholder { color: #6b7280; letter-spacing: 0.05em; }
         .brutal-field:focus { border-color: transparent; }
 
         .field-wrap { position: relative; }
         .field-label {
-  display: block;
-  font-size: 0.55rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: #8b8b8b;
-  margin-bottom: 2px;
-  transition: color 0.25s ease;
-}
+          display: block;
+          font-size: 0.55rem;
+          letter-spacing: 0.26em;
+          text-transform: uppercase;
+          color: #8b8b8b;
+          margin-bottom: 2px;
+          transition: color 0.25s ease;
+        }
         .field-wrap.active .field-label { color: #f97316; }
         .field-bar {
           position: absolute; bottom: 0; left: 0;
@@ -229,7 +210,6 @@ color: #f5f5f5;
         }
         .field-wrap.active .field-bar::after { transform: scaleX(1); }
 
-        /* ── SUBMIT BUTTON ── */
         .submit-btn {
           position: relative; overflow: hidden;
           background: transparent;
@@ -258,7 +238,6 @@ color: #f5f5f5;
         .btn-arrow { display: inline-block; margin-left: 10px; transition: transform 0.25s ease; }
         .submit-btn:hover .btn-arrow { transform: translateX(5px); }
 
-        /* ── SUCCESS ── */
         .success-box {
           display: inline-flex; align-items: center; gap: 12px;
           padding: 16px 28px;
@@ -269,7 +248,7 @@ color: #f5f5f5;
         }
         @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 
-        /* ── STATS ── */
+        /* ── STATS — now visible ── */
         .stat-num {
           font-size: clamp(2.8rem, 4.5vw, 5rem);
           font-weight: 900; line-height: 0.88;
@@ -277,18 +256,20 @@ color: #f5f5f5;
         }
         .stat-label {
           font-size: 0.55rem; letter-spacing: 0.24em;
-          text-transform: uppercase; color: #333; margin-top: 8px;
+          text-transform: uppercase;
+          color: #888;
+          margin-top: 8px;
+          transition: color 0.2s ease;
         }
+        .stat-item:hover .stat-label { color: #f97316; }
         @keyframes countUp {
           from { opacity: 0; transform: translateY(20px) scale(0.92); }
           to   { opacity: 1; transform: none; }
         }
         .stat-anim { animation: countUp 0.7s cubic-bezier(0.34,1.56,0.64,1) both; }
 
-        /* ── ORANGE RULE ── */
         .o-rule { width: 52px; height: 2px; background: #f97316; margin-bottom: 28px; }
 
-        /* ── LOGO STRIP ── */
         @keyframes lscroll  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
         @keyframes lscrollR { from { transform: translateX(-50%); } to { transform: translateX(0); } }
         .logo-track     { display: flex; width: max-content; animation: lscroll  20s linear infinite; }
@@ -297,13 +278,12 @@ color: #f5f5f5;
         .logo-row:hover .logo-track-rev { animation-play-state: paused; }
         .logo-item {
           display: flex; align-items: center; gap: 12px;
-          padding: 0 28px; color: #1c1c1c;
+          padding: 0 28px; color: #3a3a3a;
           white-space: nowrap; transition: color 0.25s ease; cursor: default;
         }
         .logo-item:hover { color: #f97316; }
         .logo-item-label { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
 
-        /* ── RIGHT PANEL VIDEO ── */
         .rp-video-wrap { position: relative; overflow: hidden; background: #050505; }
         .rp-video-wrap video {
           width: 100%; height: 100%; object-fit: cover;
@@ -337,39 +317,44 @@ color: #f5f5f5;
           pointer-events: none; user-select: none; line-height: 1;
         }
 
-        /* ── SERVICE TAGS ── */
+        /* ── SERVICE TAGS — now visible ── */
         .svc-tag {
           font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
-          color: #2a2a2a; padding: 5px 12px; border: 1px solid #181818;
+          color: #888;
+          padding: 5px 12px; border: 1px solid #2a2a2a;
           transition: color 0.2s, border-color 0.2s; cursor: default;
         }
         .svc-tag:hover { color: #f97316; border-color: #f97316; }
 
-        /* ── CORNER BRACKETS ── */
+        /* ── WHAT WE DO LABEL — visible ── */
+        .what-we-do-label {
+          font-size: 0.52rem;
+          letter-spacing: 0.24em;
+          text-transform: uppercase;
+          color: #666;
+          margin-bottom: 12px;
+        }
+
         .corner-br { position: absolute; width: 20px; height: 20px; pointer-events: none; }
         .corner-br.tl { top:12px; left:12px; border-top:1.5px solid #f97316; border-left:1.5px solid #f97316; }
         .corner-br.tr { top:12px; right:12px; border-top:1.5px solid #f97316; border-right:1.5px solid #f97316; }
         .corner-br.bl { bottom:12px; left:12px; border-bottom:1.5px solid #f97316; border-left:1.5px solid #f97316; }
         .corner-br.br { bottom:12px; right:12px; border-bottom:1.5px solid #f97316; border-right:1.5px solid #f97316; }
 
-        /* ── SCAN LINES ── */
         .scan-lines {
           position: absolute; inset: 0;
           background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
           pointer-events: none; z-index: 5;
         }
 
-        /* ── PULSE DOT ── */
         @keyframes pulse-dot {
           0%,100% { opacity:1; transform:scale(1); }
           50%      { opacity:0.35; transform:scale(0.65); }
         }
 
-        /* ── RIGHT PANEL desktop only ── */
         .right-panel-desktop { display: none; }
         @media (min-width: 1024px) { .right-panel-desktop { display: flex !important; } }
 
-        /* ── INSTA ── */
         .c-insta-link {
           display: flex; align-items: center; justify-content: center;
           color: #fff; transition: color 0.2s ease;
@@ -387,10 +372,8 @@ color: #f5f5f5;
           }}
         />
 
-        {/* ── NAVBAR — identical structure to page.js ── */}
+        {/* NAVBAR */}
         <nav className="sticky top-0 z-50 flex items-center justify-between px-5 md:px-8 py-4 backdrop-blur-md bg-black/50 border-b border-zinc-900">
-
-          {/* LOGO — clickable, same animation as homepage */}
           <Link href="/">
             <div className="c-brand-wrap flex items-center gap-2 cursor-pointer select-none">
               <LogoSVG size={26} className="c-logo-svg" />
@@ -403,7 +386,6 @@ color: #f5f5f5;
             </div>
           </Link>
 
-          {/* KATANA NAV — same as homepage */}
           <div className="hidden md:flex items-center">
             {["Branding", "Strategy", "Marketing", "Motion"].map((item) => (
               <div key={item} className="c-nav-item">
@@ -414,23 +396,20 @@ color: #f5f5f5;
             ))}
           </div>
 
-          {/* ACTIONS */}
           <div className="flex items-center gap-3">
-            
-            <a
-  href="https://www.instagram.com/unfltrr?igsh=MWN0Y2ozZjk4NHpubQ=="
-  target="_blank"
-  rel="noopener noreferrer"
-  className="c-insta-link"
-  aria-label="Instagram"
->
+  <a
+    href="https://www.instagram.com/unfltrr?igsh=MWN0Y2ozZjk4NHpubQ=="
+    target="_blank"
+    rel="noopener noreferrer"
+    className="c-insta-link"
+    aria-label="Instagram"
+  >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="2" y="2" width="20" height="20" rx="6" ry="6" stroke="currentColor" strokeWidth="1.8" fill="none" />
                 <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.8" fill="none" />
                 <circle cx="17.8" cy="6.2" r="1.1" fill="currentColor" />
               </svg>
             </a>
-            {/* Contact button is intentionally dimmed since we're already on this page */}
             <button className="c-contact-btn" style={{ opacity: 0.35, pointerEvents: "none" }}>
               <span className="c-contact-btn-text">
                 <span className="c-contact-arrow">→</span>
@@ -438,23 +417,18 @@ color: #f5f5f5;
               </span>
             </button>
           </div>
-
         </nav>
 
-        {/* ── MAIN SPLIT — full remaining viewport height ── */}
+        {/* MAIN SPLIT */}
         <div style={{ flex: 1, display: "flex", minHeight: "calc(100svh - 65px)" }}>
 
           {/* LEFT — FORM */}
-          <div
-            className="flex flex-col"
-            style={{
-              flex: 1,
-              padding: "clamp(28px,4vw,60px) clamp(20px,5vw,56px)",
-              justifyContent: "center",
-            }}
-          >
+          <div className="flex flex-col" style={{
+            flex: 1,
+            padding: "clamp(28px,4vw,60px) clamp(20px,5vw,56px)",
+            justifyContent: "center",
+          }}>
 
-            {/* EYEBROW */}
             <p className="cr" ref={r(0, 0)} style={{
               color: "#f97316", fontSize: "0.6rem", letterSpacing: "0.28em",
               textTransform: "uppercase", marginBottom: 20,
@@ -464,7 +438,6 @@ color: #f5f5f5;
               New Project Inquiry
             </p>
 
-            {/* TITLE */}
             <h1 className="cr" ref={r(1, 60)} style={{
               fontSize: "clamp(3rem, 8vw, 6rem)",
               fontWeight: 900, lineHeight: 0.88,
@@ -481,12 +454,11 @@ color: #f5f5f5;
               </span>
             </h1>
 
-            {/* ORANGE RULE */}
             <div className="o-rule cr" ref={r(2, 120)} />
 
-            {/* SUBTEXT */}
             <p className="cr" ref={r(3, 160)} style={{
-              color: "#555", fontSize: "0.88rem", lineHeight: 1.7,
+              color: "#888",
+              fontSize: "0.88rem", lineHeight: 1.7,
               maxWidth: 400, marginBottom: "clamp(20px,3vw,36px)",
             }}>
               Branding, strategy, marketing, or full creative direction — we build systems that
@@ -503,7 +475,7 @@ color: #f5f5f5;
                 { num: "3+",  label: "Years Active"  },
                 { num: "∞",   label: "Culturally Driven" },
               ].map((s, i) => (
-                <div key={s.label} className="stat-anim" style={{ animationDelay: `${280 + i * 80}ms` }}>
+                <div key={s.label} className="stat-item stat-anim" style={{ animationDelay: `${280 + i * 80}ms` }}>
                   <div className="stat-num">{s.num}</div>
                   <div className="stat-label">{s.label}</div>
                 </div>
@@ -573,13 +545,9 @@ color: #f5f5f5;
 
           </div>
 
-          {/* RIGHT PANEL — desktop only */}
-          <div
-            className="right-panel-desktop flex-col"
-            style={{ width: "42%", borderLeft: "1px solid #111" }}
-          >
+          {/* RIGHT PANEL */}
+          <div className="right-panel-desktop flex-col" style={{ width: "42%", borderLeft: "1px solid #111" }}>
 
-            {/* VIDEO */}
             <div className="rp-video-wrap" style={{ flex: "0 0 62%" }}>
               <video
                 src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1778434734/1.5_lrsfll.mp4"
@@ -598,15 +566,14 @@ color: #f5f5f5;
               <div className="rp-label">UNFLTR Studio — Culture-First Creative</div>
             </div>
 
-            {/* LOGO STRIP */}
             <div style={{
               flex: "0 0 38%", borderTop: "1px solid #111",
               background: "#000", display: "flex", flexDirection: "column",
               justifyContent: "center", overflow: "hidden",
             }}>
-
               <div style={{ padding: "20px 28px 14px" }}>
-                <p style={{ fontSize:"0.52rem", letterSpacing:"0.24em", textTransform:"uppercase", color:"#2a2a2a", marginBottom:12 }}>What We Do</p>
+                {/* WHAT WE DO — now visible */}
+                <p className="what-we-do-label">What We Do</p>
                 <div style={{ display:"flex", flexWrap:"wrap", gap:"6px 10px" }}>
                   {SERVICES.map((s) => <span key={s} className="svc-tag">{s}</span>)}
                 </div>
@@ -646,13 +613,10 @@ color: #f5f5f5;
 
         </div>
 
-        {/* FOOTER BAR */}
+        {/* FOOTER */}
         <div style={{ height:1, background:"#111" }} />
-        <div style={{
-          padding: "14px clamp(20px,5vw,40px)",
-          display:"flex", justifyContent:"space-between", alignItems:"center",
-        }}>
-          <span style={{ fontSize:"0.55rem", letterSpacing:"0.22em", textTransform:"uppercase", color:"#2a2a2a" }}>© 2025 UNFLTR Studio</span>
+        <div style={{ padding:"14px clamp(20px,5vw,40px)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <span style={{ fontSize:"0.55rem", letterSpacing:"0.22em", textTransform:"uppercase", color:"#444" }}>© 2025 UNFLTR Studio</span>
           <span style={{ fontSize:"0.55rem", letterSpacing:"0.22em", textTransform:"uppercase", color:"#f97316" }}>Culture-First</span>
         </div>
 
