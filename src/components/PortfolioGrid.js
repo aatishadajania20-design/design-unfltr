@@ -62,17 +62,45 @@ export default function PortfolioGrid() {
           border-radius: 1rem;
           background: #111;
         }
-        .card-wrap img {
+
+        /* ── MEDIA (img + video treated identically) ── */
+        .card-wrap img,
+        .card-wrap video {
           width: 100%;
           height: 100%;
           object-fit: cover;
           display: block;
           transition: transform 0.9s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s ease;
         }
-        .card-wrap:hover img {
+        .card-wrap:hover img,
+        .card-wrap:hover video {
           transform: scale(1.04);
           filter: brightness(0.2) saturate(0.3);
         }
+
+        /* small "● VIDEO" pill shown on video cards */
+        .video-pill {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          z-index: 5;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 4px 10px;
+          border: 1px solid rgba(249,115,22,0.45);
+          border-radius: 999px;
+          font-size: 0.52rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.6);
+          backdrop-filter: blur(6px);
+          background: rgba(0,0,0,0.35);
+          pointer-events: none;
+          transition: opacity 0.3s ease;
+        }
+        .card-wrap:hover .video-pill { opacity: 0; }
+
         .marquee-overlay {
           position: absolute;
           inset: 0;
@@ -237,24 +265,19 @@ export default function PortfolioGrid() {
         }
         .view-more-btn:hover .vmb-icon { transform: translateY(-4px); }
 
-        /* Corner brackets on view more */
         .vmb-corner {
           position: absolute;
-          width: 18px;
-          height: 18px;
+          width: 18px; height: 18px;
           border-color: #1e1e1e;
           transition: border-color 0.3s ease;
         }
-        .vmb-corner.tl { top: 14px; left: 14px; border-top: 1.5px solid; border-left: 1.5px solid; }
-        .vmb-corner.tr { top: 14px; right: 14px; border-top: 1.5px solid; border-right: 1.5px solid; }
-        .vmb-corner.bl { bottom: 14px; left: 14px; border-bottom: 1.5px solid; border-left: 1.5px solid; }
-        .vmb-corner.br { bottom: 14px; right: 14px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
+        .vmb-corner.tl { top:14px; left:14px; border-top:1.5px solid; border-left:1.5px solid; }
+        .vmb-corner.tr { top:14px; right:14px; border-top:1.5px solid; border-right:1.5px solid; }
+        .vmb-corner.bl { bottom:14px; left:14px; border-bottom:1.5px solid; border-left:1.5px solid; }
+        .vmb-corner.br { bottom:14px; right:14px; border-bottom:1.5px solid; border-right:1.5px solid; }
 
-        /* Grid span for the button on desktop — last odd position spans full width */
         @media (min-width: 768px) {
-          .view-more-cell {
-            grid-column: span 1;
-          }
+          .view-more-cell { grid-column: span 1; }
         }
       `}</style>
 
@@ -276,7 +299,34 @@ export default function PortfolioGrid() {
                 style={{ transitionDelay: `${(index % 2) * 90}ms` }}
               >
                 <div className="card-wrap" style={{ height: "clamp(260px, 52vw, 700px)" }}>
-                  <img src={project.image} alt={project.title} />
+
+                  {/* ── MEDIA: video if project.video exists, else image ── */}
+                  {project.video ? (
+                    <video
+                      src={project.video}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="none"
+                      style={{ position: "absolute", inset: 0 }}
+                    />
+                  ) : (
+                    <img src={project.image} alt={project.title} />
+                  )}
+
+                  {/* pill badge on video cards */}
+                  {project.video && (
+                    <div className="video-pill">
+                      <span style={{
+                        width: 5, height: 5, borderRadius: "50%",
+                        background: "#f97316", display: "inline-block",
+                        animation: "pulse-dot 2s ease-in-out infinite",
+                      }} />
+                      Video
+                    </div>
+                  )}
+
                   <span className="hover-index">{String(index + 1).padStart(2, "0")}</span>
 
                   <div className="marquee-overlay">
@@ -325,7 +375,7 @@ export default function PortfolioGrid() {
           );
         })}
 
-        {/* VIEW MORE BUTTON — only shown when not all visible */}
+        {/* VIEW MORE */}
         {!showAll && projects.length > INITIAL_COUNT && (
           <div className="view-more-cell">
             <button
@@ -337,17 +387,21 @@ export default function PortfolioGrid() {
               <span className="vmb-corner tr" />
               <span className="vmb-corner bl" />
               <span className="vmb-corner br" />
-
               <div className="vmb-icon">↓</div>
               <span className="vmb-label">View More</span>
-              <span className="vmb-count">
-                +{projects.length - INITIAL_COUNT} Projects
-              </span>
+              <span className="vmb-count">+{projects.length - INITIAL_COUNT} Projects</span>
             </button>
           </div>
         )}
 
       </section>
+
+      <style>{`
+        @keyframes pulse-dot {
+          0%,100% { opacity:1; transform:scale(1); }
+          50%      { opacity:0.4; transform:scale(0.7); }
+        }
+      `}</style>
     </>
   );
 }
