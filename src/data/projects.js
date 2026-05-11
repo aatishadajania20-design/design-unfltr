@@ -182,6 +182,14 @@ const projects = [
     image:
       "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778519894/lemme_be_your_saki_Night_life_event_by_Blunt_entertainment__fvlcjs.jpg",
   },
+
+  {
+    title: "1st Patt",
+    category: "Video Production",
+    slug: "1st-patt",
+    image:
+      "https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1778521162/1st_pattx2.mp4",
+  },
 ];
 
 export default projects;
