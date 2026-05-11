@@ -310,7 +310,7 @@ export default function Home() {
         {/* HERO VIDEO */}
         <section className="relative w-full overflow-hidden" style={{ minHeight: "100svh" }}>
           <video
-            src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1778434734/1.5_lrsfll.mp4"
+            src="https://res.cloudinary.com/dta1dl0pj/video/upload/v1778518780/1.5_1_lmvsx1.mp4"
             autoPlay muted loop playsInline preload="auto"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
           />
