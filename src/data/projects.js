@@ -142,6 +142,46 @@ const projects = [
     image:
       "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778519891/Chic_Thearpy_Decor_Ad_for_Performance_Marketing_bjcktk.jpg",
   },
+
+  {
+    title: "Certified Thrift Ad 2025",
+    category: "Advertisement",
+    slug: "certified-thrift-ad-2025",
+    image:
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778519891/certified_thrift_Ad_2025_wsusjk.jpg",
+  },
+
+  {
+    title: "A Night Under The Stars",
+    category: "Event Design",
+    slug: "a-night-under-the-stars-la-mar",
+    image:
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778519891/a_night_under_the_stars_Event_La_Mar_2024_qvdzmp.png",
+  },
+
+  {
+    title: "House Party Event HYPE",
+    category: "Visual Design",
+    slug: "house-party-event-2023",
+    image:
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778519892/house_party_event_2023_HYPE_fpsjos.png",
+  },
+
+  {
+    title: "Swiped Dating App Party",
+    category: "Event Branding",
+    slug: "swiped-dating-app-party-2023",
+    image:
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778519893/swiped_Dating_App_Party_Event_2023_vlajxp.jpg",
+  },
+
+  {
+    title: "Lemme Be Your Saki",
+    category: "Nightlife Event",
+    slug: "lemme-be-your-saki-blunt-entertainment",
+    image:
+      "https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778519894/lemme_be_your_saki_Night_life_event_by_Blunt_entertainment__fvlcjs.jpg",
+  },
 ];
 
 export default projects;
