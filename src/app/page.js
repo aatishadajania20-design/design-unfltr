@@ -477,7 +477,8 @@ function ClientsSection() {
           font-weight: 900;
           line-height: 0.85;
           letter-spacing: -0.06em;
-          color: #111;
+          color: #ffffff;
+  opacity: 0.12;
           display: block;
           transition: color 0.3s ease;
         }
@@ -486,7 +487,7 @@ function ClientsSection() {
           font-size: 0.55rem;
           letter-spacing: 0.24em;
           text-transform: uppercase;
-          color: #333;
+          color: #888;
           margin-top: 4px;
           display: block;
         }
@@ -636,7 +637,7 @@ function ClientsSection() {
           font-weight: 700;
           letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: #222;
+           color: #bdbdbd;
           transition: color 0.25s ease;
           white-space: nowrap;
         }
@@ -679,7 +680,7 @@ function ClientsSection() {
           font-size: 0.52rem;
           letter-spacing: 0.22em;
           text-transform: uppercase;
-          color: #444;
+          color: #777;
         }
       `}</style>
 
