@@ -243,7 +243,7 @@ export default function PortfolioGrid() {
         .vmb-count {
           position: relative;
           z-index: 1;
-          font-size: 0.62rem;
+          font-size: 0.92rem;
           letter-spacing: 0.22em;
           text-transform: uppercase;
           color: #444;
