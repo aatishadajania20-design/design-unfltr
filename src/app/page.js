@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import PortfolioGrid from "@/components/PortfolioGrid";
 
 export default function Home() {
@@ -9,7 +10,6 @@ export default function Home() {
         @import url('https://fonts.cdnfonts.com/css/neue-haas-grotesk-display-pro');
         * { font-family: 'Neue Haas Grotesk Display Pro', 'Helvetica Neue', Arial, sans-serif; }
 
-        /* LOGO */
         .logo-svg { transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1); transform-origin: center; }
         .logo-path { fill: #ffffff; transition: fill 0.35s ease; }
         .brand-wrap:hover .logo-svg { transform: rotate(180deg) scale(1.15); }
@@ -29,7 +29,6 @@ export default function Home() {
         .brand-suffix { transition: color 0.2s ease 0.24s; color: #f97316; }
         .brand-wrap:hover .brand-suffix { color: #fff; }
 
-        /* ─── KATANA NAV ─── */
         .nav-item {
           position: relative;
           cursor: pointer;
@@ -37,9 +36,7 @@ export default function Home() {
           user-select: none;
           overflow: visible;
         }
-
-        .nav-top,
-        .nav-bottom {
+        .nav-top, .nav-bottom {
           display: block;
           font-size: 0.8rem;
           font-weight: 500;
@@ -47,61 +44,28 @@ export default function Home() {
           color: #9ca3af;
           line-height: 1;
           white-space: nowrap;
-          transition:
-            transform 0.38s cubic-bezier(0.76, 0, 0.24, 1),
-            color 0.25s ease;
+          transition: transform 0.38s cubic-bezier(0.76,0,0.24,1), color 0.25s ease;
           will-change: transform;
           text-transform: uppercase;
         }
-
-        /* Top half: only pixels 0→50% of the glyph height visible */
-        .nav-top {
-          clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%);
-        }
-
-        /* Bottom half: overlaid via negative margin, only 50%→100% visible */
-        .nav-bottom {
-          clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
-          margin-top: -1em;
-        }
-
-        /* HOVER — diagonal tear */
-        .nav-item:hover .nav-top {
-          transform: translate(6px, -8px) skewX(14deg);
-          color: #ffffff;
-        }
-        .nav-item:hover .nav-bottom {
-          transform: translate(-6px, 8px) skewX(14deg);
-          color: #ffffff;
-        }
-
-        /* THE SLASH — diagonal orange blade sweeping across */
+        .nav-top { clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%); }
+        .nav-bottom { clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%); margin-top: -1em; }
+        .nav-item:hover .nav-top { transform: translate(6px,-8px) skewX(14deg); color: #fff; }
+        .nav-item:hover .nav-bottom { transform: translate(-6px,8px) skewX(14deg); color: #fff; }
         .nav-slash {
           position: absolute;
-          top: 50%;
-          left: -6px;
-          right: -6px;
+          top: 50%; left: -6px; right: -6px;
           height: 1.5px;
-          background: linear-gradient(
-            90deg,
-            transparent 0%,
-            #f97316 15%,
-            #ff9a4d 50%,
-            #f97316 85%,
-            transparent 100%
-          );
+          background: linear-gradient(90deg, transparent 0%, #f97316 15%, #ff9a4d 50%, #f97316 85%, transparent 100%);
           transform: translateY(-50%) scaleX(0) rotate(-5deg);
           transform-origin: left center;
-          transition: transform 0.32s cubic-bezier(0.76, 0, 0.24, 1);
+          transition: transform 0.32s cubic-bezier(0.76,0,0.24,1);
           pointer-events: none;
           z-index: 20;
           filter: drop-shadow(0 0 3px #f97316cc);
         }
-        .nav-item:hover .nav-slash {
-          transform: translateY(-50%) scaleX(1) rotate(-5deg);
-        }
+        .nav-item:hover .nav-slash { transform: translateY(-50%) scaleX(1) rotate(-5deg); }
 
-        /* CONTACT BUTTON */
         .contact-btn {
           position: relative;
           overflow: hidden;
@@ -125,8 +89,7 @@ export default function Home() {
         }
         .contact-btn::before {
           content: '';
-          position: absolute;
-          inset: 0;
+          position: absolute; inset: 0;
           background: #f97316;
           clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
           transform: translateX(-105%);
@@ -136,27 +99,58 @@ export default function Home() {
         .contact-btn:hover::before { transform: translateX(0); }
         .contact-btn:hover { color: #000; }
         .contact-btn-text {
-          position: relative;
-          z-index: 1;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          line-height: 1;
+          position: relative; z-index: 1;
+          display: flex; align-items: center; gap: 6px; line-height: 1;
         }
-        .contact-arrow {
-          color: #f97316;
-          transition: color 0.28s ease, transform 0.2s ease;
-          font-size: 0.85rem;
-        }
+        .contact-arrow { color: #f97316; transition: color 0.28s ease, transform 0.2s ease; font-size: 0.85rem; }
         .contact-btn:hover .contact-arrow { color: #000; transform: translateX(3px); }
 
-        /* PULSE DOT */
+        /* HERO CTA — ghost glass button */
+        .hero-clients-cta {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 22px;
+          border: 1px solid rgba(255,255,255,0.18);
+          background: rgba(255,255,255,0.05);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          color: rgba(255,255,255,0.65);
+          font-size: 0.65rem;
+          font-weight: 600;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
+          white-space: nowrap;
+          font-family: inherit;
+          border-radius: 2px;
+        }
+        .hero-clients-cta:hover {
+          border-color: rgba(249,115,22,0.6);
+          background: rgba(249,115,22,0.08);
+          color: #f97316;
+        }
+        .hero-cta-dot {
+          width: 5px; height: 5px;
+          border-radius: 50%;
+          background: #f97316;
+          display: inline-block;
+          animation: pulse-dot 2s ease-in-out infinite;
+          flex-shrink: 0;
+        }
+        .hero-cta-arrow {
+          display: inline-block;
+          transition: transform 0.25s ease;
+          font-size: 0.8rem;
+        }
+        .hero-clients-cta:hover .hero-cta-arrow { transform: translateY(3px); }
+
         @keyframes pulse-dot {
           0%, 100% { opacity: 1; transform: scale(1); }
           50%       { opacity: 0.4; transform: scale(0.7); }
         }
 
-        /* MARQUEE */
         @keyframes marquee-scroll {
           0%   { transform: translateX(0); }
           100% { transform: translateX(-50%); }
@@ -195,12 +189,9 @@ export default function Home() {
         .chat-marquee-section:hover .chat-marquee-dot { color: #000; }
         .chat-cta-hint {
           position: absolute;
-          right: 20px;
-          top: 50%;
+          right: 20px; top: 50%;
           transform: translateY(-50%);
-          display: flex;
-          align-items: center;
-          gap: 6px;
+          display: flex; align-items: center; gap: 6px;
           font-size: 0.65rem;
           letter-spacing: 0.15em;
           text-transform: uppercase;
@@ -229,8 +220,6 @@ export default function Home() {
 
         {/* NAVBAR */}
         <nav className="sticky top-0 z-50 flex items-center justify-between px-5 md:px-8 py-4 backdrop-blur-md bg-black/50 border-b border-zinc-900">
-
-          {/* LOGO */}
           <div className="brand-wrap flex items-center gap-2 cursor-pointer select-none">
             <svg className="logo-svg" width="26" height="26" viewBox="0 0 88.82 89.67" xmlns="http://www.w3.org/2000/svg">
               <g>
@@ -246,7 +235,6 @@ export default function Home() {
             </h1>
           </div>
 
-          {/* DESKTOP NAV — true katana slash */}
           <div className="hidden md:flex items-center">
             {["Branding", "Strategy", "Marketing", "Motion"].map((item) => (
               <div key={item} className="nav-item">
@@ -257,8 +245,7 @@ export default function Home() {
             ))}
           </div>
 
-          {/* ACTIONS */}
-        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
   <a
     href="https://www.instagram.com/unfltrr?igsh=MWN0Y2ozZjk4NHpubQ=="
     target="_blank"
@@ -296,16 +283,15 @@ export default function Home() {
     </svg>
   </a>
 
-            <Link href="/contact">
-              <button className="contact-btn">
-                <span className="contact-btn-text">
-                  <span className="contact-arrow">→</span>
-                  Contact
-                </span>
-              </button>
-            </Link>
-          </div>
-
+  <Link href="/contact">
+    <button className="contact-btn">
+      <span className="contact-btn-text">
+        <span className="contact-arrow">→</span>
+        Contact
+      </span>
+    </button>
+  </Link>
+</div>
         </nav>
 
         {/* HERO VIDEO */}
@@ -319,8 +305,10 @@ export default function Home() {
             position: "absolute", inset: 0, zIndex: 1,
             background: "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.72) 100%)"
           }} />
-          <div style={{ position: "relative", zIndex: 3 }}
-            className="px-5 md:px-8 pt-24 pb-16 md:pb-24 flex flex-col justify-end min-h-[100svh]">
+          <div
+            style={{ position: "relative", zIndex: 3 }}
+            className="px-5 md:px-8 pt-24 pb-16 md:pb-24 flex flex-col justify-end min-h-[100svh]"
+          >
             <p className="text-orange-500 uppercase tracking-[0.25em] md:tracking-[0.3em] text-xs md:text-sm mb-5">
               Creative Strategy Studio
             </p>
@@ -330,7 +318,9 @@ export default function Home() {
             <p className="text-gray-300 mt-6 md:mt-8 max-w-2xl text-base md:text-xl leading-relaxed">
               UNFLTR Is A Multidisciplinary Creative Studio Blending Branding, Marketing, Motion, And Strategy Into Culturally Relevant Brand Systems.
             </p>
-            <div className="flex items-center gap-5 mt-8 md:mt-12">
+
+            {/* BOTTOM META ROW — includes CTA */}
+            <div className="flex flex-wrap items-center gap-4 md:gap-6 mt-8 md:mt-12">
               <div className="flex items-center gap-2">
                 <span style={{
                   width: 7, height: 7, borderRadius: "50%", background: "#f97316",
@@ -338,8 +328,20 @@ export default function Home() {
                 }} />
                 <span className="text-xs uppercase tracking-[0.16em] text-white/50">Showreel 2025</span>
               </div>
-              <div style={{ height: 1, width: 36, background: "rgba(255,255,255,0.18)" }} />
-              <span className="text-xs uppercase tracking-[0.16em] text-white/30">Est. 2024</span>
+              <div style={{ height: 1, width: 36, background: "rgba(255,255,255,0.18)" }} className="hidden sm:block" />
+              <span className="text-xs uppercase tracking-[0.16em] text-white/30 hidden sm:inline">Est. 2024</span>
+
+              {/* GHOST CTA — relocated here */}
+              <button
+                className="hero-clients-cta"
+                onClick={() => {
+                  document.getElementById("clients-section")?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                <span className="hero-cta-dot" />
+                Past Clients
+                <span className="hero-cta-arrow">↓</span>
+              </button>
             </div>
           </div>
         </section>
@@ -347,8 +349,8 @@ export default function Home() {
         {/* PORTFOLIO */}
         <PortfolioGrid />
 
-{/* CLIENTS */}
-<ClientsSection />
+        {/* CLIENTS */}
+        <ClientsSection />
 
         {/* FOOTER MARQUEE */}
         <ChatMarquee />
@@ -358,6 +360,7 @@ export default function Home() {
   );
 }
 
+/* ─── CHAT MARQUEE ──────────────────────────────────────── */
 function ChatMarquee() {
   const repeated = Array(16).fill(null);
   return (
@@ -381,66 +384,110 @@ function ChatMarquee() {
   );
 }
 
+/* ─── CLIENTS SECTION ───────────────────────────────────── */
 function ClientsSection() {
+  const sectionRef = useRef(null);
+  const headerRef = useRef(null);
+  const row1Ref = useRef(null);
+  const row2Ref = useRef(null);
+  const statsRef = useRef(null);
+  const cardRefs = useRef([]);
+
   const clients = [
-    { name: "MNST",        logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/MNST_vyaeim.png" },
-    { name: "Cava",        logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/cava_jxvtci.png" },
-    { name: "Mekada",      logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/mekada_ng33kr.png" },
-    { name: "Astro",       logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/astro_oyrcy8.png" },
-    { name: "Amazonia",    logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/amazonia_xe1tup.png" },
-    { name: "142B Lounge", logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/142b_lounge_v2zyac.png" },
-    { name: "Four Seasons",logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/4_seasons_cdfk2v.png" },
-    { name: "Blunt",       logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/blunt_bjssqi.png" },
-    { name: "Lalit",       logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/lalit_n2bxlz.png" },
-    { name: "Aquila",      logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/aquila_h9muin.png" },
+    { name: "MNST",         logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/MNST_vyaeim.png" },
+    { name: "Cava",         logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/cava_jxvtci.png" },
+    { name: "Mekada",       logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/mekada_ng33kr.png" },
+    { name: "Astro",        logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/astro_oyrcy8.png" },
+    { name: "Amazonia",     logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/amazonia_xe1tup.png" },
+    { name: "142B Lounge",  logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/142b_lounge_v2zyac.png" },
+    { name: "Four Seasons", logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/4_seasons_cdfk2v.png" },
+    { name: "Blunt",        logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/blunt_bjssqi.png" },
+    { name: "Lalit",        logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/lalit_n2bxlz.png" },
+    { name: "Aquila",       logo: "https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/aquila_h9muin.png" },
   ];
 
-  // Double for seamless loop
   const row1 = [...clients, ...clients];
   const row2 = [...clients, ...clients].reverse();
+
+  useEffect(() => {
+    const targets = [headerRef, row1Ref, row2Ref, statsRef];
+    const observers = targets.map((ref, i) => {
+      if (!ref.current) return null;
+      ref.current.style.opacity = "0";
+      ref.current.style.transform = "translateY(36px)";
+      ref.current.style.transition = `opacity 0.9s cubic-bezier(0.25,0.46,0.45,0.94) ${i * 100}ms, transform 0.9s cubic-bezier(0.25,0.46,0.45,0.94) ${i * 100}ms`;
+
+      const obs = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          ref.current.style.opacity = "1";
+          ref.current.style.transform = "translateY(0)";
+        } else {
+          ref.current.style.opacity = "0";
+          ref.current.style.transform = "translateY(36px)";
+        }
+      }, { threshold: 0.1 });
+      obs.observe(ref.current);
+      return obs;
+    });
+    return () => observers.forEach(o => o?.disconnect());
+  }, []);
 
   return (
     <>
       <style>{`
-        /* ── CLIENTS SECTION ── */
-        .clients-section {
+        .cs-section {
           position: relative;
           background: #000;
           border-top: 1px solid #141414;
           overflow: hidden;
-          padding: 0;
         }
 
-        /* Diagonal orange slash watermark */
-        .clients-slash {
+        /* WATERMARK */
+        .cs-watermark {
           position: absolute;
-          top: 0; bottom: 0;
-          left: 50%;
+          top: 50%; left: 50%;
+          transform: translate(-50%, -50%) rotate(-8deg);
+          font-size: clamp(8rem, 20vw, 18rem);
+          font-weight: 900;
+          letter-spacing: -0.06em;
+          color: rgba(255,255,255,0.018);
+          text-transform: uppercase;
+          pointer-events: none;
+          user-select: none;
+          white-space: nowrap;
+          z-index: 0;
+          line-height: 1;
+        }
+
+        /* DIAGONAL SLASH */
+        .cs-slash {
+          position: absolute;
+          top: 0; bottom: 0; left: 48%;
           width: 1px;
-          background: linear-gradient(to bottom, transparent, #f97316 30%, #f97316 70%, transparent);
-          transform: rotate(-12deg) scaleY(1.4);
-          opacity: 0.08;
+          background: linear-gradient(to bottom, transparent, #f97316 25%, #f97316 75%, transparent);
+          transform: rotate(-14deg) scaleY(1.5);
+          opacity: 0.06;
           pointer-events: none;
           z-index: 1;
         }
 
-        /* HEADER ROW */
-        .clients-header {
+        /* HEADER */
+        .cs-header {
+          position: relative;
+          z-index: 2;
           display: flex;
           align-items: flex-end;
           justify-content: space-between;
-          padding: 40px 24px 28px;
-          border-bottom: 1px solid #111;
-          position: relative;
-          z-index: 2;
           gap: 16px;
           flex-wrap: wrap;
+          padding: 44px 20px 28px;
+          border-bottom: 1px solid #111;
         }
         @media (min-width: 768px) {
-          .clients-header { padding: 52px 48px 32px; }
+          .cs-header { padding: 56px 48px 34px; }
         }
 
-        .clients-eyebrow {
+        .cs-eyebrow {
           font-size: 0.58rem;
           letter-spacing: 0.28em;
           text-transform: uppercase;
@@ -448,155 +495,86 @@ function ClientsSection() {
           display: flex;
           align-items: center;
           gap: 10px;
-          margin-bottom: 10px;
+          margin-bottom: 12px;
         }
-        .clients-eyebrow-line {
+        .cs-eyebrow-line {
+          display: inline-block;
           width: 28px; height: 1px;
           background: #f97316;
-          display: inline-block;
         }
 
-        .clients-title {
-          font-size: clamp(2.4rem, 6vw, 5rem);
+        .cs-title {
+          font-size: clamp(2.2rem, 5.5vw, 5rem);
           font-weight: 900;
           line-height: 0.88;
           letter-spacing: -0.04em;
           color: #fff;
           text-transform: uppercase;
         }
-        .clients-title span {
-          color: #f97316;
-        }
+        .cs-title-accent { color: #f97316; }
 
-        .clients-count-wrap {
+        /* COUNT + LABEL — fixed visibility */
+        .cs-count-wrap {
           text-align: right;
           flex-shrink: 0;
         }
-        .clients-count-num {
-          font-size: clamp(3.5rem, 8vw, 7rem);
+        .cs-count-num {
+          font-size: clamp(3rem, 7vw, 6rem);
           font-weight: 900;
           line-height: 0.85;
           letter-spacing: -0.06em;
           color: #ffffff;
-  opacity: 0.12;
+          opacity: 0.12;
           display: block;
-          transition: color 0.3s ease;
+          transition: opacity 0.3s ease;
         }
-        .clients-section:hover .clients-count-num { color: #1e1e1e; }
-        .clients-count-label {
-          font-size: 0.55rem;
-          letter-spacing: 0.24em;
+        .cs-section:hover .cs-count-num { opacity: 0.22; }
+        .cs-count-label {
+          font-size: 0.85rem;
+          letter-spacing: 0.18em;
           text-transform: uppercase;
           color: #888;
           margin-top: 4px;
           display: block;
         }
 
-        /* VIEW ALL BTN */
-        .clients-view-btn {
-          position: relative;
-          overflow: hidden;
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          padding: 13px 28px;
-          border: 1px solid #222;
-          background: transparent;
-          color: #555;
-          font-size: 0.65rem;
-          font-weight: 700;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          cursor: pointer;
-          transition: color 0.3s ease, border-color 0.3s ease;
-          clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-          font-family: inherit;
-          flex-shrink: 0;
-          align-self: center;
-        }
-        .clients-view-btn::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: #f97316;
-          transform: translateX(-105%);
-          transition: transform 0.35s cubic-bezier(0.76,0,0.24,1);
-          z-index: 0;
-        }
-        .clients-view-btn:hover::before { transform: translateX(0); }
-        .clients-view-btn:hover {
-          color: #000;
-          border-color: #f97316;
-        }
-        .clients-view-btn span { position: relative; z-index: 1; }
-        .cvb-arrow {
-          display: inline-block;
-          transition: transform 0.25s ease;
-          position: relative;
-          z-index: 1;
-          font-size: 1rem;
-        }
-        .clients-view-btn:hover .cvb-arrow { transform: translateX(5px); }
-
-        /* MARQUEE ROWS */
-        .clients-marquee-wrap {
+        /* MARQUEE */
+        .cs-marquee-wrap {
           position: relative;
           z-index: 2;
-          padding: 0;
           overflow: hidden;
         }
-
-        .clients-marquee-row {
+        .cs-marquee-row {
           display: flex;
           overflow: hidden;
-          border-bottom: 1px solid #0e0e0e;
-          padding: 0;
+          border-bottom: 1px solid #0d0d0d;
         }
-        .clients-marquee-row:first-child { border-top: 1px solid #0e0e0e; }
+        .cs-marquee-row:first-child { border-top: 1px solid #0d0d0d; }
 
-        @keyframes clients-scroll {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        @keyframes clients-scroll-rev {
-          0%   { transform: translateX(-50%); }
-          100% { transform: translateX(0); }
-        }
+        @keyframes cs-fwd { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
+        @keyframes cs-rev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 
-        .clients-track {
-          display: flex;
-          width: max-content;
-          animation: clients-scroll 28s linear infinite;
-          will-change: transform;
-        }
-        .clients-track-rev {
-          display: flex;
-          width: max-content;
-          animation: clients-scroll-rev 36s linear infinite;
-          will-change: transform;
-        }
+        .cs-track     { display: flex; width: max-content; animation: cs-fwd 30s linear infinite; will-change: transform; }
+        .cs-track-rev { display: flex; width: max-content; animation: cs-rev 40s linear infinite; will-change: transform; }
+        .cs-marquee-wrap:hover .cs-track,
+        .cs-marquee-wrap:hover .cs-track-rev { animation-play-state: paused; }
 
-        /* Pause on hover */
-        .clients-marquee-wrap:hover .clients-track,
-        .clients-marquee-wrap:hover .clients-track-rev {
-          animation-play-state: paused;
-        }
-
-        /* INDIVIDUAL CLIENT CARD */
-        .client-card {
+        /* CLIENT CARD */
+        .cs-card {
           display: flex;
           align-items: center;
-          gap: 20px;
-          padding: 22px 36px;
-          border-right: 1px solid #0e0e0e;
+          gap: 18px;
+          padding: 20px 32px;
+          border-right: 1px solid #0d0d0d;
           flex-shrink: 0;
           position: relative;
           cursor: default;
-          transition: background 0.25s ease;
+          transition: background 0.28s ease;
+          min-width: 190px;
           overflow: hidden;
-          min-width: 200px;
         }
-        .client-card::after {
+        /* orange sweep from bottom */
+        .cs-card::after {
           content: '';
           position: absolute;
           bottom: 0; left: 0; right: 0;
@@ -604,180 +582,174 @@ function ClientsSection() {
           background: #f97316;
           transform: scaleX(0);
           transform-origin: left;
-          transition: transform 0.3s cubic-bezier(0.76,0,0.24,1);
+          transition: transform 0.32s cubic-bezier(0.76,0,0.24,1);
         }
-        .client-card:hover::after { transform: scaleX(1); }
-        .client-card:hover { background: #080808; }
+        .cs-card:hover::after { transform: scaleX(1); }
+        .cs-card:hover { background: #07070a; }
 
-        .client-logo-wrap {
-          width: 80px;
-          height: 40px;
+        .cs-logo-wrap {
+          width: 72px; height: 36px;
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          position: relative;
         }
-        .client-logo {
-          max-width: 100%;
-          max-height: 100%;
+        .cs-logo {
+          max-width: 100%; max-height: 100%;
           object-fit: contain;
           filter: brightness(0) invert(1);
-          opacity: 0.35;
-          transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+          opacity: 0.3;
+          transition: opacity 0.3s ease, transform 0.3s ease;
         }
-        .client-card:hover .client-logo {
-          opacity: 0.9;
-          filter: brightness(0) invert(1);
-          transform: scale(1.08);
-        }
+        .cs-card:hover .cs-logo { opacity: 0.85; transform: scale(1.1); }
 
-        .client-name {
-          font-size: 0.65rem;
+        /* client name — visible by default */
+        .cs-name {
+          font-size: 0.72rem;
           font-weight: 700;
-          letter-spacing: 0.18em;
+          letter-spacing: 0.16em;
           text-transform: uppercase;
-           color: #bdbdbd;
-          transition: color 0.25s ease;
+          color: #bdbdbd;
           white-space: nowrap;
+          transition: color 0.25s ease;
         }
-        .client-card:hover .client-name { color: #f97316; }
+        .cs-card:hover .cs-name { color: #f97316; }
 
-        /* SEPARATOR DOT between cards */
-        .client-sep {
-          font-size: 0.5rem;
-          color: #1a1a1a;
-          flex-shrink: 0;
-        }
+        .cs-sep { font-size: 0.45rem; color: #1c1c1c; flex-shrink: 0; }
 
-        /* BOTTOM STAT BAR */
-        .clients-stat-bar {
+        /* ROW 2 ghost style */
+        .cs-card-ghost .cs-logo { opacity: 0.12; }
+        .cs-card-ghost .cs-name { color: #2a2a2a; }
+        .cs-card-ghost:hover .cs-name { color: #f97316; }
+        .cs-card-ghost:hover .cs-logo { opacity: 0.7; }
+
+        /* STAT BAR */
+        .cs-stat-bar {
           display: flex;
+          flex-wrap: wrap;
           border-top: 1px solid #111;
           position: relative;
           z-index: 2;
         }
-        .clients-stat-cell {
+        .cs-stat-cell {
           flex: 1;
-          padding: 20px 24px;
+          min-width: 120px;
+          padding: 22px 24px;
           border-right: 1px solid #111;
           display: flex;
           flex-direction: column;
-          gap: 4px;
-          transition: background 0.2s ease;
+          gap: 5px;
+          transition: background 0.22s ease;
           cursor: default;
+          position: relative;
+          overflow: hidden;
         }
-        .clients-stat-cell:last-child { border-right: none; }
-        .clients-stat-cell:hover { background: #080808; }
-        .clients-stat-val {
-          font-size: clamp(1.4rem, 3vw, 2.2rem);
+        .cs-stat-cell::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 2px;
+          background: #f97316;
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.3s cubic-bezier(0.76,0,0.24,1);
+        }
+        .cs-stat-cell:hover::before { transform: scaleX(1); }
+        .cs-stat-cell:last-child { border-right: none; }
+        .cs-stat-cell:hover { background: #070707; }
+
+        .cs-stat-val {
+          font-size: clamp(1.6rem, 3.5vw, 2.4rem);
           font-weight: 900;
           letter-spacing: -0.04em;
           color: #fff;
           line-height: 1;
         }
-        .clients-stat-lbl {
-          font-size: 0.52rem;
+        .cs-stat-lbl {
+          font-size: 0.55rem;
           letter-spacing: 0.22em;
           text-transform: uppercase;
           color: #777;
+          transition: color 0.2s ease;
+        }
+        .cs-stat-cell:hover .cs-stat-lbl { color: #f97316; }
+
+        /* MOBILE: horizontal scroll fallback for very small screens */
+        @media (max-width: 480px) {
+          .cs-card { padding: 16px 22px; min-width: 160px; gap: 12px; }
+          .cs-logo-wrap { width: 56px; height: 28px; }
+          .cs-name { font-size: 0.62rem; }
+          .cs-stat-cell { padding: 16px 16px; }
         }
       `}</style>
 
-      <section className="clients-section">
+      <section className="cs-section" id="clients-section" ref={sectionRef}>
 
-        {/* Diagonal slash watermark */}
-        <div className="clients-slash" />
+        <div className="cs-watermark" aria-hidden="true">TRUSTED</div>
+        <div className="cs-slash" aria-hidden="true" />
 
         {/* HEADER */}
-        <div className="clients-header">
+        <div className="cs-header" ref={headerRef}>
           <div>
-            <p className="clients-eyebrow">
-              <span className="clients-eyebrow-line" />
+            <p className="cs-eyebrow">
+              <span className="cs-eyebrow-line" />
               Trusted By
             </p>
-            <h2 className="clients-title">
+            <h2 className="cs-title">
               Brands That<br />
-              <span>Chose Bold.</span>
+              <span className="cs-title-accent">Chose Bold.</span>
             </h2>
           </div>
 
-          <div className="clients-count-wrap">
-            <span className="clients-count-num">10</span>
-            <span className="clients-count-label">Clients & Counting</span>
+          <div className="cs-count-wrap">
+            <span className="cs-count-num">10</span>
+            <span className="cs-count-label">Clients & Counting</span>
           </div>
-
-          {/* VIEW ALL — subtle brutalist CTA */}
-          <button
-            className="clients-view-btn"
-            onClick={() => {
-              document.querySelector(".clients-marquee-wrap")?.scrollIntoView({ behavior: "smooth" });
-            }}
-          >
-            <span>View All</span>
-            <span className="cvb-arrow">↓</span>
-          </button>
         </div>
 
-        {/* SCROLLING LOGO ROWS */}
-        <div className="clients-marquee-wrap">
-
-          {/* ROW 1 — forward */}
-          <div className="clients-marquee-row">
-            <div className="clients-track">
+        {/* MARQUEE ROW 1 */}
+        <div className="cs-marquee-wrap" ref={row1Ref}>
+          <div className="cs-marquee-row">
+            <div className="cs-track">
               {row1.map((client, i) => (
-                <div key={i} className="client-card">
-                  <div className="client-logo-wrap">
-                    <img
-                      src={client.logo}
-                      alt={client.name}
-                      className="client-logo"
-                      loading="lazy"
-                    />
+                <div key={i} className="cs-card">
+                  <div className="cs-logo-wrap">
+                    <img src={client.logo} alt={client.name} className="cs-logo" loading="lazy" />
                   </div>
-                  <span className="client-name">{client.name}</span>
-                  <span className="client-sep">✦</span>
+                  <span className="cs-name">{client.name}</span>
+                  <span className="cs-sep">✦</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* ROW 2 — reverse, outlined style */}
-          <div className="clients-marquee-row">
-            <div className="clients-track-rev">
+          {/* MARQUEE ROW 2 — ghost / reversed */}
+          <div className="cs-marquee-row" ref={row2Ref}>
+            <div className="cs-track-rev">
               {row2.map((client, i) => (
-                <div key={i} className="client-card" style={{ background: "transparent" }}>
-                  <div className="client-logo-wrap">
-                    <img
-                      src={client.logo}
-                      alt={client.name}
-                      className="client-logo"
-                      loading="lazy"
-                      style={{ opacity: 0.15 }}
-                    />
+                <div key={i} className="cs-card cs-card-ghost">
+                  <div className="cs-logo-wrap">
+                    <img src={client.logo} alt={client.name} className="cs-logo" loading="lazy" />
                   </div>
-                  <span className="client-name" style={{ color: "#1a1a1a", WebkitTextStroke: "0.5px #2a2a2a" }}>
-                    {client.name}
-                  </span>
-                  <span className="client-sep" style={{ color: "#f97316", opacity: 0.3 }}>—</span>
+                  <span className="cs-name">{client.name}</span>
+                  <span className="cs-sep" style={{ color: "#f97316", opacity: 0.25 }}>—</span>
                 </div>
               ))}
             </div>
           </div>
-
         </div>
 
         {/* STAT BAR */}
-        <div className="clients-stat-bar">
+        <div className="cs-stat-bar" ref={statsRef}>
           {[
             { val: "10+", lbl: "Clients Served" },
             { val: "3+",  lbl: "Years Active" },
             { val: "40+", lbl: "Projects Delivered" },
             { val: "∞",   lbl: "Culturally Driven" },
           ].map((s) => (
-            <div key={s.lbl} className="clients-stat-cell">
-              <span className="clients-stat-val">{s.val}</span>
-              <span className="clients-stat-lbl">{s.lbl}</span>
+            <div key={s.lbl} className="cs-stat-cell">
+              <span className="cs-stat-val">{s.val}</span>
+              <span className="cs-stat-lbl">{s.lbl}</span>
             </div>
           ))}
         </div>
