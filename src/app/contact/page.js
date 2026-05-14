@@ -550,10 +550,19 @@ export default function ContactPage() {
 
             <div className="rp-video-wrap" style={{ flex: "0 0 62%" }}>
               <video
-                src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1778434734/1.5_lrsfll.mp4"
-                autoPlay muted loop playsInline preload="auto"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
+  key="showreel-video"
+  src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1778520760/1.5_1_gim6ct.mp4"
+  autoPlay
+  muted
+  loop
+  playsInline
+  preload="auto"
+  style={{
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  }}
+/>
               <div className="rp-overlay" />
               <div className="scan-lines" />
               <div className="rp-watermark">UNFLTR</div>
