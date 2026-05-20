@@ -236,6 +236,10 @@ export default function SlugClient({ project, nextProject, prevProject }) {
           transition: transform 0.9s cubic-bezier(0.25,0.46,0.45,0.94),
                       filter 0.5s ease;
         }
+                      .slug-nav-img video,
+.slug-nav-img {
+  background: #000;
+}
         .slug-nav-card:hover .slug-nav-img {
           transform: scale(1.07);
           filter: brightness(0.3) saturate(0.5);
@@ -413,16 +417,30 @@ export default function SlugClient({ project, nextProject, prevProject }) {
             const thumb = proj.image;
             return (
               <Link href={`/projects/${proj.slug}`} key={proj.slug} className="slug-nav-card">
-                {thumb ? (
-                  <img
-                    src={thumb}
-                    alt={proj.title}
-                    className="slug-nav-img"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="slug-nav-img" style={{ background:"#111" }} />
-                )}
+                {proj.video ? (
+  <video
+    src={proj.video}
+    poster={proj.image}
+    autoPlay
+    muted
+    loop
+    playsInline
+    preload="metadata"
+    className="slug-nav-img"
+  />
+) : proj.image ? (
+  <img
+    src={proj.image}
+    alt={proj.title}
+    className="slug-nav-img"
+    loading="lazy"
+  />
+) : (
+  <div
+    className="slug-nav-img"
+    style={{ background: "#111" }}
+  />
+)}
                 <div className="slug-nav-overlay" />
                 <div className="slug-nav-arrow">→</div>
                 <div className="slug-nav-label">
