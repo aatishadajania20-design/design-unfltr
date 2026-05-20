@@ -206,8 +206,8 @@ export default function Home() {
               </g>
             </svg>
             <h1 className="text-orange-500 text-lg md:text-xl font-semibold tracking-tight leading-none">
-              {"UNFLTR".split("").map((char, i) => <span key={i} className="brand-letter">{char}</span>)}
-              <span className="brand-suffix"> Studio®</span>
+              {"Unfltr".split("").map((char, i) => <span key={i} className="brand-letter">{char}</span>)}
+              <span className="brand-suffix"> Studio</span>
             </h1>
           </div>
 
@@ -258,7 +258,7 @@ export default function Home() {
               <span className="text-xs uppercase tracking-[0.16em] text-white/30 hidden sm:inline">Est. 2024</span>
               <button className="hero-clients-cta" onClick={() => document.getElementById("clients-section")?.scrollIntoView({ behavior:"smooth" })}>
                 <span className="hero-cta-dot" />
-                Past Clients
+                Our Clients
                 <span className="hero-cta-arrow">↓</span>
               </button>
             </div>
