@@ -23,8 +23,16 @@ export default function Home() {
         .brand-wrap:hover .brand-letter:nth-child(4) { transform: translateY(-3px); transition-delay: 120ms; }
         .brand-wrap:hover .brand-letter:nth-child(5) { transform: translateY(-3px); transition-delay: 160ms; }
         .brand-wrap:hover .brand-letter:nth-child(6) { transform: translateY(-3px); transition-delay: 200ms; }
-        .brand-suffix { transition: color 0.2s ease 0.24s; color: #f97316; }
-        .brand-wrap:hover .brand-suffix { color: #fff; }
+
+        /* STUDIO letters — same stagger but starting after UNFLTR */
+        .studio-letter { display: inline-block; transition: color 0.2s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1); color: #f97316; }
+        .brand-wrap:hover .studio-letter { color: #fff; }
+        .brand-wrap:hover .studio-letter:nth-child(1) { transform: translateY(-3px); transition-delay: 240ms; }
+        .brand-wrap:hover .studio-letter:nth-child(2) { transform: translateY(-3px); transition-delay: 280ms; }
+        .brand-wrap:hover .studio-letter:nth-child(3) { transform: translateY(-3px); transition-delay: 320ms; }
+        .brand-wrap:hover .studio-letter:nth-child(4) { transform: translateY(-3px); transition-delay: 360ms; }
+        .brand-wrap:hover .studio-letter:nth-child(5) { transform: translateY(-3px); transition-delay: 400ms; }
+        .brand-wrap:hover .studio-letter:nth-child(6) { transform: translateY(-3px); transition-delay: 440ms; }
 
         .nav-item { position: relative; cursor: pointer; padding: 10px 18px; user-select: none; overflow: visible; }
         .nav-top, .nav-bottom {
@@ -73,6 +81,7 @@ export default function Home() {
           letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer;
           transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
           white-space: nowrap; font-family: inherit; border-radius: 2px;
+          text-decoration: none;
         }
         .hero-clients-cta:hover { border-color: rgba(249,115,22,0.6); background: rgba(249,115,22,0.08); color: #f97316; }
         .hero-cta-dot { width: 5px; height: 5px; border-radius: 50%; background: #f97316; display: inline-block; animation: pulse-dot 2s ease-in-out infinite; flex-shrink: 0; }
@@ -80,99 +89,39 @@ export default function Home() {
         .hero-clients-cta:hover .hero-cta-arrow { transform: translateY(3px); }
 
         @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
-       /* ── FOOTER MARQUEE ── */
-@keyframes marquee-scroll {
-  0% { transform: translateX(0) }
-  100% { transform: translateX(-50%) }
-}
 
-.chat-marquee-section {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  background: #000;
-  border-top: 1px solid #1a1a1a;
+        @keyframes marquee-scroll {
+          0% { transform: translateX(0) }
+          100% { transform: translateX(-50%) }
+        }
+        .chat-marquee-section {
+          position: relative; overflow: hidden; cursor: pointer;
+          background: #000; border-top: 1px solid #1a1a1a;
+          padding: 10px 0; transition: background 0.4s ease;
+        }
+        .chat-marquee-section:hover { background: #f97316; }
+        .chat-marquee-track {
+          display: flex; width: max-content;
+          animation: marquee-scroll 22s linear infinite;
+        }
+        .chat-marquee-section:hover .chat-marquee-track { animation: marquee-scroll 10s linear infinite; }
+        .chat-marquee-word {
+          font-size: clamp(1.2rem, 3vw, 2.6rem); font-weight: 900;
+          text-transform: uppercase; letter-spacing: -0.02em;
+          white-space: nowrap; padding-right: 1.2rem;
+          color: #fff; transition: color 0.4s ease; line-height: 1;
+        }
+        .chat-marquee-section:hover .chat-marquee-word { color: #000; }
+        .chat-marquee-dot { color: #f97316; transition: color 0.4s ease; }
+        .chat-marquee-section:hover .chat-marquee-dot { color: #000; }
+        .chat-cta-hint {
+          position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+          display: flex; align-items: center; gap: 5px; font-size: 0.52rem;
+          letter-spacing: 0.15em; text-transform: uppercase; color: #f97316;
+          transition: color 0.4s ease, transform 0.3s ease; z-index: 2; pointer-events: none;
+        }
+        .chat-marquee-section:hover .chat-cta-hint { color: #000; transform: translateY(-50%) translateX(4px); }
 
-  /* REDUCED HEIGHT */
-  padding: 10px 0;
-
-  transition: background 0.4s ease;
-}
-
-.chat-marquee-section:hover {
-  background: #f97316;
-}
-
-.chat-marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee-scroll 22s linear infinite;
-}
-
-.chat-marquee-section:hover .chat-marquee-track {
-  animation: marquee-scroll 10s linear infinite;
-}
-
-.chat-marquee-word {
-  /* SMALLER TEXT */
-  font-size: clamp(1.2rem, 3vw, 2.6rem);
-
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-
-  /* SMALLER GAP */
-  padding-right: 1.2rem;
-
-  color: #fff;
-  transition: color 0.4s ease;
-  line-height: 1;
-}
-
-.chat-marquee-section:hover .chat-marquee-word {
-  color: #000;
-}
-
-.chat-marquee-dot {
-  color: #f97316;
-  transition: color 0.4s ease;
-}
-
-.chat-marquee-section:hover .chat-marquee-dot {
-  color: #000;
-}
-
-.chat-cta-hint {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-
-  display: flex;
-  align-items: center;
-  gap: 5px;
-
-  /* SMALLER CTA TEXT */
-  font-size: 0.52rem;
-
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #f97316;
-
-  transition:
-    color 0.4s ease,
-    transform 0.3s ease;
-
-  z-index: 2;
-  pointer-events: none;
-}
-
-.chat-marquee-section:hover .chat-cta-hint {
-  color: #000;
-  transform: translateY(-50%) translateX(4px);
-}
-        /* BRUTALIST LINK */
         .brutal-link {
           display: inline-flex; align-items: center; gap: 8px;
           font-size: 0.62rem; font-weight: 800; letter-spacing: 0.22em;
@@ -207,7 +156,8 @@ export default function Home() {
             </svg>
             <h1 className="text-orange-500 text-lg md:text-xl font-semibold tracking-tight leading-none">
               {"UNFLTR".split("").map((char, i) => <span key={i} className="brand-letter">{char}</span>)}
-              <span className="brand-suffix"> STUDIO</span>
+              <span>&nbsp;</span>
+              {"STUDIO".split("").map((char, i) => <span key={i} className="studio-letter">{char}</span>)}
             </h1>
           </div>
 
@@ -256,11 +206,11 @@ export default function Home() {
               </div>
               <div style={{ height:1, width:36, background:"rgba(255,255,255,0.18)" }} className="hidden sm:block" />
               <span className="text-xs uppercase tracking-[0.16em] text-white/30 hidden sm:inline">Est. 2024</span>
-              <button className="hero-clients-cta" onClick={() => document.getElementById("clients-section")?.scrollIntoView({ behavior:"smooth" })}>
+              <Link href="/clients" className="hero-clients-cta">
                 <span className="hero-cta-dot" />
                 Our Clients
-                <span className="hero-cta-arrow">↓</span>
-              </button>
+                <span className="hero-cta-arrow">→</span>
+              </Link>
             </div>
           </div>
         </section>
@@ -363,7 +313,6 @@ function ClientsSection() {
         .cs-section:hover .cs-count-num { opacity:0.2; }
         .cs-count-label { font-size:0.85rem; letter-spacing:0.18em; text-transform:uppercase; color:#888; margin-top:4px; display:block; }
 
-        /* MARQUEE */
         .cs-marquee-wrap { position:relative; z-index:2; overflow:hidden; }
         .cs-marquee-row { display:flex; overflow:hidden; border-bottom:1px solid #0d0d0d; }
         .cs-marquee-row:first-child { border-top:1px solid #0d0d0d; }
@@ -376,7 +325,6 @@ function ClientsSection() {
         .cs-marquee-wrap:hover .cs-track,
         .cs-marquee-wrap:hover .cs-track-rev { animation-play-state:paused; }
 
-        /* CLIENT CARD */
         .cs-card {
           display:flex; align-items:center; gap:18px;
           padding:18px 28px; border-right:1px solid #0d0d0d;
@@ -391,11 +339,6 @@ function ClientsSection() {
           z-index:0;
         }
         .cs-card:hover::before { transform:translateY(0); }
-        .cs-card::after {
-          content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
-          background:#f97316; transform:scaleX(0); transform-origin:left;
-          transition:transform 0.32s cubic-bezier(0.76,0,0.24,1);
-        }
 
         .cs-logo-wrap { width:100px; height:54px; display:flex; align-items:center; justify-content:center; flex-shrink:0; position:relative; z-index:1; }
         .cs-logo { max-width:100%; max-height:100%; object-fit:contain; filter:brightness(0) invert(1); opacity:0.35; transition:opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease; }
@@ -406,17 +349,14 @@ function ClientsSection() {
         .cs-sep { font-size:0.45rem; color:#1c1c1c; flex-shrink:0; position:relative; z-index:1; transition:color 0.25s ease; }
         .cs-card:hover .cs-sep { color:rgba(0,0,0,0.3); }
 
-        /* ghost row */
         .cs-card-ghost .cs-logo { opacity:0.1; }
         .cs-card-ghost .cs-name { color:#2a2a2a; }
         .cs-card-ghost:hover .cs-name { color:#000; }
         .cs-card-ghost:hover .cs-logo { opacity:1; filter:brightness(0); }
 
-        /* EXPLORE STRIP */
-        .cs-explore-strip { position:relative; z-index:2; display:flex; align-items:center; justify-content:space-between; padding:20px 20px; border-top:1px solid #111; flex-wrap:wrap; gap:12px; }
+        .cs-explore-strip { position:relative; z-index:2; display:flex; align-items:center; justify-content:flex-end; padding:20px 20px; border-top:1px solid #111; }
         @media(min-width:768px){ .cs-explore-strip{padding:20px 48px;} }
 
-        /* STAT BAR */
         .cs-stat-bar { display:flex; flex-wrap:wrap; border-top:1px solid #111; position:relative; z-index:2; }
         .cs-stat-cell { flex:1; min-width:120px; padding:22px 24px; border-right:1px solid #111; display:flex; flex-direction:column; gap:5px; transition:background 0.22s ease; cursor:default; position:relative; overflow:hidden; }
         .cs-stat-cell::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:#f97316; transform:scaleX(0); transform-origin:left; transition:transform 0.3s cubic-bezier(0.76,0,0.24,1); }
@@ -438,7 +378,6 @@ function ClientsSection() {
         <div className="cs-watermark" aria-hidden="true">TRUSTED</div>
         <div className="cs-slash" aria-hidden="true" />
 
-        {/* HEADER */}
         <div className="cs-header" ref={headerRef}>
           <div>
             <p className="cs-eyebrow"><span className="cs-eyebrow-line" />Trusted By</p>
@@ -449,15 +388,9 @@ function ClientsSection() {
               <span className="cs-count-num">37</span>
               <span className="cs-count-label">Clients & Counting</span>
             </div>
-            {/* TOP-RIGHT BRUTAL LINK */}
-            <Link href="/clients" className="brutal-link">
-              View All Brands //
-              <span className="brutal-link-arrow">→</span>
-            </Link>
           </div>
         </div>
 
-        {/* MARQUEE ROWS */}
         <div className="cs-marquee-wrap" ref={marqueeRef}>
           <div className="cs-marquee-row">
             <div className="cs-track">
@@ -483,18 +416,13 @@ function ClientsSection() {
           </div>
         </div>
 
-        {/* EXPLORE STRIP */}
         <div className="cs-explore-strip">
-          <span style={{ fontSize:"0.55rem", letterSpacing:"0.22em", textTransform:"uppercase", color:"#333" }}>
-            Full Roster Available
-          </span>
           <Link href="/clients" className="brutal-link">
-            Explore Roster
+            View More Brands
             <span className="brutal-link-arrow">→</span>
           </Link>
         </div>
 
-        {/* STAT BAR */}
         <div className="cs-stat-bar" ref={statsRef}>
           {[
             { val:"37+", lbl:"Clients Served" },

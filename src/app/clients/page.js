@@ -37,39 +37,65 @@ const ALL_CLIENTS = [
   { name:"Bombay Monks",     logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/bombay_monks_wyhy8q.png" },
   { name:"Clique",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/clique_qjgnsu.png" },
   { name:"Monet",            logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/monet_zp3wjm.png" },
+  { name:"Mekada",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/mekada_ng33kr.png" },
   { name:"Ansh Entertainment",logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747615/logo_2_kv9jqv.png" },
 ];
 
 export default function ClientsPage() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const cellRefs = useRef([]);
   const gridRef = useRef(null);
+  const heroRef = useRef(null);
+  const statsRef = useRef(null);
+  const countStripRef = useRef(null);
 
-  // Staggered spring reveal
+  // Staggered spring reveal for grid cells
   useEffect(() => {
     const observers = [];
     cellRefs.current.forEach((el, i) => {
       if (!el) return;
       const col = i % 5;
       const row = Math.floor(i / 5);
-      const delay = col * 60 + row * 25;
+      const delay = col * 55 + row * 22;
       el.style.opacity = "0";
-      el.style.transform = "translateY(28px) scale(0.96)";
-      el.style.transition = `opacity 1.1s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 1.1s cubic-bezier(0.16,1,0.3,1) ${delay}ms`;
+      el.style.transform = "translateY(24px) scale(0.97)";
+      el.style.transition = `opacity 1s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 1s cubic-bezier(0.16,1,0.3,1) ${delay}ms`;
       const obs = new IntersectionObserver(([entry]) => {
         el.style.opacity = entry.isIntersecting ? "1" : "0";
-        el.style.transform = entry.isIntersecting ? "translateY(0) scale(1)" : "translateY(28px) scale(0.96)";
-      }, { threshold: 0.05 });
+        el.style.transform = entry.isIntersecting ? "translateY(0) scale(1)" : "translateY(24px) scale(0.97)";
+      }, { threshold: 0.04 });
       obs.observe(el);
       observers.push(obs);
     });
-    return () => observers.forEach(o => o.disconnect());
-  }, []);
 
-  // Cursor tracking for magnetic effect
-  const handleMouseMove = useCallback((e) => {
-    setCursorPos({ x: e.clientX, y: e.clientY });
+    // Hero entrance
+    if (heroRef.current) {
+      heroRef.current.style.opacity = "0";
+      heroRef.current.style.transform = "translateY(20px)";
+      heroRef.current.style.transition = "opacity 1s cubic-bezier(0.16,1,0.3,1), transform 1s cubic-bezier(0.16,1,0.3,1)";
+      setTimeout(() => {
+        if (heroRef.current) {
+          heroRef.current.style.opacity = "1";
+          heroRef.current.style.transform = "translateY(0)";
+        }
+      }, 100);
+    }
+
+    // Stats entrance
+    [statsRef, countStripRef].forEach((ref, idx) => {
+      if (!ref.current) return;
+      ref.current.style.opacity = "0";
+      ref.current.style.transform = "translateY(18px)";
+      ref.current.style.transition = `opacity 0.9s cubic-bezier(0.16,1,0.3,1) ${idx * 80}ms, transform 0.9s cubic-bezier(0.16,1,0.3,1) ${idx * 80}ms`;
+      const obs = new IntersectionObserver(([e]) => {
+        ref.current.style.opacity = e.isIntersecting ? "1" : "0";
+        ref.current.style.transform = e.isIntersecting ? "translateY(0)" : "translateY(18px)";
+      }, { threshold: 0.1 });
+      obs.observe(ref.current);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach(o => o.disconnect());
   }, []);
 
   return (
@@ -81,11 +107,12 @@ export default function ClientsPage() {
           box-sizing: border-box;
         }
 
-        /* ── SHARED NAV (exact match to homepage) ── */
+        /* ── NAV — exact homepage match ── */
         .logo-svg { transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1); transform-origin: center; }
         .logo-path { fill: #ffffff; transition: fill 0.35s ease; }
         .brand-wrap:hover .logo-svg { transform: rotate(180deg) scale(1.15); }
         .brand-wrap:hover .logo-path { fill: #f97316; }
+
         .brand-letter { display: inline-block; transition: color 0.2s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
         .brand-wrap:hover .brand-letter { color: #fff; }
         .brand-wrap:hover .brand-letter:nth-child(1) { transform: translateY(-3px); transition-delay: 0ms; }
@@ -94,8 +121,16 @@ export default function ClientsPage() {
         .brand-wrap:hover .brand-letter:nth-child(4) { transform: translateY(-3px); transition-delay: 120ms; }
         .brand-wrap:hover .brand-letter:nth-child(5) { transform: translateY(-3px); transition-delay: 160ms; }
         .brand-wrap:hover .brand-letter:nth-child(6) { transform: translateY(-3px); transition-delay: 200ms; }
-        .brand-suffix { transition: color 0.2s ease 0.24s; color: #f97316; }
-        .brand-wrap:hover .brand-suffix { color: #fff; }
+
+        /* STUDIO letters animated separately */
+        .studio-letter { display: inline-block; transition: color 0.2s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1); color: #f97316; }
+        .brand-wrap:hover .studio-letter { color: #fff; }
+        .brand-wrap:hover .studio-letter:nth-child(1) { transform: translateY(-3px); transition-delay: 240ms; }
+        .brand-wrap:hover .studio-letter:nth-child(2) { transform: translateY(-3px); transition-delay: 280ms; }
+        .brand-wrap:hover .studio-letter:nth-child(3) { transform: translateY(-3px); transition-delay: 320ms; }
+        .brand-wrap:hover .studio-letter:nth-child(4) { transform: translateY(-3px); transition-delay: 360ms; }
+        .brand-wrap:hover .studio-letter:nth-child(5) { transform: translateY(-3px); transition-delay: 400ms; }
+        .brand-wrap:hover .studio-letter:nth-child(6) { transform: translateY(-3px); transition-delay: 440ms; }
 
         .nav-item { position: relative; cursor: pointer; padding: 10px 18px; user-select: none; overflow: visible; }
         .nav-top, .nav-bottom {
@@ -136,27 +171,20 @@ export default function ClientsPage() {
         .contact-arrow { color: #f97316; transition: color 0.28s ease, transform 0.2s ease; font-size: 0.85rem; }
         .contact-btn:hover .contact-arrow { color: #000; transform: translateX(3px); }
 
-        /* ── FOOTER MARQUEE (exact match to homepage) ── */
-        @keyframes marquee-scroll {
-          0% { transform: translateX(0) }
-          100% { transform: translateX(-50%) }
-        }
+        /* ── FOOTER MARQUEE — exact homepage match ── */
+        @keyframes marquee-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
         .chat-marquee-section {
           position: relative; overflow: hidden; cursor: pointer;
           background: #000; border-top: 1px solid #1a1a1a;
           padding: 10px 0; transition: background 0.4s ease;
         }
         .chat-marquee-section:hover { background: #f97316; }
-        .chat-marquee-track {
-          display: flex; width: max-content;
-          animation: marquee-scroll 22s linear infinite;
-        }
+        .chat-marquee-track { display: flex; width: max-content; animation: marquee-scroll 22s linear infinite; }
         .chat-marquee-section:hover .chat-marquee-track { animation: marquee-scroll 10s linear infinite; }
         .chat-marquee-word {
           font-size: clamp(1.2rem, 3vw, 2.6rem); font-weight: 900;
           text-transform: uppercase; letter-spacing: -0.02em;
-          white-space: nowrap; padding-right: 1.2rem;
-          color: #fff; transition: color 0.4s ease; line-height: 1;
+          white-space: nowrap; padding-right: 1.2rem; color: #fff; transition: color 0.4s ease; line-height: 1;
         }
         .chat-marquee-section:hover .chat-marquee-word { color: #000; }
         .chat-marquee-dot { color: #f97316; transition: color 0.4s ease; }
@@ -171,25 +199,6 @@ export default function ClientsPage() {
 
         @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
 
-        /* ── BRUTAL LINK ── */
-        .brutal-link {
-          display: inline-flex; align-items: center; gap: 8px;
-          font-size: 0.62rem; font-weight: 800; letter-spacing: 0.22em;
-          text-transform: uppercase; color: #444; text-decoration: none;
-          position: relative; padding-bottom: 2px; transition: color 0.22s ease;
-          white-space: nowrap;
-        }
-        .brutal-link::after {
-          content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-          height: 1px; background: #f97316;
-          transform: scaleX(0); transform-origin: left;
-          transition: transform 0.28s cubic-bezier(0.76,0,0.24,1);
-        }
-        .brutal-link:hover { color: #f97316; }
-        .brutal-link:hover::after { transform: scaleX(1); }
-        .brutal-link-arrow { transition: transform 0.22s ease; }
-        .brutal-link:hover .brutal-link-arrow { transform: translateX(4px); }
-
         /* ── ANIMATED GRID BG ── */
         @keyframes gridPan { 0%{background-position:0 0} 100%{background-position:40px 40px} }
         .cl-grid-bg {
@@ -197,62 +206,64 @@ export default function ClientsPage() {
           background-image:
             linear-gradient(rgba(249,115,22,0.025) 1px, transparent 1px),
             linear-gradient(90deg, rgba(249,115,22,0.025) 1px, transparent 1px);
-          background-size: 40px 40px;
-          animation: gridPan 14s linear infinite;
+          background-size: 40px 40px; animation: gridPan 14s linear infinite;
           pointer-events: none; z-index: 0;
         }
 
         /* ── HERO ── */
         .cl-hero {
           position: relative; z-index: 2;
-          border-bottom: 1px solid #141414;
-          padding: 56px 20px 44px; overflow: hidden;
+          border-bottom: 1px solid #1e1e1e;
+          padding: 56px 20px 48px; overflow: hidden;
         }
-        @media(min-width:768px){ .cl-hero { padding: 72px 48px 52px; } }
+        @media(min-width:768px){ .cl-hero { padding: 72px 48px 56px; } }
 
         .cl-hero-eyebrow {
-          font-size: 0.56rem; letter-spacing: 0.32em;
-          text-transform: uppercase; color: #f97316;
-          display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+          font-size: 0.56rem; letter-spacing: 0.32em; text-transform: uppercase;
+          color: #f97316; display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
         }
         .cl-hero-line { display:inline-block; width:24px; height:1px; background:#f97316; }
 
         .cl-hero-title {
           font-size: clamp(2.8rem, 9.5vw, 8.5rem); font-weight: 900;
-          line-height: 0.84; letter-spacing: -0.04em;
-          text-transform: uppercase; color: #fff;
+          line-height: 0.84; letter-spacing: -0.04em; text-transform: uppercase; color: #fff;
         }
         .cl-hero-title-accent {
-          display: block; color: transparent;
-          -webkit-text-stroke: 2px #f97316;
+          display: block; color: transparent; -webkit-text-stroke: 2px #f97316;
         }
 
+        /* ── STAT TABLE — bright labels ── */
         .cl-data-table {
-          display: flex; flex-wrap: wrap;
-          border: 1px solid #181818; margin-top: 36px; max-width: 680px;
+          display: flex; flex-wrap: wrap; border: 1px solid #222;
+          margin-top: 40px; max-width: 720px;
         }
         .cl-data-cell {
-          flex: 1; min-width: 130px; padding: 18px 22px;
-          border-right: 1px solid #181818;
-          position: relative; overflow: hidden;
-          transition: background 0.25s ease; cursor: default;
+          flex: 1; min-width: 140px; padding: 20px 24px;
+          border-right: 1px solid #222; position: relative; overflow: hidden;
+          transition: background 0.3s ease; cursor: default;
         }
         .cl-data-cell:last-child { border-right: none; }
-        .cl-data-cell:hover { background: #060606; }
-        .cl-data-cell::after {
+        .cl-data-cell:hover { background: #080808; }
+        /* Orange top bar sweeps in */
+        .cl-data-cell::before {
           content: ''; position: absolute; top:0; left:0; right:0; height:2px;
           background: #f97316; transform: scaleX(0); transform-origin: left;
-          transition: transform 0.32s cubic-bezier(0.76,0,0.24,1);
+          transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
         }
-        .cl-data-cell:hover::after { transform: scaleX(1); }
+        .cl-data-cell:hover::before { transform: scaleX(1); }
         .cl-data-val {
-          font-size: clamp(1.6rem, 3.5vw, 2.6rem); font-weight: 900;
+          font-size: clamp(1.8rem, 3.8vw, 2.8rem); font-weight: 900;
           letter-spacing: -0.04em; color: #fff; line-height: 1; display:block;
         }
+        /* BRIGHT label — readable against black */
         .cl-data-lbl {
-          font-size: 0.5rem; letter-spacing: 0.26em;
-          text-transform: uppercase; color: #444; margin-top: 5px; display:block;
+          font-size: 0.52rem; letter-spacing: 0.22em;
+          text-transform: uppercase;
+          color: #888;  /* was #444 — now much brighter */
+          margin-top: 6px; display:block;
+          transition: color 0.3s ease;
         }
+        .cl-data-cell:hover .cl-data-lbl { color: #f97316; }
 
         .cl-watermark {
           position: absolute; bottom: -18%; right: -1%;
@@ -262,54 +273,54 @@ export default function ClientsPage() {
           line-height: 1; transform: rotate(-5deg);
         }
 
-        /* ── DYNAMIC WABI-SABI GRID ── */
+        /* ── COUNT STRIP ── */
+        .cl-count-strip {
+          position: relative; z-index: 2;
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 12px 20px; border-bottom: 1px solid #111; flex-wrap: wrap; gap: 8px;
+        }
+        @media(min-width:768px){ .cl-count-strip { padding: 12px 48px; } }
+        .cl-count-strip-label {
+          font-size: 0.5rem; letter-spacing: 0.28em; text-transform: uppercase;
+          color: #555; display: flex; align-items: center; gap: 8px;
+        }
+        .cl-count-strip-num {
+          font-size: 0.5rem; letter-spacing: 0.22em; text-transform: uppercase; color: #f97316;
+        }
+
+        /* ── WABI-SABI GRID ── */
         .cl-roster-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
+          display: grid; grid-template-columns: repeat(2, 1fr);
           position: relative; z-index: 2;
         }
         @media(min-width:540px)  { .cl-roster-grid { grid-template-columns: repeat(3,1fr); } }
         @media(min-width:820px)  { .cl-roster-grid { grid-template-columns: repeat(4,1fr); } }
         @media(min-width:1100px) { .cl-roster-grid { grid-template-columns: repeat(5,1fr); } }
 
-        /* ── WABI-SABI CELL ── */
+        /* ── CELL ── */
         .cl-cell {
-          position: relative;
-          aspect-ratio: 4 / 3;
-          overflow: hidden;
-          background: #000;
-          cursor: default;
-          border-right: 1px solid #0d0d0d;
-          border-bottom: 1px solid #0d0d0d;
+          position: relative; aspect-ratio: 4 / 3; overflow: hidden;
+          background: #030303; cursor: default;
+          border-right: 1px solid #111; border-bottom: 1px solid #111;
           isolation: isolate;
         }
 
-        /* Organic scan-line grain — embracing imperfection */
+        /* Very subtle scan-line texture — barely visible */
         .cl-cell::after {
-          content: '';
-          position: absolute; inset: 0;
+          content: ''; position: absolute; inset: 0;
           background: repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 2px,
-            rgba(255,255,255,0.006) 2px,
-            rgba(255,255,255,0.006) 3px
+            0deg, transparent, transparent 3px,
+            rgba(255,255,255,0.004) 3px, rgba(255,255,255,0.004) 4px
           );
           pointer-events: none; z-index: 8; mix-blend-mode: screen;
         }
 
-        /* ── HOVER: elegant frame expansion (not abrupt flood) ── */
-        /* Fine-line frame that materializes */
-        .cl-cell-frame {
-          position: absolute; inset: 0; z-index: 7; pointer-events: none;
-        }
+        /* Fine-line frame materialises on hover */
+        .cl-cell-frame { position: absolute; inset: 0; z-index: 7; pointer-events: none; }
         .cl-cell-frame::before, .cl-cell-frame::after {
-          content: '';
-          position: absolute;
-          background: #f97316;
-          transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+          content: ''; position: absolute; background: #f97316;
+          transition: transform 0.55s cubic-bezier(0.16,1,0.3,1);
         }
-        /* Top + bottom bars */
         .cl-cell-frame::before {
           top: 0; left: 0; right: 0; height: 1.5px;
           transform: scaleX(0); transform-origin: left;
@@ -317,218 +328,155 @@ export default function ClientsPage() {
         .cl-cell:hover .cl-cell-frame::before { transform: scaleX(1); }
         .cl-cell-frame::after {
           bottom: 0; left: 0; right: 0; height: 1.5px;
-          transform: scaleX(0); transform-origin: right;
-          transition-delay: 0.04s;
+          transform: scaleX(0); transform-origin: right; transition-delay: 0.05s;
         }
         .cl-cell:hover .cl-cell-frame::after { transform: scaleX(1); }
 
-        /* Left + right bars via pseudo on inner div */
+        .cl-cell-frame-sides { position: absolute; inset: 0; z-index: 7; pointer-events: none; }
         .cl-cell-frame-sides::before, .cl-cell-frame-sides::after {
-          content: '';
-          position: absolute;
-          width: 1.5px; background: #f97316;
-          top: 0; bottom: 0;
-          transition: transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.08s;
+          content: ''; position: absolute; width: 1.5px; background: #f97316;
+          top: 0; bottom: 0; transition: transform 0.55s cubic-bezier(0.16,1,0.3,1) 0.08s;
         }
         .cl-cell-frame-sides::before { left: 0; transform: scaleY(0); transform-origin: top; }
         .cl-cell-frame-sides::after  { right: 0; transform: scaleY(0); transform-origin: bottom; }
         .cl-cell:hover .cl-cell-frame-sides::before { transform: scaleY(1); }
         .cl-cell:hover .cl-cell-frame-sides::after  { transform: scaleY(1); }
 
-        /* Corner crosshairs */
+        /* Crosshair corners */
         .cl-cell-corner {
           position: absolute; width: 10px; height: 10px;
           pointer-events: none; z-index: 9;
-          opacity: 0; transition: opacity 0.35s ease 0.15s;
+          opacity: 0; transition: opacity 0.3s ease 0.2s;
         }
         .cl-cell:hover .cl-cell-corner { opacity: 1; }
-        .cl-cell-corner.tl { top:7px; left:7px; border-top:1px solid rgba(249,115,22,0.7); border-left:1px solid rgba(249,115,22,0.7); }
-        .cl-cell-corner.tr { top:7px; right:7px; border-top:1px solid rgba(249,115,22,0.7); border-right:1px solid rgba(249,115,22,0.7); }
-        .cl-cell-corner.bl { bottom:7px; left:7px; border-bottom:1px solid rgba(249,115,22,0.7); border-left:1px solid rgba(249,115,22,0.7); }
-        .cl-cell-corner.br { bottom:7px; right:7px; border-bottom:1px solid rgba(249,115,22,0.7); border-right:1px solid rgba(249,115,22,0.7); }
+        .cl-cell-corner.tl { top:7px; left:7px; border-top:1px solid rgba(249,115,22,0.8); border-left:1px solid rgba(249,115,22,0.8); }
+        .cl-cell-corner.tr { top:7px; right:7px; border-top:1px solid rgba(249,115,22,0.8); border-right:1px solid rgba(249,115,22,0.8); }
+        .cl-cell-corner.bl { bottom:7px; left:7px; border-bottom:1px solid rgba(249,115,22,0.8); border-left:1px solid rgba(249,115,22,0.8); }
+        .cl-cell-corner.br { bottom:7px; right:7px; border-bottom:1px solid rgba(249,115,22,0.8); border-right:1px solid rgba(249,115,22,0.8); }
 
-        /* Index number — metadata read-out */
+        /* Index metadata */
         .cl-cell-index {
           position: absolute; bottom: 9px; right: 10px; z-index: 9;
           font-size: 0.44rem; letter-spacing: 0.16em;
-          color: rgba(255,255,255,0.1); font-weight: 700;
-          transition: color 0.35s ease, opacity 0.35s ease;
-          pointer-events: none; font-variant-numeric: tabular-nums;
+          color: rgba(255,255,255,0.12); font-weight: 700;
+          transition: color 0.3s ease; pointer-events: none;
         }
-        .cl-cell:hover .cl-cell-index { color: rgba(249,115,22,0.6); }
+        .cl-cell:hover .cl-cell-index { color: rgba(249,115,22,0.7); }
 
-        /* Dimension readout top-left — micro editorial detail */
         .cl-cell-dim {
           position: absolute; top: 9px; left: 10px; z-index: 9;
           font-size: 0.38rem; letter-spacing: 0.12em;
-          color: rgba(255,255,255,0.07); font-weight: 600;
-          transition: color 0.35s ease, opacity 0.35s ease;
-          pointer-events: none; font-variant-numeric: tabular-nums;
-          text-transform: uppercase;
+          color: rgba(255,255,255,0.08); font-weight: 600;
+          transition: color 0.3s ease; pointer-events: none; text-transform: uppercase;
         }
-        .cl-cell:hover .cl-cell-dim { color: rgba(249,115,22,0.45); }
+        .cl-cell:hover .cl-cell-dim { color: rgba(249,115,22,0.5); }
 
-        /* ── WABI-SABI LOGO LAYER ── */
-        /* Natural dimensions, not forced uniform */
+        /* ── LOGO LAYER — clean, no blur ── */
         .cl-cell-logo-wrap {
-          position: absolute; inset: 0;
-          display: flex; align-items: center; justify-content: center;
-          padding: 22px; z-index: 2;
-          transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1);
+          position: absolute; inset: 0; display: flex; align-items: center;
+          justify-content: center; padding: 20%; z-index: 2;
+          transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1);
         }
-        .cl-cell:hover .cl-cell-logo-wrap { opacity: 0; transform: scale(0.88) translateY(-8px); }
+        .cl-cell:hover .cl-cell-logo-wrap { opacity: 0; transform: scale(0.9) translateY(-10px); }
 
         .cl-cell-logo {
-          /* Let natural aspect ratio breathe — wabi-sabi */
-          max-width: 72%; max-height: 58%;
+          max-width: 100%; max-height: 100%; width: auto; height: auto;
           object-fit: contain;
+          /* Clean white logo — no blur, no pixelation */
           filter: brightness(0) invert(1);
-          opacity: 0.45;
-          transition: opacity 0.4s ease;
-          /* Embrace pixel texture for low-res logos */
-          image-rendering: -webkit-optimize-contrast;
-          image-rendering: crisp-edges;
+          opacity: 0.75;
+          transition: opacity 0.3s ease;
+          /* No image-rendering override — let browser render naturally at display size */
         }
 
-        /* Very small logos: float in a void — intentional negative space */
-        .cl-cell-logo.is-tiny {
-          max-width: 40%; max-height: 36%;
-          opacity: 0.3;
-        }
-
-        /* ── MULTI-LAYERED HOVER OVERLAY ── elegant slide-reveal, not flood ── */
-        /* Dark tinted layer slides up first */
+        /* ── HOVER OVERLAY ── multi-layer elegant reveal ── */
+        /* Layer 1: dark veil slides up */
         .cl-cell-overlay-bg {
           position: absolute; inset: 0; z-index: 3;
-          background: rgba(10,5,0,0.82);
+          background: #0a0500;
           transform: translateY(100%);
-          transition: transform 0.45s cubic-bezier(0.16,1,0.3,1);
+          transition: transform 0.48s cubic-bezier(0.16,1,0.3,1);
         }
         .cl-cell:hover .cl-cell-overlay-bg { transform: translateY(0); }
 
-        /* Orange accent panel slides in from bottom with slight delay */
-        .cl-cell-overlay-accent {
-          position: absolute; bottom: 0; left: 0; right: 0;
-          height: 3px; z-index: 5;
-          background: linear-gradient(90deg, #f97316, #ff6a00);
-          transform: scaleX(0); transform-origin: left;
-          transition: transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.18s;
+        /* Layer 2: orange shimmer at top on hover */
+        .cl-cell-overlay-shimmer {
+          position: absolute; top: 0; left: 0; right: 0; height: 60px; z-index: 4;
+          background: linear-gradient(180deg, rgba(249,115,22,0.12) 0%, transparent 100%);
+          opacity: 0;
+          transition: opacity 0.4s ease 0.15s;
         }
-        .cl-cell:hover .cl-cell-overlay-accent { transform: scaleX(1); }
+        .cl-cell:hover .cl-cell-overlay-shimmer { opacity: 1; }
 
-        /* Content container */
+        /* Layer 3: name marquee content */
         .cl-cell-overlay-content {
           position: absolute; inset: 0; z-index: 6;
           display: flex; flex-direction: column; justify-content: center;
-          overflow: hidden;
-          opacity: 0;
-          transition: opacity 0.3s ease 0.15s;
+          overflow: hidden; opacity: 0;
+          transition: opacity 0.35s ease 0.12s;
         }
         .cl-cell:hover .cl-cell-overlay-content { opacity: 1; }
 
-        /* Row 1 — solid name marquee forward */
+        /* Marquee rows */
         @keyframes name-run-fwd { from{transform:translateX(0)} to{transform:translateX(-50%)} }
         @keyframes name-run-rev { from{transform:translateX(-50%)} to{transform:translateX(0)} }
 
-        .cl-name-track {
-          display: flex; width: max-content;
-          animation: name-run-fwd 5s linear infinite; will-change: transform;
-        }
-        .cl-name-track-rev {
-          display: flex; width: max-content;
-          animation: name-run-rev 7.5s linear infinite; will-change: transform;
-        }
+        .cl-name-track     { display: flex; width: max-content; animation: name-run-fwd 4.5s linear infinite; will-change: transform; }
+        .cl-name-track-rev { display: flex; width: max-content; animation: name-run-rev 7s linear infinite; will-change: transform; }
         .cl-name-seg {
           font-size: clamp(0.85rem, 2.2vw, 1.4rem); font-weight: 900;
           text-transform: uppercase; letter-spacing: -0.01em;
-          color: #fff; white-space: nowrap; padding-right: 1.4rem; line-height: 1.15;
+          color: #fff; white-space: nowrap; padding-right: 1.4rem; line-height: 1.2;
         }
-        .cl-name-seg-ghost {
-          color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.2);
-        }
-        .cl-name-divider {
-          width: 100%; height: 1px; background: rgba(255,255,255,0.08); flex-shrink: 0;
-        }
+        .cl-name-seg-ghost { color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.18); }
+        .cl-name-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.07); flex-shrink: 0; margin: 2px 0; }
 
-        /* Metadata strip slides up from bottom */
+        /* Orange accent bottom bar */
+        .cl-cell-overlay-accent {
+          position: absolute; bottom: 0; left: 0; right: 0; height: 3px; z-index: 5;
+          background: linear-gradient(90deg, #f97316, #ff6a00);
+          transform: scaleX(0); transform-origin: left;
+          transition: transform 0.55s cubic-bezier(0.16,1,0.3,1) 0.2s;
+        }
+        .cl-cell:hover .cl-cell-overlay-accent { transform: scaleX(1); }
+
+        /* Metadata strip slides up */
         .cl-cell-meta {
           position: absolute; bottom: 0; left: 0; right: 0;
-          padding: 7px 11px; z-index: 7; background: rgba(249,115,22,0.92);
+          padding: 7px 11px; z-index: 7; background: rgba(249,115,22,0.95);
           transform: translateY(100%);
-          transition: transform 0.42s cubic-bezier(0.16,1,0.3,1) 0.1s;
+          transition: transform 0.44s cubic-bezier(0.16,1,0.3,1) 0.1s;
           display: flex; justify-content: space-between; align-items: center;
           pointer-events: none;
         }
         .cl-cell:hover .cl-cell-meta { transform: translateY(0); }
-        .cl-cell-meta-name {
-          font-size: 0.44rem; font-weight: 800;
-          letter-spacing: 0.22em; text-transform: uppercase; color: #000;
-        }
-        .cl-cell-meta-tag {
-          font-size: 0.38rem; letter-spacing: 0.14em;
-          text-transform: uppercase; color: rgba(0,0,0,0.5);
-        }
+        .cl-cell-meta-name { font-size: 0.44rem; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase; color: #000; }
+        .cl-cell-meta-tag  { font-size: 0.38rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(0,0,0,0.45); }
 
-        /* ── COUNT STRIP ── */
-        .cl-count-strip {
-          position: relative; z-index: 2;
-          display: flex; align-items: center; justify-content: space-between;
-          padding: 12px 20px; border-bottom: 1px solid #0d0d0d; flex-wrap: wrap; gap: 8px;
+        /* ── ENTRANCE: pulsing orange dot indicator ── */
+        @keyframes scanline-move {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100vh); }
         }
-        @media(min-width:768px){ .cl-count-strip { padding: 12px 48px; } }
-        .cl-count-strip-label {
-          font-size: 0.5rem; letter-spacing: 0.28em;
-          text-transform: uppercase; color: #2a2a2a;
-          display: flex; align-items: center; gap: 8px;
-        }
-        .cl-count-strip-num {
-          font-size: 0.5rem; letter-spacing: 0.22em;
-          text-transform: uppercase; color: #f97316;
-        }
-
-        /* ── SECTION DIVIDER between grid rows — organic separator ── */
-        .cl-grid-section-marker {
-          grid-column: 1 / -1;
-          display: flex; align-items: center; gap: 16px;
-          padding: 12px 16px; border-bottom: 1px solid #0d0d0d;
-          border-top: 1px solid #0d0d0d;
-          background: #030303; position: relative; z-index: 3; overflow: hidden;
-        }
-        .cl-grid-section-marker-line {
-          flex: 1; height: 1px; background: linear-gradient(90deg, #f97316 0%, transparent 100%); opacity: 0.15;
-        }
-        .cl-grid-section-marker-label {
-          font-size: 0.4rem; letter-spacing: 0.32em; text-transform: uppercase; color: #333;
-          white-space: nowrap;
-        }
-        .cl-grid-section-marker-dot {
-          width: 4px; height: 4px; border-radius: 50%; background: #f97316; opacity: 0.4;
-          flex-shrink: 0;
+        .cl-scanline {
+          position: fixed; top: 0; left: 0; right: 0; height: 1px;
+          background: linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.4) 50%, transparent 100%);
+          z-index: 997; pointer-events: none;
+          animation: scanline-move 3s ease-in-out forwards;
         }
       `}</style>
 
-      <main
-        className="bg-black text-white min-h-screen"
-        style={{ position:"relative" }}
-        onMouseMove={handleMouseMove}
-      >
-        {/* ANIMATED GRID BG */}
+      <main className="bg-black text-white min-h-screen" style={{ position:"relative" }}>
+        {/* Entrance scanline sweep */}
+        <div className="cl-scanline" aria-hidden="true" />
+
+        {/* Animated grid bg */}
         <div className="cl-grid-bg" aria-hidden="true" />
 
-        {/* GRAIN OVERLAY */}
-        <div
-          className="fixed inset-0 pointer-events-none"
-          style={{
-            zIndex: 998,
-            opacity: 0.025,
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-            backgroundRepeat: "repeat",
-            backgroundSize: "128px 128px",
-            mixBlendMode: "overlay"
-          }}
-        />
+        {/* Grain overlay */}
+        <div className="fixed inset-0 pointer-events-none" style={{ zIndex:998, opacity:0.022, backgroundImage:`url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`, backgroundRepeat:"repeat", backgroundSize:"128px 128px", mixBlendMode:"overlay" }} />
 
-        {/* ── NAVBAR — exact match to homepage ── */}
+        {/* ── NAV ── */}
         <nav className="sticky top-0 z-50 flex items-center justify-between px-5 md:px-8 py-4 backdrop-blur-md bg-black/50 border-b border-zinc-900">
           <Link href="/">
             <div className="brand-wrap flex items-center gap-2 cursor-pointer select-none">
@@ -538,11 +486,11 @@ export default function ClientsPage() {
                   <path className="logo-path" d="M.99,58.99l9.18,15.9,10.68-6.16c-1.79-2.09-3.57-4.17-5.36-6.26,1.33-1.76,2.66-3.51,3.99-5.27-1.72-1.97-3.44-3.93-5.16-5.9" />
                 </g>
               </svg>
-              <h1 className="text-orange-500 text-lg md:text-xl font-semibold tracking-tight leading-none">
-                {"UNFLTR".split("").map((char, i) => (
-                  <span key={i} className="brand-letter">{char}</span>
-                ))}
-                <span className="brand-suffix"> STUDIO</span>
+              {/* Logo text same size as SVG — text-lg matches 26px icon */}
+              <h1 className="text-orange-500 text-lg font-semibold tracking-tight leading-none">
+                {"UNFLTR".split("").map((char, i) => <span key={i} className="brand-letter">{char}</span>)}
+                <span>&nbsp;</span>
+                {"STUDIO".split("").map((char, i) => <span key={i} className="studio-letter">{char}</span>)}
               </h1>
             </div>
           </Link>
@@ -558,12 +506,7 @@ export default function ClientsPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <a
-              href="https://www.instagram.com/unfltrr?igsh=MWN0Y2ozZjk4NHpubQ=="
-              target="_blank" rel="noopener noreferrer"
-              className="text-white hover:text-orange-500 transition-colors duration-200"
-              aria-label="Instagram"
-            >
+            <a href="https://www.instagram.com/unfltrr?igsh=MWN0Y2ozZjk4NHpubQ==" target="_blank" rel="noopener noreferrer" className="text-white hover:text-orange-500 transition-colors duration-200" aria-label="Instagram">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="2" y="2" width="20" height="20" rx="6" ry="6" stroke="currentColor" strokeWidth="1.8" fill="none" />
                 <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.8" fill="none" />
@@ -572,20 +515,16 @@ export default function ClientsPage() {
             </a>
             <Link href="/contact">
               <button className="contact-btn">
-                <span className="contact-btn-text">
-                  <span className="contact-arrow">→</span>Contact
-                </span>
+                <span className="contact-btn-text"><span className="contact-arrow">→</span>Contact</span>
               </button>
             </Link>
           </div>
         </nav>
 
         {/* ── HERO ── */}
-        <div className="cl-hero">
+        <div className="cl-hero" ref={heroRef}>
           <div className="cl-watermark" aria-hidden="true">ROSTER</div>
-          <p className="cl-hero-eyebrow">
-            <span className="cl-hero-line" />The Complete Roster
-          </p>
+          <p className="cl-hero-eyebrow"><span className="cl-hero-line" />The Complete Roster</p>
           <h1 className="cl-hero-title">
             The UNFLTR
             <span className="cl-hero-title-accent">Roster.</span>
@@ -606,18 +545,17 @@ export default function ClientsPage() {
         </div>
 
         {/* COUNT STRIP */}
-        <div className="cl-count-strip">
+        <div className="cl-count-strip" ref={countStripRef}>
           <span className="cl-count-strip-label">
-            <span style={{ width:16, height:1, background:"#222", display:"inline-block" }} />
+            <span style={{ width:16, height:1, background:"#333", display:"inline-block" }} />
             Client Roster
           </span>
           <span className="cl-count-strip-num">{ALL_CLIENTS.length} Brands Listed</span>
         </div>
 
-        {/* ── WABI-SABI GRID ── */}
+        {/* ── GRID ── */}
         <div style={{ position:"relative", zIndex:2 }}>
           <div className="cl-roster-grid" ref={gridRef}>
-
             {ALL_CLIENTS.map((client, i) => (
               <div
                 key={i}
@@ -626,29 +564,16 @@ export default function ClientsPage() {
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                {/* Fine-line frame materialises on hover */}
                 <div className="cl-cell-frame" aria-hidden="true" />
-                <div
-                  className="cl-cell-frame-sides"
-                  style={{ position:"absolute", inset:0, zIndex:7, pointerEvents:"none" }}
-                  aria-hidden="true"
-                />
-
-                {/* Corner crosshairs */}
+                <div className="cl-cell-frame-sides" aria-hidden="true" />
                 <div className="cl-cell-corner tl" aria-hidden="true" />
                 <div className="cl-cell-corner tr" aria-hidden="true" />
                 <div className="cl-cell-corner bl" aria-hidden="true" />
                 <div className="cl-cell-corner br" aria-hidden="true" />
+                <span className="cl-cell-index" aria-hidden="true">{String(i + 1).padStart(2,"0")}</span>
+                <span className="cl-cell-dim" aria-hidden="true">UNFLTR × {String(i + 1).padStart(2,"0")}</span>
 
-                {/* Micro metadata readouts — editorial texture */}
-                <span className="cl-cell-index" aria-hidden="true">
-                  {String(i + 1).padStart(2,"0")}
-                </span>
-                <span className="cl-cell-dim" aria-hidden="true">
-                  UNFLTR × {String(i + 1).padStart(2,"0")}
-                </span>
-
-                {/* Logo — wabi-sabi natural sizing */}
+                {/* Clean logo — natural proportions, high contrast */}
                 <div className="cl-cell-logo-wrap">
                   <img
                     src={client.logo}
@@ -659,42 +584,26 @@ export default function ClientsPage() {
                   />
                 </div>
 
-                {/* Hover: dark overlay slides up */}
                 <div className="cl-cell-overlay-bg" aria-hidden="true" />
+                <div className="cl-cell-overlay-shimmer" aria-hidden="true" />
 
-                {/* Hover: content — multi-row name marquee */}
                 <div className="cl-cell-overlay-content" aria-hidden="true">
-                  {/* Row 1 — solid name forward */}
                   <div style={{ overflow:"hidden", width:"100%" }}>
                     <div className="cl-name-track">
-                      {Array(10).fill(null).map((_, j) => (
-                        <span key={j} className="cl-name-seg">{client.name}&nbsp;</span>
-                      ))}
-                      {Array(10).fill(null).map((_, j) => (
-                        <span key={`b${j}`} className="cl-name-seg">{client.name}&nbsp;</span>
-                      ))}
+                      {Array(12).fill(null).map((_,j) => <span key={j} className="cl-name-seg">{client.name}&nbsp;</span>)}
+                      {Array(12).fill(null).map((_,j) => <span key={`b${j}`} className="cl-name-seg">{client.name}&nbsp;</span>)}
                     </div>
                   </div>
-
                   <div className="cl-name-divider" />
-
-                  {/* Row 2 — ghost text reverse */}
                   <div style={{ overflow:"hidden", width:"100%" }}>
                     <div className="cl-name-track-rev">
-                      {Array(10).fill(null).map((_, j) => (
-                        <span key={j} className="cl-name-seg cl-name-seg-ghost">{client.name}&nbsp;</span>
-                      ))}
-                      {Array(10).fill(null).map((_, j) => (
-                        <span key={`b${j}`} className="cl-name-seg cl-name-seg-ghost">{client.name}&nbsp;</span>
-                      ))}
+                      {Array(12).fill(null).map((_,j) => <span key={j} className="cl-name-seg cl-name-seg-ghost">{client.name}&nbsp;</span>)}
+                      {Array(12).fill(null).map((_,j) => <span key={`b${j}`} className="cl-name-seg cl-name-seg-ghost">{client.name}&nbsp;</span>)}
                     </div>
                   </div>
                 </div>
 
-                {/* Orange accent bottom bar */}
                 <div className="cl-cell-overlay-accent" aria-hidden="true" />
-
-                {/* Metadata strip */}
                 <div className="cl-cell-meta">
                   <span className="cl-cell-meta-name">{client.name}</span>
                   <span className="cl-cell-meta-tag">× UNFLTR</span>
@@ -704,7 +613,7 @@ export default function ClientsPage() {
           </div>
         </div>
 
-        {/* ── FOOTER MARQUEE — exact match to homepage ── */}
+        {/* ── FOOTER MARQUEE — exact homepage match ── */}
         <Link href="/contact">
           <section className="chat-marquee-section" style={{ position:"relative", zIndex:2 }}>
             <div style={{ overflow:"hidden" }}>
@@ -716,13 +625,9 @@ export default function ClientsPage() {
                 ))}
               </div>
             </div>
-            <div className="chat-cta-hint">
-              <span className="hidden sm:inline">Get In Touch</span>
-              <span>→</span>
-            </div>
+            <div className="chat-cta-hint"><span className="hidden sm:inline">Get In Touch</span><span>→</span></div>
           </section>
         </Link>
-
       </main>
     </>
   );
