@@ -400,24 +400,27 @@ export default function ServicesPage() {
         }
         .sv-row:hover .sv-row-name::after { transform:scaleX(1); }
 
-        .sv-row-tagline { font-size:0.65rem; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:#666; transition:color 0.3s ease; align-self:flex-end; padding-bottom:4px; }
+        .sv-row-tagline { font-size:0.75rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#666; transition:color 0.3s ease; align-self:flex-end; padding-bottom:4px; }
+        @media(min-width:768px){ .sv-row-tagline { font-size:0.85rem; } }
         .sv-row:hover .sv-row-tagline { color:#f97316; }
 
-        .sv-row-tags { display:flex; flex-wrap:wrap; gap:6px; }
+        .sv-row-tags { display:flex; flex-wrap:wrap; gap:7px; }
         .sv-row-tag {
-          font-size:0.46rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase;
-          color:#444; border:1px solid #1a1a1a; padding:3px 8px;
+          font-size:0.6rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+          color:#555; border:1px solid #222; padding:5px 12px;
           transition:color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
         }
+        @media(min-width:768px){ .sv-row-tag { font-size:0.68rem; padding:6px 14px; } }
         .sv-row:hover .sv-row-tag { color:#f97316; border-color:rgba(249,115,22,0.35); background:rgba(249,115,22,0.04); }
 
         .sv-row-desc {
-          font-size:0.78rem; line-height:1.65; color:#555;
+          font-size:0.9rem; line-height:1.7; color:#555;
           max-height:0; overflow:hidden;
-          transition:max-height 0.5s cubic-bezier(0.16,1,0.3,1), color 0.3s ease, opacity 0.3s ease;
+          transition:max-height 0.55s cubic-bezier(0.16,1,0.3,1), color 0.3s ease, opacity 0.3s ease;
           opacity:0;
         }
-        .sv-row.is-expanded .sv-row-desc { max-height:120px; color:#999; opacity:1; }
+        @media(min-width:768px){ .sv-row-desc { font-size:1rem; line-height:1.75; } }
+        .sv-row.is-expanded .sv-row-desc { max-height:200px; color:#aaa; opacity:1; }
         .sv-row:hover .sv-row-desc { color:#888; }
 
         /* Graphic column */
@@ -433,12 +436,13 @@ export default function ServicesPage() {
         /* Expand indicator */
         .sv-row-expand {
           position:absolute; bottom:24px; right:24px;
-          font-size:0.44rem; letter-spacing:0.2em; text-transform:uppercase;
-          color:#333; display:flex; align-items:center; gap:5px;
+          font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase;
+          color:#444; display:flex; align-items:center; gap:6px;
           transition:color 0.25s ease;
         }
+        @media(min-width:768px){ .sv-row-expand { font-size:0.68rem; } }
         .sv-row:hover .sv-row-expand { color:#f97316; }
-        .sv-row-expand-arrow { display:inline-block; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1); font-size:0.7rem; }
+        .sv-row-expand-arrow { display:inline-block; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1); font-size:0.9rem; }
         .sv-row.is-expanded .sv-row-expand-arrow { transform:rotate(45deg); }
 
         /* Horizontal accent rule that sweeps across row on hover */

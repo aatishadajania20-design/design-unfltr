@@ -74,7 +74,8 @@ export default function Home() {
         .contact-btn:hover .contact-arrow { color: #000; transform: translateX(3px); }
 
         .hero-clients-cta {
-          display: inline-flex; align-items: center; gap: 10px; padding: 10px 22px;
+          display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+          padding: 12px 24px; width: 100%;
           border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.05);
           backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
           color: rgba(255,255,255,0.65); font-size: 0.65rem; font-weight: 600;
@@ -83,6 +84,9 @@ export default function Home() {
           white-space: nowrap; font-family: inherit; border-radius: 2px;
           text-decoration: none;
         }
+        @media(min-width:640px){
+          .hero-clients-cta { width: auto; padding: 10px 22px; justify-content: flex-start; }
+        }
         .hero-clients-cta:hover { border-color: rgba(249,115,22,0.6); background: rgba(249,115,22,0.08); color: #f97316; }
         .hero-cta-dot { width: 5px; height: 5px; border-radius: 50%; background: #f97316; display: inline-block; animation: pulse-dot 2s ease-in-out infinite; flex-shrink: 0; }
         .hero-cta-arrow { display: inline-block; transition: transform 0.25s ease; font-size: 0.8rem; }
@@ -90,7 +94,8 @@ export default function Home() {
 
         /* Services CTA — orange-outlined so always visible over video */
         .hero-services-cta {
-          display: inline-flex; align-items: center; gap: 10px; padding: 10px 22px;
+          display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+          padding: 12px 24px; width: 100%;
           border: 1.5px solid #f97316; background: rgba(249,115,22,0.10);
           backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
           color: #f97316; font-size: 0.65rem; font-weight: 700;
@@ -98,6 +103,9 @@ export default function Home() {
           transition: background 0.3s ease, color 0.3s ease;
           white-space: nowrap; font-family: inherit; border-radius: 2px;
           text-decoration: none; position: relative; overflow: hidden;
+        }
+        @media(min-width:640px){
+          .hero-services-cta { width: auto; padding: 10px 22px; justify-content: flex-start; }
         }
         .hero-services-cta::before {
           content: ''; position: absolute; inset: 0;
@@ -221,22 +229,28 @@ export default function Home() {
             <p className="text-gray-300 mt-6 md:mt-8 max-w-2xl text-base md:text-xl leading-relaxed">
               UNFLTR Is A Multidisciplinary Creative Studio Blending Branding, Marketing, Motion, And Strategy Into Culturally Relevant Brand Systems.
             </p>
-            <div className="flex flex-wrap items-center gap-4 md:gap-6 mt-8 md:mt-12">
-              <div className="flex items-center gap-2">
-                <span style={{ width:7, height:7, borderRadius:"50%", background:"#f97316", display:"inline-block", animation:"pulse-dot 2s ease-in-out infinite" }} />
-                <span className="text-xs uppercase tracking-[0.16em] text-white/50">Showreel 2025</span>
+            <div className="mt-8 md:mt-12">
+              {/* Top row: metadata pills */}
+              <div className="flex flex-wrap items-center gap-3 md:gap-5 mb-5 md:mb-6">
+                <div className="flex items-center gap-2">
+                  <span style={{ width:7, height:7, borderRadius:"50%", background:"#f97316", display:"inline-block", animation:"pulse-dot 2s ease-in-out infinite" }} />
+                  <span className="text-xs uppercase tracking-[0.16em] text-white/50">Showreel 2025</span>
+                </div>
+                <div style={{ height:1, width:28, background:"rgba(255,255,255,0.18)" }} className="hidden sm:block" />
+                <span className="text-xs uppercase tracking-[0.16em] text-white/30 hidden sm:inline">Est. 2024</span>
               </div>
-              <div style={{ height:1, width:36, background:"rgba(255,255,255,0.18)" }} className="hidden sm:block" />
-              <span className="text-xs uppercase tracking-[0.16em] text-white/30 hidden sm:inline">Est. 2024</span>
-              <Link href="/clients" className="hero-clients-cta">
-                <span className="hero-cta-dot" />
-                Our Clients
-                <span className="hero-cta-arrow">→</span>
-              </Link>
-              <Link href="/services" className="hero-services-cta">
-                <span>Services We Offer</span>
-                <span className="svc-arrow">↗</span>
-              </Link>
+              {/* Bottom row: CTA buttons — stack on mobile, inline on desktop */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+                <Link href="/clients" className="hero-clients-cta">
+                  <span className="hero-cta-dot" />
+                  Our Clients
+                  <span className="hero-cta-arrow">→</span>
+                </Link>
+                <Link href="/services" className="hero-services-cta">
+                  <span>Services We Offer</span>
+                  <span className="svc-arrow">↗</span>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
