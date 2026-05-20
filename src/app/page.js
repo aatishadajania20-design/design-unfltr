@@ -88,6 +88,28 @@ export default function Home() {
         .hero-cta-arrow { display: inline-block; transition: transform 0.25s ease; font-size: 0.8rem; }
         .hero-clients-cta:hover .hero-cta-arrow { transform: translateY(3px); }
 
+        /* Services CTA — orange-outlined so always visible over video */
+        .hero-services-cta {
+          display: inline-flex; align-items: center; gap: 10px; padding: 10px 22px;
+          border: 1.5px solid #f97316; background: rgba(249,115,22,0.10);
+          backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+          color: #f97316; font-size: 0.65rem; font-weight: 700;
+          letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer;
+          transition: background 0.3s ease, color 0.3s ease;
+          white-space: nowrap; font-family: inherit; border-radius: 2px;
+          text-decoration: none; position: relative; overflow: hidden;
+        }
+        .hero-services-cta::before {
+          content: ''; position: absolute; inset: 0;
+          background: #f97316; transform: translateX(-105%);
+          transition: transform 0.3s cubic-bezier(0.76,0,0.24,1); z-index: 0;
+        }
+        .hero-services-cta:hover::before { transform: translateX(0); }
+        .hero-services-cta:hover { color: #000; }
+        .hero-services-cta span { position: relative; z-index: 1; }
+        .svc-arrow { display: inline-block; transition: transform 0.25s ease; font-size: 0.8rem; position: relative; z-index: 1; }
+        .hero-services-cta:hover .svc-arrow { transform: translateX(3px); }
+
         @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
 
         @keyframes marquee-scroll {
@@ -210,6 +232,10 @@ export default function Home() {
                 <span className="hero-cta-dot" />
                 Our Clients
                 <span className="hero-cta-arrow">→</span>
+              </Link>
+              <Link href="/services" className="hero-services-cta">
+                <span>Services We Offer</span>
+                <span className="svc-arrow">↗</span>
               </Link>
             </div>
           </div>
