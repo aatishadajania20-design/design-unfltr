@@ -407,18 +407,35 @@ export default function SlugClient({ project, nextProject, prevProject }) {
           {[
             { dir: "← Previous", proj: prevProject },
             { dir: "Next →",      proj: nextProject },
-          ].map(({ dir, proj }) => (
-            <Link href={`/projects/${proj.slug}`} key={proj.slug} className="slug-nav-card">
-              <img src={proj.image} alt={proj.title} className="slug-nav-img" />
-              <div className="slug-nav-overlay" />
-              <div className="slug-nav-arrow">→</div>
-              <div className="slug-nav-label">
-                <span className="slug-nav-dir">{dir}</span>
-                <div className="slug-nav-name">{proj.title}</div>
-                <span className="slug-nav-cat">{proj.category}</span>
-              </div>
-            </Link>
-          ))}
+          ].map(({ dir, proj }) => {
+            // Always use .image for the thumbnail — works for both image and video projects
+            // (video projects have .image set as the poster/thumbnail in projects.js)
+            const thumb = proj.image;
+            return (
+              <Link href={`/projects/${proj.slug}`} key={proj.slug} className="slug-nav-card">
+                {thumb ? (
+                  <img
+                    src={thumb}
+                    alt={proj.title}
+                    className="slug-nav-img"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="slug-nav-img" style={{ background:"#111" }} />
+                )}
+                <div className="slug-nav-overlay" />
+                <div className="slug-nav-arrow">→</div>
+                <div className="slug-nav-label">
+                  <span className="slug-nav-dir">{dir}</span>
+                  <div className="slug-nav-name">{proj.title}</div>
+                  <span className="slug-nav-cat">{proj.category}</span>
+                  {proj.video && (
+                    <span style={{ fontSize:"0.42rem", letterSpacing:"0.18em", textTransform:"uppercase", color:"rgba(255,255,255,0.3)", marginTop:4, display:"block" }}>▶ Video</span>
+                  )}
+                </div>
+              </Link>
+            );
+          })}
         </div>
 
         {/* ── FOOTER MARQUEE — same as all other pages ── */}
