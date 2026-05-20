@@ -80,19 +80,98 @@ export default function Home() {
         .hero-clients-cta:hover .hero-cta-arrow { transform: translateY(3px); }
 
         @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
-        @keyframes marquee-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+       /* ── FOOTER MARQUEE ── */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0) }
+  100% { transform: translateX(-50%) }
+}
 
-        .chat-marquee-section { position: relative; overflow: hidden; cursor: pointer; background: #000; border-top: 1px solid #1a1a1a; padding: 24px 0; transition: background 0.4s ease; }
-        .chat-marquee-section:hover { background: #f97316; }
-        .chat-marquee-track { display: flex; width: max-content; animation: marquee-scroll 22s linear infinite; }
-        .chat-marquee-section:hover .chat-marquee-track { animation: marquee-scroll 10s linear infinite; }
-        .chat-marquee-word { font-size: clamp(2.2rem,5vw,5rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; white-space: nowrap; padding-right: 2.5rem; color: #fff; transition: color 0.4s ease; line-height: 1; }
-        .chat-marquee-section:hover .chat-marquee-word { color: #000; }
-        .chat-marquee-dot { color: #f97316; transition: color 0.4s ease; }
-        .chat-marquee-section:hover .chat-marquee-dot { color: #000; }
-        .chat-cta-hint { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 6px; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #f97316; transition: color 0.4s ease, transform 0.3s ease; z-index: 2; pointer-events: none; }
-        .chat-marquee-section:hover .chat-cta-hint { color: #000; transform: translateY(-50%) translateX(4px); }
+.chat-marquee-section {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: #000;
+  border-top: 1px solid #1a1a1a;
 
+  /* REDUCED HEIGHT */
+  padding: 10px 0;
+
+  transition: background 0.4s ease;
+}
+
+.chat-marquee-section:hover {
+  background: #f97316;
+}
+
+.chat-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 22s linear infinite;
+}
+
+.chat-marquee-section:hover .chat-marquee-track {
+  animation: marquee-scroll 10s linear infinite;
+}
+
+.chat-marquee-word {
+  /* SMALLER TEXT */
+  font-size: clamp(1.2rem, 3vw, 2.6rem);
+
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+
+  /* SMALLER GAP */
+  padding-right: 1.2rem;
+
+  color: #fff;
+  transition: color 0.4s ease;
+  line-height: 1;
+}
+
+.chat-marquee-section:hover .chat-marquee-word {
+  color: #000;
+}
+
+.chat-marquee-dot {
+  color: #f97316;
+  transition: color 0.4s ease;
+}
+
+.chat-marquee-section:hover .chat-marquee-dot {
+  color: #000;
+}
+
+.chat-cta-hint {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  /* SMALLER CTA TEXT */
+  font-size: 0.52rem;
+
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #f97316;
+
+  transition:
+    color 0.4s ease,
+    transform 0.3s ease;
+
+  z-index: 2;
+  pointer-events: none;
+}
+
+.chat-marquee-section:hover .chat-cta-hint {
+  color: #000;
+  transform: translateY(-50%) translateX(4px);
+}
         /* BRUTALIST LINK */
         .brutal-link {
           display: inline-flex; align-items: center; gap: 8px;
