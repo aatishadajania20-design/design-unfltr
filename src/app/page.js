@@ -207,7 +207,7 @@ export default function Home() {
             </svg>
             <h1 className="text-orange-500 text-lg md:text-xl font-semibold tracking-tight leading-none">
               {"Unfltr".split("").map((char, i) => <span key={i} className="brand-letter">{char}</span>)}
-              <span className="brand-suffix"> Studio</span>
+              <span className="brand-suffix"> STUDIO</span>
             </h1>
           </div>
 
