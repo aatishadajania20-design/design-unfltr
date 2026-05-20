@@ -1,4 +1,5 @@
 "use client";
+import SiteHeader from "@/components/SiteHeader";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -225,54 +226,8 @@ export default function AboutPage() {
         {/* Grain */}
         <div className="fixed inset-0 pointer-events-none" style={{ zIndex:998, opacity:0.022, backgroundImage:`url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`, backgroundRepeat:"repeat", backgroundSize:"128px 128px", mixBlendMode:"overlay" }} />
 
-        {/* ── NAV ── */}
-        <nav className="sticky top-0 z-50 flex items-center justify-between px-5 md:px-8 py-4 backdrop-blur-md bg-black/50 border-b border-zinc-900">
-          <Link href="/">
-            <div className="brand-wrap flex items-center gap-2 cursor-pointer select-none">
-              <svg className="logo-svg" width="26" height="26" viewBox="0 0 88.82 89.67" xmlns="http://www.w3.org/2000/svg">
-                <g>
-                  <path className="logo-path" d="M87.83,30.06l-9.18-15.9-25.02,14.44V-.31h-18.36v28.96L10.17,14.16.99,30.06l25.06,14.47-8.94,5.16c1.82,2.36,3.63,4.73,5.45,7.09l-3.75,5.23c1.33,1.86,2.66,3.73,3.99,5.59l12.47-7.2v28.96h18.36v-28.91l25.02,14.44,9.18-15.9-25.06-14.46,25.06-14.47Z" />
-                  <path className="logo-path" d="M.99,58.99l9.18,15.9,10.68-6.16c-1.79-2.09-3.57-4.17-5.36-6.26,1.33-1.76,2.66-3.51,3.99-5.27-1.72-1.97-3.44-3.93-5.16-5.9" />
-                </g>
-              </svg>
-              <h1 className="brand-wordmark">
-                {"UNFLTR".split("").map((char,i) => <span key={`u${i}`} className="brand-letter" style={{ "--i":i }}>{char}</span>)}
-                <span style={{ display:"inline-block" }}>&nbsp;</span>
-                {"STUDIO".split("").map((char,i) => <span key={`s${i}`} className="brand-letter brand-letter-studio" style={{ "--i":i+7 }}>{char}</span>)}
-              </h1>
-            </div>
-          </Link>
-
-          <div className="hidden md:flex items-center">
-            {[
-              { href:"/services", label:"Services" },
-              { href:"/",        label:"Work" },
-              { href:"/clients", label:"Clients" },
-              { href:"/about",   label:"About" },
-            ].map(({ href, label }) => (
-              <Link key={label} href={href} className="nav-item">
-                <span className="nav-top" aria-hidden="true">{label}</span>
-                <span className="nav-bottom">{label}</span>
-                <span className="nav-katana" aria-hidden="true">
-                  <span className="nav-katana-blade" />
-                  <span className="nav-katana-flash" />
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <a href="https://www.instagram.com/unfltrr?igsh=MWN0Y2ozZjk4NHpubQ==" target="_blank" rel="noopener noreferrer"
-              className="text-white hover:text-orange-500 transition-colors duration-200" aria-label="Instagram">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="6" ry="6" stroke="currentColor" strokeWidth="1.8" fill="none"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.8" fill="none"/><circle cx="17.8" cy="6.2" r="1.1" fill="currentColor"/></svg>
-            </a>
-            <Link href="/contact">
-              <button className="contact-btn">
-                <span className="contact-btn-text"><span className="contact-arrow">→</span>Contact</span>
-              </button>
-            </Link>
-          </div>
-        </nav>
+        
+        <SiteHeader />
 
         {/* ── HERO ── */}
         <div className="ab-hero" ref={heroRef}>

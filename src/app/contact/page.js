@@ -1,4 +1,5 @@
 "use client";
+import SiteHeader from "@/components/SiteHeader";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -216,44 +217,7 @@ export default function ContactPage() {
         />
 
         {/* NAVBAR */}
-        <nav className="sticky top-0 z-50 flex items-center justify-between px-5 md:px-8 py-4 backdrop-blur-md bg-black/50 border-b border-zinc-900">
-          <Link href="/">
-            <div className="c-brand-wrap flex items-center gap-2 cursor-pointer select-none">
-              <LogoSVG size={26} className="c-logo-svg" />
-              <h1 className="text-orange-500 text-lg md:text-xl font-semibold tracking-tight leading-none">
-                {"UNFLTR".split("").map((char, i) => (
-                  <span key={i} className="c-brand-letter">{char}</span>
-                ))}
-                <span className="c-brand-suffix"> Studio®</span>
-              </h1>
-            </div>
-          </Link>
-
-          <div className="hidden md:flex items-center">
-            {["Branding", "Strategy", "Marketing", "Motion"].map((item) => (
-              <div key={item} className="c-nav-item">
-                <span className="c-nav-top" aria-hidden="true">{item}</span>
-                <span className="c-nav-bottom">{item}</span>
-                <span className="c-nav-slash" aria-hidden="true" />
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <a href="https://www.instagram.com/unfltrr?igsh=MWN0Y2ozZjk4NHpubQ==" target="_blank" rel="noopener noreferrer" className="c-insta-link" aria-label="Instagram">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="2" width="20" height="20" rx="6" ry="6" stroke="currentColor" strokeWidth="1.8" fill="none" />
-                <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.8" fill="none" />
-                <circle cx="17.8" cy="6.2" r="1.1" fill="currentColor" />
-              </svg>
-            </a>
-            <button className="c-contact-btn" style={{ opacity: 0.35, pointerEvents: "none" }}>
-              <span className="c-contact-btn-text">
-                <span className="c-contact-arrow">→</span>Contact
-              </span>
-            </button>
-          </div>
-        </nav>
+        <SiteHeader />
 
         {/* MAIN SPLIT */}
         <div style={{ flex: 1, display: "flex", minHeight: "calc(100svh - 65px)" }}>
