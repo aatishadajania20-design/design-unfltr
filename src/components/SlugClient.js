@@ -55,15 +55,18 @@ export default function SlugClient({ project, nextProject, prevProject }) {
         .slug-hero {
           position: relative; width: 100%;
           background: #000; overflow: hidden;
-          max-height: 92svh;
+          height: 92svh; height: 92vh;
         }
         .slug-hero::after {
           content: ''; position: absolute; bottom: 0; left: 0; right: 0;
           height: 3px; background: #f97316; z-index: 4;
         }
+        /* Both img and video fill the box */
         .slug-hero-media {
-          width: 100%; display: block;
-          object-fit: cover; max-height: 92svh;
+          position: absolute; inset: 0;
+          width: 100%; height: 100%;
+          object-fit: cover; object-position: center;
+          display: block;
           transition: transform 14s ease;
         }
         .slug-hero:hover .slug-hero-media { transform: scale(1.025); }
@@ -318,12 +321,14 @@ export default function SlugClient({ project, nextProject, prevProject }) {
             <video
               ref={videoRef}
               src={project.video}
+              poster={project.image}
               autoPlay
               muted
               loop
               playsInline
               preload="auto"
               className="slug-hero-media"
+              onLoadedMetadata={() => { videoRef.current?.play().catch(() => {}); }}
               onCanPlay={() => { setVideoReady(true); videoRef.current?.play().catch(() => {}); }}
             />
           ) : (
