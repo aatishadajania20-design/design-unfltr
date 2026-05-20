@@ -431,7 +431,7 @@ export default function ClientsPage() {
               </svg>
               <span className="text-orange-500 text-lg md:text-xl font-semibold tracking-tight leading-none">
                 {"UNFLTR".split("").map((char,i) => <span key={i} className="cl-brand-letter">{char}</span>)}
-                <span className="cl-brand-suffix"> Studio®</span>
+                <span className="cl-brand-suffix"> STUDIO</span>
               </span>
             </div>
           </Link>
