@@ -84,6 +84,16 @@ export default function Home() {
 
         @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
 
+        /* ── HERO VIDEO RESPONSIVE SWAP ── */
+        /* Default: show mobile, hide desktop */
+        .hero-video-mobile  { display: block; }
+        .hero-video-desktop { display: none;  }
+        /* ≥768px: show desktop, hide mobile */
+        @media (min-width: 768px) {
+          .hero-video-mobile  { display: none;  }
+          .hero-video-desktop { display: block; }
+        }
+
         /* ── OUR WORK TITLE ── */
         .work-marker { position:relative; z-index:2; background:#000; border-top:1px solid #141414; border-bottom:1px solid #141414; padding:clamp(52px,9vw,100px) clamp(20px,5vw,52px); overflow:hidden; }
         .work-marker-eyebrow { font-size:0.58rem; letter-spacing:0.34em; text-transform:uppercase; color:#f97316; display:flex; align-items:center; gap:14px; margin-bottom:22px; }
@@ -177,9 +187,20 @@ export default function Home() {
         <SiteHeader scrollWork />
 
         <section className="relative w-full overflow-hidden" style={{ minHeight:"100svh" }}>
-          <video src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1779299532/old_reel_revamped_du8rtf.mp4"
+          {/* Mobile video — shown ≤767px */}
+          <video
+            className="hero-video-mobile"
+            src="https://res.cloudinary.com/dta1dl0pj/video/upload/q_auto/f_auto/v1779382972/Mobile_size_qu64xp.mp4"
             autoPlay muted loop playsInline preload="auto"
-            style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", zIndex:0 }} />
+            style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", zIndex:0 }}
+          />
+          {/* Desktop video — shown ≥768px */}
+          <video
+            className="hero-video-desktop"
+            src="https://res.cloudinary.com/dta1dl0pj/video/upload/v1779382971/old_reel_revamped_1_pdrf7w.mp4"
+            autoPlay muted loop playsInline preload="auto"
+            style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", zIndex:0 }}
+          />
           <div style={{ position:"absolute", inset:0, zIndex:1, background:"linear-gradient(to bottom, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.12) 40%, rgba(0,0,0,0.75) 100%)" }} />
           <div style={{ position:"relative", zIndex:3 }} className="px-5 md:px-8 pt-24 pb-16 md:pb-24 flex flex-col justify-end min-h-[100svh]">
             <p className="text-orange-500 uppercase tracking-[0.25em] md:tracking-[0.3em] text-xs md:text-sm mb-5">Creative Strategy Studio</p>
@@ -238,6 +259,7 @@ function ClientsSection() {
   const clients = [
     { name:"MNST",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/MNST_vyaeim.png" },
     { name:"Cava",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/cava_jxvtci.png" },
+    { name:"Mekada",         logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/mekada_ng33kr.png" },
     { name:"Astro",          logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/astro_oyrcy8.png" },
     { name:"Amazonia",       logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/amazonia_xe1tup.png" },
     { name:"142B Lounge",    logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/142b_lounge_v2zyac.png" },
