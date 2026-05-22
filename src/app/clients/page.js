@@ -38,6 +38,7 @@ const ALL_CLIENTS = [
   { name:"Bombay Monks",     logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/bombay_monks_wyhy8q.png" },
   { name:"Clique",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/clique_qjgnsu.png" },
   { name:"Monet",            logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/monet_zp3wjm.png" },
+  { name:"Mekada",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/mekada_ng33kr.png" },
   { name:"Ansh Entertainment",logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747615/logo_2_kv9jqv.png" },
 ];
 
@@ -487,7 +488,7 @@ export default function ClientsPage() {
           </h1>
           <div className="cl-data-table">
             {[
-              { val:"37+",  lbl:"Clients Served" },
+              { val:`${ALL_CLIENTS.length}+`,  lbl:"Clients Served" },
               { val:"110+", lbl:"Projects Done" },
               { val:"3+",   lbl:"Years Active" },
               { val:"∞",    lbl:"Culturally Driven" },

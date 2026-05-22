@@ -213,11 +213,14 @@ export default function Home() {
                 <span className="text-xs uppercase tracking-[0.16em] text-white/30 hidden sm:inline">Est. 2024</span>
               </div>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                <Link href="/about" className="hero-clients-cta md:hidden">
+                  <span>About Us</span><span className="hero-cta-arrow">→</span>
+                </Link>
                 <Link href="/clients" className="hero-clients-cta">
                   <span className="hero-cta-dot" />Our Clients<span className="hero-cta-arrow">→</span>
                 </Link>
                 <Link href="/services" className="hero-services-cta">
-                  <span>Services We Offer</span><span className="svc-arrow">↗</span>
+                  <span>Services We Offer</span><span className="svc-arrow">→</span>
                 </Link>
               </div>
             </div>
@@ -250,24 +253,42 @@ function ClientsSection() {
   const marqueeRef = useRef(null);
   const statsRef = useRef(null);
   const clients = [
-    { name:"MNST",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/MNST_vyaeim.png" },
-    { name:"Cava",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/cava_jxvtci.png" },
-    { name:"Mekada",         logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/mekada_ng33kr.png" },
-    { name:"Astro",          logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/astro_oyrcy8.png" },
-    { name:"Amazonia",       logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/amazonia_xe1tup.png" },
-    { name:"142B Lounge",    logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/142b_lounge_v2zyac.png" },
-    { name:"Four Seasons",   logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/4_seasons_cdfk2v.png" },
-    { name:"Blunt",          logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/blunt_bjssqi.png" },
-    { name:"Lalit",          logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/lalit_n2bxlz.png" },
-    { name:"Aquila",         logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/aquila_h9muin.png" },
-    { name:"Taj Hotels",     logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778747618/Taj_ht3b3n.png" },
-    { name:"BookMyShow",     logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778747614/Book_My_Show_Logo-02_White_iwdyfp.png" },
-    { name:"Ishq FM Radio",  logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778747617/ishq_fm_radio_pawtjy.png" },
-    { name:"Ignite Ent",     logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778747617/IGNITE_ENT_new_fhvse1.png" },
-    { name:"Bombay Monks",   logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778747614/bombay_monks_wyhy8q.png" },
-    { name:"Tryst",          logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778747618/tryst_unuryj.png" },
-    { name:"Nirvana",        logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778747615/nirvana_xo2ed2.png" },
-    { name:"Race Lounge Bar",logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/q_auto/f_auto/v1778747616/Race_-_Lounge_Bar_jjnhzi.png" },
+    { name:"MNST",             logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/MNST_vyaeim.png" },
+  { name:"Cava",             logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/cava_jxvtci.png" },
+  { name:"Astro",            logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/astro_oyrcy8.png" },
+  { name:"Amazonia",         logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/amazonia_xe1tup.png" },
+  { name:"142B Lounge",      logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/142b_lounge_v2zyac.png" },
+  { name:"Four Seasons",     logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/4_seasons_cdfk2v.png" },
+  { name:"Blunt",            logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/blunt_bjssqi.png" },
+  { name:"Lalit",            logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/lalit_n2bxlz.png" },
+  { name:"Aquila",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/aquila_h9muin.png" },
+  { name:"V Are",            logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747618/V_Are_xbmhqd.png" },
+  { name:"Taj Hotels",       logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747618/Taj_ht3b3n.png" },
+  { name:"Tryst",            logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747618/tryst_unuryj.png" },
+  { name:"Thakkar",          logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747618/Thakkar_zmbx4v.png" },
+  { name:"Kaam",             logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747617/kaam_y0o5ua.png" },
+  { name:"Ishq FM Radio",    logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747617/ishq_fm_radio_pawtjy.png" },
+  { name:"Ignite Ent",       logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747617/IGNITE_ENT_new_fhvse1.png" },
+  { name:"Saqi",             logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747617/saqi_q5c7ph.png" },
+  { name:"Gear",             logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747616/gear_qknfze.png" },
+  { name:"Hype",             logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747617/hype_logo_smaxvs.png" },
+  { name:"Rajiv",            logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747617/rajiv_nltffy.png" },
+  { name:"Icarus",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747616/icarus_kkmhpz.png" },
+  { name:"Race Lounge Bar",  logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747616/Race_-_Lounge_Bar_jjnhzi.png" },
+  { name:"Paradise",         logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747616/Paradise_Logo_d3jlyr.png" },
+  { name:"Purly",            logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747616/purly_g0zl2p.png" },
+  { name:"Certified Thrift", logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/certified_thrift_fm9w9l.png" },
+  { name:"Emergence",        logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747616/EMERGENCE_bbe1tx.png" },
+  { name:"Dot",              logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747616/dot_gikxtq.png" },
+  { name:"C9 Energy",        logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747615/open_file_of_logo_c9_energy_drink-01_zjt0ko.png" },
+  { name:"Nirvana",          logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747615/nirvana_xo2ed2.png" },
+  { name:"Oracle",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747615/orcale_hvrqwy.png" },
+  { name:"BookMyShow",       logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/Book_My_Show_Logo-02_White_iwdyfp.png" },
+  { name:"Bombay Monks",     logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/bombay_monks_wyhy8q.png" },
+  { name:"Clique",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/clique_qjgnsu.png" },
+  { name:"Monet",            logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/monet_zp3wjm.png" },
+  { name:"Mekada",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/mekada_ng33kr.png" },
+  { name:"Ansh Entertainment",logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747615/logo_2_kv9jqv.png" },
   ];
   const row1 = [...clients, ...clients];
   const row2 = [...clients, ...clients].reverse();
@@ -293,7 +314,7 @@ function ClientsSection() {
           <h2 className="cs-title">Brands That<br /><span className="cs-title-accent">Chose Bold.</span></h2>
         </div>
         <div className="cs-header-right">
-          <div><span className="cs-count-num">37</span><span className="cs-count-label">Clients & Counting</span></div>
+          <div><span className="cs-count-num">{clients.length}</span><span className="cs-count-label">Clients & Counting</span></div>
         </div>
       </div>
       <div className="cs-marquee-wrap" ref={marqueeRef}>
@@ -302,7 +323,7 @@ function ClientsSection() {
       </div>
       <div className="cs-explore-strip"><Link href="/clients" className="brutal-link">View More Brands<span className="brutal-link-arrow">→</span></Link></div>
       <div className="cs-stat-bar" ref={statsRef}>
-        {[{val:"37+",lbl:"Clients Served"},{val:"3+",lbl:"Years Active"},{val:"110+",lbl:"Projects Delivered"},{val:"∞",lbl:"Culturally Driven"}].map(s => (
+        {[{val:`${clients.length}+`,lbl:"Clients Served"},{val:"3+",lbl:"Years Active"},{val:"110+",lbl:"Projects Delivered"},{val:"∞",lbl:"Culturally Driven"}].map(s => (
           <div key={s.lbl} className="cs-stat-cell"><span className="cs-stat-val">{s.val}</span><span className="cs-stat-lbl">{s.lbl}</span></div>
         ))}
       </div>
