@@ -7,48 +7,92 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-space",
 });
 
-const LOGO_URL =
-  "https://res.cloudinary.com/dta1dl0pj/image/upload/v1779453981/UNFLTR_Symbol_Logo_1_klt1he.png";
-
 export const metadata = {
-  title: "UNFLTR Studio",
-  description: "Creative strategy and branding studio",
-  metadataBase: new URL("https://www.unfltrstudio.in"),
-  icons: {
-    icon: LOGO_URL,
-    shortcut: LOGO_URL,
-    apple: LOGO_URL,
+  metadataBase: new URL("https://unfltrstudio.in"),
+
+  title: {
+    default: "UNFLTR Studio",
+    template: "%s | UNFLTR Studio",
   },
+
+  description: "Creative strategy and branding studio",
+
+  keywords: [
+    "UNFLTR",
+    "UNFLTR Studio",
+    "Creative Studio",
+    "Branding",
+    "Design Agency",
+    "Portfolio",
+  ],
+
+  authors: [
+    {
+      name: "UNFLTR Studio",
+    },
+  ],
+
+  creator: "UNFLTR Studio",
+
+  icons: {
+    icon: [
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+    ],
+
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+
+    shortcut: ["/icon.png"],
+  },
+
   openGraph: {
     title: "UNFLTR Studio",
     description: "Creative strategy and branding studio",
-    url: "https://www.unfltrstudio.in",
+
+    url: "https://unfltrstudio.in",
+
     siteName: "UNFLTR Studio",
+
     images: [
       {
-        url: LOGO_URL,
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "UNFLTR Studio",
       },
     ],
+
+    locale: "en_US",
+
     type: "website",
   },
+
   twitter: {
     card: "summary_large_image",
+
     title: "UNFLTR Studio",
+
     description: "Creative strategy and branding studio",
-    images: [LOGO_URL],
+
+    images: ["/og-image.png"],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${spaceGrotesk.variable} font-sans bg-black text-white`}>
-
+      <body
+        className={`${spaceGrotesk.variable} font-sans bg-black text-white`}
+      >
         {children}
-
       </body>
     </html>
   );
