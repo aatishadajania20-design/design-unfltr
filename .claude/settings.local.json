@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Admin/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.5.0/.claude/skills/ui-ux-pro-max/**)",
+      "Bash(python scripts/search.py \"cinematic premium animation motion wheel spin\" --domain ux -n 6)",
+      "Bash(python3 scripts/search.py \"cinematic premium animation motion wheel spin\" --domain ux -n 6)",
+      "Bash(npm run *)"
+    ]
+  }
+}
