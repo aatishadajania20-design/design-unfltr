@@ -40,21 +40,20 @@ function NavItem({ href, label, onClick }) {
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   LETTER SPLIT MAP
-   Blade-cut: top half flies up, bottom half falls down.
-   Diagonal cut line (~±4%) gives a katana-slash feel.
+   LETTER SPLIT MAP — varied tilt directions, larger displacements
+   N, T, I lean opposite direction for chaotic, violent feel.
    ───────────────────────────────────────────────────────────── */
 const SPLITS = {
-  U: { top:{c:"polygon(0% 0%,100% 0%,100% 46%,0% 54%)",dx:-4,dy:-30,r:-6}, bot:{c:"polygon(0% 54%,100% 46%,100% 100%,0% 100%)",dx:4,dy:30,r:6} },
-  N: { top:{c:"polygon(0% 0%,100% 0%,100% 44%,0% 56%)",dx:-5,dy:-28,r:-8}, bot:{c:"polygon(0% 56%,100% 44%,100% 100%,0% 100%)",dx:5,dy:28,r:8} },
-  F: { top:{c:"polygon(0% 0%,100% 0%,100% 48%,0% 52%)",dx:-6,dy:-32,r:-5}, bot:{c:"polygon(0% 52%,100% 48%,100% 100%,0% 100%)",dx:6,dy:32,r:5} },
-  L: { top:{c:"polygon(0% 0%,100% 0%,100% 45%,0% 55%)",dx:-4,dy:-29,r:-9}, bot:{c:"polygon(0% 55%,100% 45%,100% 100%,0% 100%)",dx:4,dy:29,r:9} },
-  T: { top:{c:"polygon(0% 0%,100% 0%,100% 47%,0% 53%)",dx:-3,dy:-31,r:-6}, bot:{c:"polygon(0% 53%,100% 47%,100% 100%,0% 100%)",dx:3,dy:31,r:6} },
-  R: { top:{c:"polygon(0% 0%,100% 0%,100% 43%,0% 57%)",dx:-5,dy:-29,r:-10}, bot:{c:"polygon(0% 57%,100% 43%,100% 100%,0% 100%)",dx:5,dy:29,r:10} },
-  S: { top:{c:"polygon(0% 0%,100% 0%,100% 49%,0% 51%)",dx:-6,dy:-28,r:-5}, bot:{c:"polygon(0% 51%,100% 49%,100% 100%,0% 100%)",dx:6,dy:28,r:5} },
-  D: { top:{c:"polygon(0% 0%,100% 0%,100% 46%,0% 54%)",dx:-4,dy:-33,r:-7}, bot:{c:"polygon(0% 54%,100% 46%,100% 100%,0% 100%)",dx:4,dy:33,r:7} },
-  I: { top:{c:"polygon(0% 0%,100% 0%,100% 50%,0% 50%)",dx:-7,dy:-26,r:-12}, bot:{c:"polygon(0% 50%,100% 50%,100% 100%,0% 100%)",dx:7,dy:26,r:12} },
-  O: { top:{c:"polygon(0% 0%,100% 0%,100% 45%,0% 55%)",dx:-5,dy:-30,r:-6}, bot:{c:"polygon(0% 55%,100% 45%,100% 100%,0% 100%)",dx:5,dy:30,r:6} },
+  U: { top:{c:"polygon(0% 0%,100% 0%,100% 40%,0% 60%)",  dx:-10,dy:-40,r:-9},  bot:{c:"polygon(0% 60%,100% 40%,100% 100%,0% 100%)", dx:8, dy:38, r:7}  },
+  N: { top:{c:"polygon(0% 0%,100% 0%,100% 58%,0% 42%)",  dx:8,  dy:-36,r:11},  bot:{c:"polygon(0% 42%,100% 58%,100% 100%,0% 100%)", dx:-7,dy:34, r:-10} },
+  F: { top:{c:"polygon(0% 0%,100% 0%,100% 44%,0% 56%)",  dx:-11,dy:-44,r:-6},  bot:{c:"polygon(0% 56%,100% 44%,100% 100%,0% 100%)", dx:9, dy:42, r:5}  },
+  L: { top:{c:"polygon(0% 0%,100% 0%,100% 36%,0% 64%)",  dx:-9, dy:-38,r:-13}, bot:{c:"polygon(0% 64%,100% 36%,100% 100%,0% 100%)", dx:7, dy:36, r:11} },
+  T: { top:{c:"polygon(0% 0%,100% 0%,100% 55%,0% 45%)",  dx:7,  dy:-42,r:8},   bot:{c:"polygon(0% 45%,100% 55%,100% 100%,0% 100%)", dx:-6,dy:40, r:-7} },
+  R: { top:{c:"polygon(0% 0%,100% 0%,100% 42%,0% 58%)",  dx:-10,dy:-36,r:-11}, bot:{c:"polygon(0% 58%,100% 42%,100% 100%,0% 100%)", dx:8, dy:34, r:10} },
+  S: { top:{c:"polygon(0% 0%,100% 0%,100% 52%,0% 48%)",  dx:-10,dy:-38,r:-5},  bot:{c:"polygon(0% 48%,100% 52%,100% 100%,0% 100%)", dx:8, dy:36, r:4}  },
+  D: { top:{c:"polygon(0% 0%,100% 0%,100% 38%,0% 62%)",  dx:-8, dy:-46,r:-9},  bot:{c:"polygon(0% 62%,100% 38%,100% 100%,0% 100%)", dx:6, dy:44, r:8}  },
+  I: { top:{c:"polygon(0% 0%,100% 0%,100% 62%,0% 38%)",  dx:10, dy:-32,r:15},  bot:{c:"polygon(0% 38%,100% 62%,100% 100%,0% 100%)", dx:-9,dy:30, r:-14} },
+  O: { top:{c:"polygon(0% 0%,100% 0%,100% 44%,0% 56%)",  dx:-9, dy:-40,r:-8},  bot:{c:"polygon(0% 56%,100% 44%,100% 100%,0% 100%)", dx:7, dy:38, r:7}  },
 };
 
 function SplitLetter({ ch, isStudio, hitDelay }) {
@@ -87,7 +86,8 @@ function SplitLetter({ ch, isStudio, hitDelay }) {
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   ASTERISK LOGO — main body + chip fragment + shockwave rings
+   ASTERISK LOGO — body + chip + energy arcs + shockwave rings + debris
+   Energy arc circles live inside the SVG so they spin WITH the wheel.
    ───────────────────────────────────────────────────────────── */
 function AsteriskLogo() {
   return (
@@ -103,7 +103,10 @@ function AsteriskLogo() {
             d="M1,58.5l9.2,15.9l10.7,-6.2c-1.8,-2.1,-3.6,-4.2,-5.4,-6.3c1.3,-1.8,2.7,-3.5,4,-5.3c-1.7,-2,-3.4,-3.9,-5.2,-5.9L1,58.5z"
           />
         </g>
-        {/* Three fracture lines — flash at break moment */}
+        {/* Energy arc circles — orbit WITH the spinning SVG */}
+        <circle className="cl-e-arc cl-e-arc-1" cx="45" cy="45" r="50" fill="none" />
+        <circle className="cl-e-arc cl-e-arc-2" cx="45" cy="45" r="62" fill="none" />
+        {/* Fracture lines — flash at break moment */}
         <line className="cl-aster-fracture cl-aster-fracture-1" x1="2" y1="50" x2="26" y2="64" stroke="#f97316" strokeWidth="1.8" strokeLinecap="round"/>
         <line className="cl-aster-fracture cl-aster-fracture-2" x1="5" y1="56" x2="20" y2="44" stroke="#f97316" strokeWidth="1.0" strokeLinecap="round"/>
         <line className="cl-aster-fracture cl-aster-fracture-3" x1="2" y1="43" x2="16" y2="55" stroke="#f97316" strokeWidth="0.6" strokeLinecap="round"/>
@@ -113,25 +116,30 @@ function AsteriskLogo() {
       <span className="cl-ring cl-ring-1" aria-hidden="true" />
       <span className="cl-ring cl-ring-2" aria-hidden="true" />
       <span className="cl-ring cl-ring-3" aria-hidden="true" />
+
+      {/* Debris sparks — 4 directions at break */}
+      <span className="cl-spark cl-spark-1" aria-hidden="true" />
+      <span className="cl-spark cl-spark-2" aria-hidden="true" />
+      <span className="cl-spark cl-spark-3" aria-hidden="true" />
+      <span className="cl-spark cl-spark-4" aria-hidden="true" />
     </span>
   );
 }
 
 /* ─────────────────────────────────────────────────────────────────
    TIMING — single source of truth, all ms values.
+   Extended for anime-style power build-up + dramatic halt.
    ───────────────────────────────────────────────────────────── */
 const TIMING = {
-  WINDUP_END: 600,    // 0-600ms    windup + anticipation
-  TRAVEL_END: 1900,   // 600-1900ms roll across wordmark
-  HALT_END:   2260,   // 1900-2260ms  overshoot + spring
-  BREAK_END:  2800,   // 2260-2800ms  chip snap + shockwave
-  TOTAL:      2800,
+  WINDUP_END: 1100,   // 0–1100ms  vibration charge (34% of 3200)
+  TRAVEL_END: 2200,   // 1100–2200ms roll across wordmark (69%)
+  HALT_END:   2560,   // 2200–2560ms squash-stretch halt (80%)
+  BREAK_END:  3200,   // 2560–3200ms chip break + settle (100%)
+  TOTAL:      3200,
 };
-// Percentages (used as literal values in keyframes below)
-// WINDUP_END ≈ 21.4%  TRAVEL_END ≈ 67.9%  HALT_END ≈ 80.7%
 
 export default function SiteHeader({ scrollWork = false }) {
-  const brandRef   = useRef(null);
+  const brandRef    = useRef(null);
   const wordmarkRef = useRef(null);
   const [travelEnd, setTravelEnd] = useState(160);
 
@@ -140,18 +148,10 @@ export default function SiteHeader({ scrollWork = false }) {
       if (!brandRef.current || !wordmarkRef.current) return;
       const bRect = brandRef.current.getBoundingClientRect();
       const wRect = wordmarkRef.current.getBoundingClientRect();
-      /*
-        The SVG starts at brand's left edge.
-        We want it to travel to 24px PAST the wordmark's right edge.
-        travelEnd = (wordmarkRight - brandLeft) + overshoot
-      */
       const overshoot = 24;
       setTravelEnd(Math.max(100, wRect.right - bRect.left + overshoot));
     };
-
-    // Measure immediately (rough estimate with fallback font)
     measure();
-    // Re-measure once the custom font is loaded for pixel-perfect accuracy
     if (typeof document !== "undefined" && document.fonts?.ready) {
       document.fonts.ready.then(measure).catch(() => {});
     }
@@ -167,12 +167,8 @@ export default function SiteHeader({ scrollWork = false }) {
     }
   }, [scrollWork]);
 
-  /*
-    Letter hit timing: wheel passes over all 12 letters in the travel window.
-    HIT_BASE = WINDUP_END + 60ms offset (wheel already in motion)
-    HIT_RANGE spread evenly across 11 gaps.
-  */
-  const HIT_BASE  = TIMING.WINDUP_END + 60;
+  /* Letter hit timing: wheel passes over all 12 letters during travel window */
+  const HIT_BASE  = TIMING.WINDUP_END + 80;
   const HIT_RANGE = TIMING.TRAVEL_END - HIT_BASE - 100;
   const HIT_STEP  = HIT_RANGE / 11;
 
@@ -187,7 +183,7 @@ export default function SiteHeader({ scrollWork = false }) {
         }
 
         /* ═══════════════════════════════════════════════════════
-           NAV — dynamic height via content, smooth padding change
+           NAV
            ═══════════════════════════════════════════════════════ */
         .cl-nav-wrap {
           overflow: visible;
@@ -212,7 +208,7 @@ export default function SiteHeader({ scrollWork = false }) {
         }
         .cl-brand:hover { transform: scale(1.1); }
 
-        /* Impact flash — white radial bloom from logo position at halt */
+        /* Impact flash — radial bloom at halt */
         .cl-brand::before {
           content: '';
           position: absolute;
@@ -250,15 +246,15 @@ export default function SiteHeader({ scrollWork = false }) {
           flex-shrink: 0;
         }
 
-        /* Persistent orange glow — grows at break */
+        /* Persistent orange glow — builds during charge, explodes at break */
         .cl-aster-wrap::after {
           content: '';
           position: absolute;
           inset: -28px;
           border-radius: 50%;
           background: radial-gradient(ellipse at center,
-            rgba(249,115,22,0.7)  0%,
-            rgba(249,115,22,0.35) 30%,
+            rgba(249,115,22,0.75) 0%,
+            rgba(249,115,22,0.38) 30%,
             transparent           68%);
           opacity: 0;
           pointer-events: none;
@@ -268,11 +264,14 @@ export default function SiteHeader({ scrollWork = false }) {
           animation: cl-aster-glow ${TIMING.TOTAL}ms linear forwards;
         }
         @keyframes cl-aster-glow {
-          0%,78%  { opacity:0; transform:scale(0.5); }
-          82%     { opacity:1; transform:scale(1.3); }
-          87%     { opacity:0.8; transform:scale(1.7); }
-          92%     { opacity:0.3; transform:scale(2.2); }
-          100%    { opacity:0; transform:scale(2.6); }
+          0%,38%  { opacity:0;    transform:scale(0.3); }
+          50%     { opacity:0.1;  transform:scale(0.6); }
+          68%     { opacity:0.28; transform:scale(0.95); }
+          80%     { opacity:0.8;  transform:scale(1.3); }
+          82%     { opacity:1;    transform:scale(1.55); }
+          87%     { opacity:0.6;  transform:scale(2.0); }
+          93%     { opacity:0.16; transform:scale(2.4); }
+          100%    { opacity:0.1;  transform:scale(2.6); }
         }
 
         /* ─────────────────────────────────────────────
@@ -295,9 +294,42 @@ export default function SiteHeader({ scrollWork = false }) {
         .cl-aster-fracture  { opacity: 0; }
 
         /* ═══════════════════════════════════════════════════════
+           ENERGY ARC CIRCLES — partial arcs that orbit with spin
+           They live inside SVG so they rotate with the wheel naturally.
+           ═══════════════════════════════════════════════════════ */
+        .cl-e-arc-1 {
+          stroke: #f97316;
+          stroke-width: 1.8;
+          stroke-dasharray: 45 269;
+          stroke-linecap: round;
+          opacity: 0;
+        }
+        .cl-e-arc-2 {
+          stroke: rgba(255,200,100,0.75);
+          stroke-width: 0.9;
+          stroke-dasharray: 22 367;
+          stroke-linecap: round;
+          opacity: 0;
+        }
+        .cl-brand:hover .cl-e-arc-1 {
+          animation: cl-arc-charge ${TIMING.TOTAL}ms linear forwards;
+        }
+        .cl-brand:hover .cl-e-arc-2 {
+          animation: cl-arc-charge ${TIMING.TOTAL}ms linear 150ms forwards;
+        }
+        @keyframes cl-arc-charge {
+          0%,8%  { opacity: 0; }
+          18%    { opacity: 0.5; }
+          34%    { opacity: 0.75; }
+          68%    { opacity: 0.85; }
+          80%    { opacity: 1; }
+          82%    { opacity: 0; }
+          100%   { opacity: 0; }
+        }
+
+        /* ═══════════════════════════════════════════════════════
            ★ WHEEL ROLL SEQUENCE — ${TIMING.TOTAL}ms, linear timing.
-           Keyframe placement encodes all physics.
-           Phases: anticipation → windup → travel → squash-halt → settle
+           Phases: vibration charge → fast travel → squash-halt → settle
            ═══════════════════════════════════════════════════════ */
         .cl-brand:hover .cl-aster-svg {
           animation: cl-aster-journey ${TIMING.TOTAL}ms linear forwards;
@@ -306,48 +338,53 @@ export default function SiteHeader({ scrollWork = false }) {
         .cl-brand:hover .cl-aster-chip-path { fill: #f97316; }
 
         @keyframes cl-aster-journey {
-          /* ─── ANTICIPATION — brief pull-back before launch ─── */
-          0%   { transform: translateX(0)    translateY(0)    scale(1)      rotate(0deg); }
-          4%   { transform: translateX(-3px) translateY(1px)  scale(0.9)    rotate(-22deg); }
+          /* ─── VIBRATION CHARGE — scale builds 1→2.22 with micro shake ─── */
+          0%   { transform: translateX(0)       translateY(0)       scale(1)    rotate(0deg); }
+          3%   { transform: translateX(0.8px)   translateY(-0.8px)  scale(1.1)  rotate(30deg); }
+          6%   { transform: translateX(-1.2px)  translateY(0.8px)   scale(1.35) rotate(108deg); }
+          9%   { transform: translateX(1.4px)   translateY(-1px)    scale(1.58) rotate(252deg); }
+          12%  { transform: translateX(-1.2px)  translateY(1.3px)   scale(1.82) rotate(450deg); }
+          15%  { transform: translateX(1.4px)   translateY(-1.2px)  scale(2.05) rotate(720deg); }
+          19%  { transform: translateX(-1.2px)  translateY(1px)     scale(2.18) rotate(1044deg); }
+          26%  { transform: translateX(0.8px)   translateY(-0.9px)  scale(2.22) rotate(1296deg); }
+          34%  { transform: translateX(0)       translateY(0)       scale(2.22) rotate(1512deg); }
 
-          /* ─── WINDUP — scale up, accelerate rotation ─── */
-          11%  { transform: translateX(0)    translateY(-1px) scale(1.18)   rotate(162deg); }
-          21%  { transform: translateX(3px)  translateY(0)    scale(1.38)   rotate(576deg); }
+          /* ─── LAUNCH BRIDGE — smooth acceleration from stationary into travel ─── */
+          37%  { transform: translateX(calc(var(--travel-end)*0.03)) translateY(-1px)   scale(2.21) rotate(1700deg); }
 
-          /* ─── TRAVEL — smooth roll across wordmark ───
-             Y oscillation (±2–3px) simulates wheel riding over each letter.
-             Spin is proportional to distance (~9 full revolutions at peak).  */
-          29%  { transform: translateX(calc(var(--travel-end)*0.13)) translateY(-3px) scale(1.38) rotate(1116deg); }
-          37%  { transform: translateX(calc(var(--travel-end)*0.28)) translateY(2.5px) scale(1.38) rotate(1764deg); }
-          45%  { transform: translateX(calc(var(--travel-end)*0.45)) translateY(-3px) scale(1.38) rotate(2448deg); }
-          53%  { transform: translateX(calc(var(--travel-end)*0.62)) translateY(2.5px) scale(1.38) rotate(3132deg); }
-          61%  { transform: translateX(calc(var(--travel-end)*0.81)) translateY(-2px) scale(1.38) rotate(3780deg); }
-          68%  { transform: translateX(var(--travel-end))            translateY(0)    scale(1.38) rotate(4176deg); }
+          /* ─── TRAVEL — fast linear roll across wordmark ───
+             Scale stays at 2.2×, Y oscillates ±1.5px for rolling contact. */
+          43%  { transform: translateX(calc(var(--travel-end)*0.15)) translateY(-2px)   scale(2.2) rotate(2296deg); }
+          51%  { transform: translateX(calc(var(--travel-end)*0.33)) translateY(1.5px)  scale(2.2) rotate(3090deg); }
+          59%  { transform: translateX(calc(var(--travel-end)*0.54)) translateY(-1.5px) scale(2.2) rotate(3882deg); }
+          65%  { transform: translateX(calc(var(--travel-end)*0.75)) translateY(1.5px)  scale(2.2) rotate(4476deg); }
+          69%  { transform: translateX(var(--travel-end))            translateY(0)      scale(2.2) rotate(4872deg); }
 
-          /* ─── HALT — squash on impact, spring back ───
-             scale(x,y): squash wide on overshoot, tall on rebound */
-          72%  { transform: translateX(calc(var(--travel-end) + 18px)) translateY(-6px) scale(1.6,0.68)  rotate(4320deg); }
-          77%  { transform: translateX(calc(var(--travel-end) -  9px)) translateY(4px)  scale(0.82,1.24) rotate(4284deg); }
-          81%  { transform: translateX(var(--travel-end))              translateY(0)    scale(1.30,1)    rotate(4298deg); }
+          /* ─── HALT — squash on impact, stretch on rebound, scale stays ~2× ─── */
+          72%  { transform: translateX(calc(var(--travel-end) + 20px)) translateY(-7px)  scale(2.45,1.6)  rotate(5020deg); }
+          77%  { transform: translateX(calc(var(--travel-end) - 12px)) translateY(5px)   scale(1.85,2.45) rotate(4990deg); }
+          80%  { transform: translateX(calc(var(--travel-end) - 30px)) translateY(0)     scale(2.05,2.0)  rotate(5002deg); }
 
-          /* ─── SETTLE — breathe down after impact ─── */
-          88%  { transform: translateX(var(--travel-end)) translateY(0) scale(1.26) rotate(4298deg); }
-          100% { transform: translateX(var(--travel-end)) translateY(0) scale(1.22) rotate(4298deg); }
+          /* ─── BREAK SETTLE — hold while chip snaps off ─── */
+          84%  { transform: translateX(calc(var(--travel-end) - 30px)) translateY(0) scale(2.0)  rotate(5002deg); }
+          88%  { transform: translateX(calc(var(--travel-end) - 30px)) translateY(0) scale(1.95) rotate(5002deg); }
+
+          /* ─── RETURN HOME — glide back to origin, stay enlarged + broken ─── */
+          92%  { transform: translateX(calc(var(--travel-end)*0.42)) translateY(0) scale(1.93) rotate(5002deg); }
+          96%  { transform: translateX(calc(var(--travel-end)*0.10)) translateY(0) scale(1.91) rotate(5002deg); }
+          100% { transform: translateX(0)                            translateY(0) scale(1.9)  rotate(5002deg); }
         }
 
-        /* ─── CHIP BREAK — violent snap-off, flies off and disappears ─── */
+        /* ─── CHIP BREAK — violent snap; fragment STAYS VISIBLE at opacity 0.88 ─── */
         .cl-brand:hover .cl-aster-chip-path {
           animation: cl-chip-break ${TIMING.TOTAL}ms linear forwards;
         }
         @keyframes cl-chip-break {
-          0%,80%  { transform: translate(0,0)      rotate(0deg);   opacity:1; }
-          /* Micro-shudder at halt */
-          83%     { transform: translate(-3px,4px)  rotate(-14deg); opacity:1; }
-          /* Violent snap — fragment accelerates away */
-          88%     { transform: translate(-12px,18px) rotate(-44deg); opacity:0.95; }
-          94%     { transform: translate(-24px,36px) rotate(-78deg); opacity:0.65; }
-          /* Completely flies off — disappears */
-          100%    { transform: translate(-34px,50px) rotate(-105deg); opacity:0; }
+          0%,80%  { transform: translate(0,0)       rotate(0deg);   opacity:1; }
+          83%     { transform: translate(-2px,3px)   rotate(-12deg); opacity:1; }
+          88%     { transform: translate(-7px,10px)  rotate(-36deg); opacity:1; }
+          94%     { transform: translate(-14px,18px) rotate(-58deg); opacity:0.92; }
+          100%    { transform: translate(-18px,22px) rotate(-68deg); opacity:0.88; }
         }
 
         /* ─── FRACTURE LINES — bright flash at break ─── */
@@ -391,11 +428,57 @@ export default function SiteHeader({ scrollWork = false }) {
           animation: cl-shockwave ${TIMING.TOTAL}ms linear ${160}ms forwards;
         }
         @keyframes cl-shockwave {
-          0%,80%  { transform:scale(0); opacity:0; }
+          0%,80%  { transform:scale(0);   opacity:0; }
           82%     { transform:scale(0.15); opacity:1; }
-          88%     { transform:scale(3.2); opacity:0.55; }
-          95%     { transform:scale(6.0); opacity:0.15; }
-          100%    { transform:scale(8.0); opacity:0; }
+          88%     { transform:scale(3.2);  opacity:0.55; }
+          95%     { transform:scale(6.0);  opacity:0.15; }
+          100%    { transform:scale(8.0);  opacity:0; }
+        }
+
+        /* ─── DEBRIS SPARKS — 4-way burst at break ─── */
+        .cl-spark {
+          position:absolute;
+          width:3px; height:3px;
+          border-radius:50%;
+          background:radial-gradient(circle,#fff 0%,#ffd99c 50%,#f97316 80%,transparent 100%);
+          top:50%; left:50%;
+          margin-top:-1.5px; margin-left:-1.5px;
+          opacity:0;
+          pointer-events:none;
+          will-change:transform,opacity;
+          z-index:7;
+        }
+        .cl-brand:hover .cl-spark-1 { animation: cl-spark-fly1 ${TIMING.TOTAL}ms linear forwards; }
+        .cl-brand:hover .cl-spark-2 { animation: cl-spark-fly2 ${TIMING.TOTAL}ms linear forwards; }
+        .cl-brand:hover .cl-spark-3 { animation: cl-spark-fly3 ${TIMING.TOTAL}ms linear forwards; }
+        .cl-brand:hover .cl-spark-4 { animation: cl-spark-fly4 ${TIMING.TOTAL}ms linear forwards; }
+        @keyframes cl-spark-fly1 {
+          0%,79.5% { transform:translate(0,0) scale(0); opacity:0; }
+          81%  { transform:translate(0,0) scale(2); opacity:1; }
+          86%  { transform:translate(-6px,-14px) scale(1.3); opacity:0.85; }
+          93%  { transform:translate(-11px,-26px) scale(0.8); opacity:0.4; }
+          100% { transform:translate(-15px,-36px) scale(0.2); opacity:0; }
+        }
+        @keyframes cl-spark-fly2 {
+          0%,79.5% { transform:translate(0,0) scale(0); opacity:0; }
+          81.5%{ transform:translate(0,0) scale(2); opacity:1; }
+          86%  { transform:translate(9px,-11px) scale(1.3); opacity:0.85; }
+          93%  { transform:translate(16px,-20px) scale(0.8); opacity:0.4; }
+          100% { transform:translate(21px,-28px) scale(0.2); opacity:0; }
+        }
+        @keyframes cl-spark-fly3 {
+          0%,79.5% { transform:translate(0,0) scale(0); opacity:0; }
+          82%  { transform:translate(0,0) scale(2); opacity:1; }
+          87%  { transform:translate(-9px,7px) scale(1.3); opacity:0.85; }
+          94%  { transform:translate(-18px,13px) scale(0.8); opacity:0.4; }
+          100% { transform:translate(-25px,18px) scale(0.2); opacity:0; }
+        }
+        @keyframes cl-spark-fly4 {
+          0%,79.5% { transform:translate(0,0) scale(0); opacity:0; }
+          82.5%{ transform:translate(0,0) scale(2); opacity:1; }
+          87%  { transform:translate(11px,9px) scale(1.3); opacity:0.85; }
+          94%  { transform:translate(20px,16px) scale(0.8); opacity:0.4; }
+          100% { transform:translate(28px,22px) scale(0.2); opacity:0; }
         }
 
         /* ═══════════════════════════════════════════════════════
@@ -442,7 +525,6 @@ export default function SiteHeader({ scrollWork = false }) {
           transform: translate(0,0) rotate(0deg);
           transform-origin: center center;
           opacity: 1;
-          /* Return (mouse-leave) — spring snap back */
           transition:
             transform 0.6s cubic-bezier(0.34,1.45,0.5,1),
             opacity   0.45s ease;
@@ -455,61 +537,66 @@ export default function SiteHeader({ scrollWork = false }) {
           transform: translate(var(--pdx),var(--pdy)) rotate(var(--pr));
           opacity: 0;
           transition:
-            transform 1.05s cubic-bezier(0.16,0.7,0.3,1) var(--hit-delay),
-            opacity   0.95s cubic-bezier(0.4,0,0.6,1)    var(--hit-delay);
+            transform 1.1s cubic-bezier(0.12,0.72,0.28,1) var(--hit-delay),
+            opacity   1.0s cubic-bezier(0.4,0,0.6,1)      var(--hit-delay);
         }
 
-        /* Cut-line flash — horizontal blade at contact point */
+        /* Slash spark — diagonal blade flash at contact */
         .cl-split-letter::before {
           content:'';
           position:absolute;
-          left:-2px; right:-2px;
-          top:44%; height:3px;
-          background:linear-gradient(90deg,
-            transparent 0%,
-            rgba(255,255,255,0.95) 22%,
-            rgba(249,115,22,0.9)   50%,
-            rgba(255,255,255,0.95) 78%,
-            transparent 100%);
-          transform:scaleX(0);
+          left:-6px; right:-6px;
+          top:5%; height:90%;
+          background:linear-gradient(135deg,
+            transparent              0%,
+            rgba(255,255,255,0)      28%,
+            rgba(255,255,255,0.96)   44%,
+            rgba(249,115,22,1.0)     50%,
+            rgba(255,255,255,0.96)   56%,
+            rgba(255,255,255,0)      72%,
+            transparent              100%);
+          transform:scaleX(0) rotate(-8deg);
           transform-origin:center;
           opacity:0;
           pointer-events:none;
           z-index:10;
+          mix-blend-mode:screen;
         }
         .cl-brand:hover .cl-split-letter::before {
-          animation: cl-cut-line 0.4s cubic-bezier(0.05,0.95,0.15,1) forwards;
+          animation: cl-cut-slash 0.32s cubic-bezier(0.05,0.95,0.15,1) forwards;
           animation-delay: var(--hit-delay);
         }
-        @keyframes cl-cut-line {
-          0%   { opacity:0; transform:scaleX(0); }
-          15%  { opacity:1; transform:scaleX(1.2); }
-          55%  { opacity:0.7; transform:scaleX(1); }
-          100% { opacity:0; transform:scaleX(0.9); }
+        @keyframes cl-cut-slash {
+          0%   { opacity:0; transform:scaleX(0) rotate(-8deg); }
+          10%  { opacity:1; transform:scaleX(1.5) rotate(-8deg); }
+          38%  { opacity:0.65; transform:scaleX(1.0) rotate(-8deg); }
+          100% { opacity:0; transform:scaleX(0.5) rotate(-8deg); }
         }
 
-        /* Impact bloom per letter */
+        /* Impact bloom per letter — explosive scale */
         .cl-split-letter::after {
           content:'';
           position:absolute;
-          inset:-6px -3px;
+          inset:-8px -5px;
           background:radial-gradient(ellipse at center,
-            rgba(255,255,255,0.5) 0%,
-            rgba(249,115,22,0.3)  25%,
-            transparent 65%);
+            rgba(255,255,255,0.65) 0%,
+            rgba(249,115,22,0.5)   20%,
+            rgba(249,115,22,0.15)  50%,
+            transparent            72%);
           opacity:0;
           pointer-events:none;
           mix-blend-mode:screen;
+          transform:scale(0.5);
         }
         .cl-brand:hover .cl-split-letter::after {
-          animation: cl-letter-flash 0.42s ease forwards;
+          animation: cl-letter-flash 0.44s ease forwards;
           animation-delay: var(--hit-delay);
         }
         @keyframes cl-letter-flash {
-          0%   { opacity:0; }
-          12%  { opacity:1; }
-          55%  { opacity:0.3; }
-          100% { opacity:0; }
+          0%   { opacity:0; transform:scale(0.5); }
+          10%  { opacity:1; transform:scale(1.4); }
+          42%  { opacity:0.45; transform:scale(1.1); }
+          100% { opacity:0; transform:scale(0.9); }
         }
 
         /* ═══════════════════════════════════════════════════════
@@ -675,6 +762,8 @@ export default function SiteHeader({ scrollWork = false }) {
           .cl-brand:hover .cl-aster-chip-path,
           .cl-brand:hover .cl-aster-fracture,
           .cl-brand:hover .cl-ring,
+          .cl-brand:hover .cl-spark,
+          .cl-brand:hover .cl-e-arc,
           .cl-brand:hover .cl-aster-wrap::after,
           .cl-brand:hover::before,
           .cl-brand:hover .cl-split-piece,
