@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import SiteHeader from "@/components/SiteHeader";
 
 const ALL_CLIENTS = [
@@ -44,11 +44,31 @@ const ALL_CLIENTS = [
 
 export default function ClientsPage() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [dbClients, setDbClients] = useState([]);
   const cellRefs = useRef([]);
   const gridRef = useRef(null);
   const heroRef = useRef(null);
   const statsRef = useRef(null);
   const countStripRef = useRef(null);
+
+  useEffect(() => {
+    fetch("/api/clients", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => { if (Array.isArray(data)) setDbClients(data); })
+      .catch(console.error);
+  }, []);
+
+  // DB is the source of truth. ALL_CLIENTS is the fallback when DB is empty.
+  // After seeding, DB will have all 36 clients and this returns DB data exclusively,
+  // so logo/name updates made via admin are immediately reflected here.
+  const mergedClients = useMemo(() => {
+    if (dbClients.length > 0) {
+      return dbClients
+        .filter((c) => c?.name && c?.logo)
+        .map((c) => ({ name: c.name, logo: c.logo }));
+    }
+    return ALL_CLIENTS;
+  }, [dbClients]);
 
   // Staggered spring reveal for grid cells
   useEffect(() => {
@@ -488,7 +508,7 @@ export default function ClientsPage() {
           </h1>
           <div className="cl-data-table">
             {[
-              { val:`${ALL_CLIENTS.length}+`,  lbl:"Clients Served" },
+              { val:`${mergedClients.length}+`,  lbl:"Clients Served" },
               { val:"110+", lbl:"Projects Done" },
               { val:"3+",   lbl:"Years Active" },
               { val:"∞",    lbl:"Culturally Driven" },
@@ -507,13 +527,13 @@ export default function ClientsPage() {
             <span style={{ width:16, height:1, background:"#333", display:"inline-block" }} />
             Client Roster
           </span>
-          <span className="cl-count-strip-num">{ALL_CLIENTS.length} Brands Listed</span>
+          <span className="cl-count-strip-num">{mergedClients.length} Brands Listed</span>
         </div>
 
         {/* ── GRID ── */}
         <div style={{ position:"relative", zIndex:2 }}>
           <div className="cl-roster-grid" ref={gridRef}>
-            {ALL_CLIENTS.map((client, i) => (
+            {mergedClients.map((client, i) => (
               <div
                 key={i}
                 className="cl-cell"

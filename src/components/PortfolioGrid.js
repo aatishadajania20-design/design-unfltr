@@ -2,21 +2,29 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import projects from "@/data/projects";
+import { videoToThumbnail } from "@/lib/utils";
 
 const INITIAL_COUNT = 9;
 
 export default function PortfolioGrid() {
   const cardRefs = useRef([]);
+  const observersRef = useRef([]);
+  const [projects, setProjects] = useState([]);
   const [showAll, setShowAll] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/works", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => { if (Array.isArray(data)) setProjects(data); })
+      .catch(() => {});
+  }, []);
 
   const visibleProjects = showAll ? projects : projects.slice(0, INITIAL_COUNT);
 
   useEffect(() => {
-    const observers = [];
-
     cardRefs.current.forEach((el) => {
-      if (!el) return;
+      if (!el || el.dataset.pgAnimated) return;
+
       el.style.opacity = "0";
       el.style.transform = "translateY(48px)";
 
@@ -25,7 +33,8 @@ export default function PortfolioGrid() {
           if (entry.isIntersecting) {
             el.style.opacity = "1";
             el.style.transform = "translateY(0)";
-          } else {
+            el.dataset.pgAnimated = "1";
+          } else if (!el.dataset.pgAnimated) {
             el.style.opacity = "0";
             el.style.transform = "translateY(48px)";
           }
@@ -33,11 +42,11 @@ export default function PortfolioGrid() {
         { threshold: 0.1 }
       );
       obs.observe(el);
-      observers.push(obs);
+      observersRef.current.push(obs);
     });
-
-    return () => observers.forEach((o) => o.disconnect());
   }, [visibleProjects]);
+
+  useEffect(() => () => observersRef.current.forEach((o) => o.disconnect()), []);
 
   return (
     <>
@@ -285,22 +294,23 @@ export default function PortfolioGrid() {
 
         {visibleProjects.map((project, index) => {
           const repeated = Array(6).fill(`${project.title} — `).join("");
+          const thumbnail = project.image || videoToThumbnail(project.video);
 
           return (
             <Link
               href={`/projects/${project.slug}`}
-              key={project.slug}
+              key={project._id ? String(project._id) : `pg-${project.slug}-${index}`}
               className="card-link block cursor-pointer"
               style={{ position: "relative" }}
             >
               <div
                 className="card-animate"
-                ref={(el) => (cardRefs.current[index] = el)}
+                ref={(el) => { cardRefs.current[index] = el; }}
                 style={{ transitionDelay: `${(index % 2) * 90}ms` }}
               >
                 <div className="card-wrap" style={{ height: "clamp(260px, 52vw, 700px)" }}>
 
-                  {/* ── MEDIA: video if project.video exists, else image ── */}
+                  {/* ── MEDIA: video if project.video exists, else thumbnail image ── */}
                   {project.video ? (
                     <video
                       src={project.video}
@@ -311,9 +321,9 @@ export default function PortfolioGrid() {
                       preload="none"
                       style={{ position: "absolute", inset: 0 }}
                     />
-                  ) : (
-                    <img src={project.image} alt={project.title} />
-                  )}
+                  ) : thumbnail ? (
+                    <img src={thumbnail} alt={project.title} />
+                  ) : null}
 
                   {/* pill badge on video cards */}
                   {project.video && (

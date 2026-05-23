@@ -5,7 +5,10 @@
       "Bash(python scripts/search.py \"cinematic premium animation motion wheel spin\" --domain ux -n 6)",
       "Bash(python3 scripts/search.py \"cinematic premium animation motion wheel spin\" --domain ux -n 6)",
       "Bash(npm run *)",
-      "Bash(npx next *)"
+      "Bash(npx next *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Admin\\\\Desktop\\\\UNFLTR\\\\design-unfltr\" -Recurse -Force)",
+      "Bash(Select-Object FullName)",
+      "Bash(Sort-Object FullName)"
     ]
   }
 }

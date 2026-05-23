@@ -36,6 +36,7 @@ export default function SlugClient({ project, nextProject, prevProject }) {
   const r = (i, delay = 0) => (el) => {
     if (el) {
       el.style.transitionDelay = `${delay}ms`;
+      // eslint-disable-next-line react-hooks/refs
       revealRefs.current[i] = el;
     }
   };
@@ -380,7 +381,7 @@ export default function SlugClient({ project, nextProject, prevProject }) {
               <span className="slug-eyebrow-line" />
               Project Overview
             </p>
-            <span className="slug-quote-mark" aria-hidden="true">"</span>
+            <span className="slug-quote-mark" aria-hidden="true">&ldquo;</span>
             <p className="slug-desc">{project.desc}</p>
           </div>
 

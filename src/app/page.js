@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import PortfolioGrid from "@/components/PortfolioGrid";
 import SiteHeader from "@/components/SiteHeader";
 
@@ -243,16 +243,20 @@ export default function Home() {
             <div className="chat-cta-hint"><span className="hidden sm:inline">Get In Touch</span><span>→</span></div>
           </section>
         </Link>
+
+        <div style={{ display:"flex", justifyContent:"center", padding:"10px 20px", borderTop:"1px solid #080808" }}>
+          <Link href="/admin" style={{ fontSize:"0.5rem", letterSpacing:"0.22em", textTransform:"uppercase", color:"#1c1c1c", textDecoration:"none", fontWeight:700, transition:"color 0.22s ease", fontFamily:"inherit" }}
+            onMouseEnter={e => e.currentTarget.style.color="#3a3a3a"}
+            onMouseLeave={e => e.currentTarget.style.color="#1c1c1c"}>
+            Admin Portal
+          </Link>
+        </div>
       </main>
     </>
   );
 }
 
-function ClientsSection() {
-  const headerRef = useRef(null);
-  const marqueeRef = useRef(null);
-  const statsRef = useRef(null);
-  const clients = [
+const STATIC_CLIENTS = [
     { name:"MNST",             logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/MNST_vyaeim.png" },
   { name:"Cava",             logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/cava_jxvtci.png" },
   { name:"Astro",            logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747613/astro_oyrcy8.png" },
@@ -289,7 +293,29 @@ function ClientsSection() {
   { name:"Monet",            logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/monet_zp3wjm.png" },
   { name:"Mekada",           logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747614/mekada_ng33kr.png" },
   { name:"Ansh Entertainment",logo:"https://res.cloudinary.com/dta1dl0pj/image/upload/v1778747615/logo_2_kv9jqv.png" },
-  ];
+];
+
+function ClientsSection() {
+  const headerRef = useRef(null);
+  const marqueeRef = useRef(null);
+  const statsRef = useRef(null);
+  const [dbClients, setDbClients] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/clients", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => { if (Array.isArray(data)) setDbClients(data); })
+      .catch(() => {});
+  }, []);
+
+  // DB is the source of truth. Static list is the fallback when DB has nothing.
+  const clients = useMemo(() => {
+    if (dbClients.length > 0) {
+      return dbClients.filter((c) => c?.name && c?.logo).map((c) => ({ name: c.name, logo: c.logo }));
+    }
+    return STATIC_CLIENTS;
+  }, [dbClients]);
+
   const row1 = [...clients, ...clients];
   const row2 = [...clients, ...clients].reverse();
   useEffect(() => {

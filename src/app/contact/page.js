@@ -36,6 +36,7 @@ export default function ContactPage() {
   const r = (i, delay = 0) => (el) => {
     if (el) {
       el.style.transitionDelay = `${delay}ms`;
+      // eslint-disable-next-line react-hooks/refs
       revealRefs.current[i] = el;
     }
   };
