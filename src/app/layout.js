@@ -1,5 +1,6 @@
 import "./globals.css";
 
+import Script from "next/script";
 import { Space_Grotesk } from "next/font/google";
 
 const spaceGrotesk = Space_Grotesk({
@@ -112,6 +113,11 @@ export default function RootLayout({ children }) {
         className={`${spaceGrotesk.variable} font-sans bg-black text-white`}
       >
         {children}
+        <Script
+          src="https://cloud.umami.is/script.js"
+          data-website-id="817bbb5a-f692-4356-8cb7-3805a3b4f4a9"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

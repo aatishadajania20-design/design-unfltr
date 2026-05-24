@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/db';
 import Work from '@/lib/models/Work';
 import { requireAuth } from '@/lib/auth';
 import { videoToThumbnail } from '@/lib/utils';
+import { toSlug, ensureUniqueSlug } from '@/lib/slug';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,6 +26,14 @@ export async function PUT(req, { params }) {
   try {
     await connectDB();
     const body = await req.json();
+
+    // Validate and ensure unique slug (exclude self so own slug doesn't trigger conflict)
+    if (body.slug !== undefined) {
+      const baseSlug = toSlug(body.slug || body.title || '');
+      if (!baseSlug) return NextResponse.json({ error: 'Slug cannot be empty' }, { status: 400 });
+      body.slug = await ensureUniqueSlug(baseSlug, id);
+    }
+
     // Backend auto-image: generate thumbnail when video provided and image is blank
     if (body.video && !body.image) {
       body.image = videoToThumbnail(body.video);

@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/db';
 import Work from '@/lib/models/Work';
 import { requireAuth } from '@/lib/auth';
 import { videoToThumbnail } from '@/lib/utils';
+import { toSlug, ensureUniqueSlug } from '@/lib/slug';
 import STATIC_PROJECTS from '@/data/projects';
 
 // Never cache — always return fresh data
@@ -31,6 +32,12 @@ export async function POST(req) {
   try {
     await connectDB();
     const body = await req.json();
+
+    // Validate and ensure unique slug
+    const baseSlug = toSlug(body.slug || body.title || '');
+    if (!baseSlug) return NextResponse.json({ error: 'Title or slug is required' }, { status: 400 });
+    body.slug = await ensureUniqueSlug(baseSlug);
+
     // Backend auto-image: if video exists and image is blank, generate thumbnail
     if (body.video && !body.image) {
       body.image = videoToThumbnail(body.video);

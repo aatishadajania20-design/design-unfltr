@@ -440,6 +440,9 @@ function Dashboard({ user, tab, setTab, works, clients, loading, onAddWork, onEd
         <button className={`adm-tab-btn${tab === 'reorder' ? ' active' : ''}`} onClick={() => setTab('reorder')}>
           ⠿ Reorder
         </button>
+        <button className={`adm-tab-btn${tab === 'analytics' ? ' active' : ''}`} onClick={() => setTab('analytics')}>
+          ◎ Analytics
+        </button>
       </div>
 
       {/* ── CONTENT ── */}
@@ -450,9 +453,10 @@ function Dashboard({ user, tab, setTab, works, clients, loading, onAddWork, onEd
             <span style={{ fontSize: '.62rem', color: '#f97316', letterSpacing: '.14em', textTransform: 'uppercase' }}>Syncing with MongoDB…</span>
           </div>
         )}
-        {tab === 'works'   && <WorksTable   works={works}     onAdd={onAddWork}   onEdit={onEditWork}   onDelete={onDeleteWork} />}
-        {tab === 'clients' && <ClientsTable clients={clients} onAdd={onAddClient} onEdit={onEditClient} onDelete={onDeleteClient} />}
-        {tab === 'reorder' && <ReorderTab   works={works}     clients={clients}   onSaved={onSaveOrder} />}
+        {tab === 'works'     && <WorksTable   works={works}     onAdd={onAddWork}   onEdit={onEditWork}   onDelete={onDeleteWork} />}
+        {tab === 'clients'   && <ClientsTable clients={clients} onAdd={onAddClient} onEdit={onEditClient} onDelete={onDeleteClient} />}
+        {tab === 'reorder'   && <ReorderTab   works={works}     clients={clients}   onSaved={onSaveOrder} />}
+        {tab === 'analytics' && <AnalyticsTab />}
       </div>
 
       {children}
@@ -1021,6 +1025,238 @@ function ReorderTab({ works, clients, onSaved }) {
           {items.length} {subTab} · drag to reorder · save to persist
         </p>
       )}
+    </div>
+  );
+}
+
+// ─── ANALYTICS TAB ───────────────────────────────────────────────────────────
+function AnalyticsTab() {
+  const [range, setRange]       = useState(30);
+  const [stats, setStats]       = useState(null);
+  const [pages, setPages]       = useState([]);
+  const [refs, setRefs]         = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [devices, setDevices]   = useState([]);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    const endAt   = Date.now();
+    const startAt = endAt - range * 24 * 60 * 60 * 1000;
+    const qs      = `startAt=${startAt}&endAt=${endAt}`;
+
+    // Defer initial setState into microtask (matches existing codebase pattern)
+    Promise.resolve()
+      .then(() => {
+        if (!active) return null;
+        setLoading(true);
+        setError(null);
+        return Promise.all([
+          fetch(`/api/analytics?type=stats&${qs}`,    { cache: 'no-store' }).then(r => r.json()),
+          fetch(`/api/analytics?type=url&${qs}`,      { cache: 'no-store' }).then(r => r.json()),
+          fetch(`/api/analytics?type=referrer&${qs}`, { cache: 'no-store' }).then(r => r.json()),
+          fetch(`/api/analytics?type=country&${qs}`,  { cache: 'no-store' }).then(r => r.json()),
+          fetch(`/api/analytics?type=device&${qs}`,   { cache: 'no-store' }).then(r => r.json()),
+        ]);
+      })
+      .then(results => {
+        if (!results || !active) return;
+        const [s, p, r, c, d] = results;
+        if (s.error) { setError(s.error); setLoading(false); return; }
+        setStats(s);
+        setPages(Array.isArray(p) ? p : []);
+        setRefs(Array.isArray(r) ? r : []);
+        setCountries(Array.isArray(c) ? c : []);
+        setDevices(Array.isArray(d) ? d : []);
+        setLoading(false);
+      })
+      .catch(e => {
+        if (active) { setError(e.message); setLoading(false); }
+      });
+
+    return () => { active = false; };
+  }, [range]);
+
+  const ANL_CSS = `
+    .anl-grid  { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px; }
+    @media(max-width:900px) { .anl-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:480px) { .anl-grid { grid-template-columns: 1fr; } }
+    .anl-card  { background:#0c0c0c; border:1px solid #171717; padding:24px 28px; position:relative; overflow:hidden; }
+    .anl-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:#f97316; transform:scaleX(0); transform-origin:left; transition:transform .3s cubic-bezier(.76,0,.24,1); }
+    .anl-card:hover::before { transform:scaleX(1); }
+    .anl-val   { font-size:2.4rem; font-weight:900; letter-spacing:-.06em; color:#fff; line-height:1; display:block; }
+    .anl-lbl   { font-size:.5rem; letter-spacing:.26em; text-transform:uppercase; color:#383838; margin-top:8px; display:block; }
+    .anl-delta { font-size:.64rem; margin-top:6px; display:block; }
+    .anl-cols  { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+    @media(max-width:700px) { .anl-cols { grid-template-columns:1fr; } }
+    .anl-list  { background:#0c0c0c; border:1px solid #171717; border-radius:4px; overflow:hidden; }
+    .anl-list-hd { padding:16px 20px; border-bottom:1px solid #141414; }
+    .anl-list-title { font-size:.56rem; letter-spacing:.24em; text-transform:uppercase; color:#555; font-weight:700; }
+    .anl-row   { display:flex; align-items:center; gap:14px; padding:12px 20px; border-bottom:1px solid #0e0e0e; }
+    .anl-row:last-child { border-bottom:none; }
+    .anl-row:hover { background:rgba(249,115,22,.03); }
+    .anl-bar-wrap { flex:1; height:4px; background:#141414; border-radius:2px; overflow:hidden; }
+    .anl-bar  { height:100%; background:#f97316; border-radius:2px; transition:width .4s cubic-bezier(.76,0,.24,1); }
+    .anl-cnt  { font-size:.78rem; font-weight:700; color:#e0e0e0; white-space:nowrap; min-width:36px; text-align:right; }
+    .anl-name { font-size:.8rem; color:#888; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px; flex:1; }
+    .anl-range-btn { background:none; border:1px solid #1e1e1e; color:#555; padding:8px 16px; font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; font-family:inherit; border-radius:2px; transition:border-color .18s,color .18s; }
+    .anl-range-btn.active { border-color:#f97316; color:#f97316; }
+    .anl-range-btn:hover:not(.active) { border-color:#333; color:#888; }
+  `;
+
+  const fmtNum = n => (n ?? 0).toLocaleString();
+
+  if (loading) return (
+    <div style={{ animation: 'adm-fade-in .3s ease' }}>
+      <style>{ANL_CSS}</style>
+      <div style={{ display:'flex', alignItems:'center', gap:10, padding:'60px 0', justifyContent:'center' }}>
+        {[0,1,2].map(i => (
+          <div key={i} style={{ width:8, height:8, borderRadius:'50%', background: i===1?'#f97316':'#222', animation:`adm-pulse 1.2s ease-in-out ${i*.2}s infinite` }} />
+        ))}
+      </div>
+    </div>
+  );
+
+  if (error) {
+    const isConfig = error.includes('UMAMI_API_TOKEN');
+    return (
+      <div style={{ animation: 'adm-fade-in .3s ease' }}>
+        <style>{ANL_CSS}</style>
+        <div style={{ marginBottom:28 }}>
+          <h2 style={{ fontSize:'1.4rem', fontWeight:900, letterSpacing:'-.04em', color:'#f5f5f5', marginBottom:6 }}>Analytics</h2>
+          <p style={{ fontSize:'.62rem', color:'#444', letterSpacing:'.1em' }}>Powered by Umami · website 817bbb5a</p>
+        </div>
+        <div style={{ border:'1px solid #1e1e1e', borderRadius:4, padding:'40px 32px', textAlign:'center', maxWidth:520 }}>
+          <p style={{ fontSize:'1.2rem', fontWeight:900, color:'#f5f5f5', marginBottom:14, letterSpacing:'-.03em' }}>
+            {isConfig ? 'API Token Required' : 'Analytics Error'}
+          </p>
+          <p style={{ fontSize:'.82rem', color:'#555', lineHeight:1.7, marginBottom: isConfig ? 24 : 0 }}>
+            {isConfig
+              ? 'Add your Umami API token to .env.local to view analytics:'
+              : error}
+          </p>
+          {isConfig && (
+            <code style={{ display:'block', background:'#0a0a0a', border:'1px solid #1e1e1e', padding:'14px 18px', borderRadius:4, fontSize:'.78rem', color:'#f97316', letterSpacing:'.04em', fontFamily:'monospace', textAlign:'left' }}>
+              UMAMI_API_TOKEN=your_token_here
+            </code>
+          )}
+          {isConfig && (
+            <p style={{ fontSize:'.62rem', color:'#2a2a2a', marginTop:18, letterSpacing:'.08em', lineHeight:1.7 }}>
+              Get your token at cloud.umami.is → Settings → API Keys
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  const maxPage    = pages[0]?.y || 1;
+  const maxRef     = refs[0]?.y  || 1;
+  const maxCountry = countries[0]?.y || 1;
+  const maxDevice  = devices[0]?.y  || 1;
+
+  return (
+    <div style={{ animation: 'adm-fade-in .3s ease' }}>
+      <style>{ANL_CSS}</style>
+
+      {/* header */}
+      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:28, gap:16, flexWrap:'wrap' }}>
+        <div>
+          <h2 style={{ fontSize:'1.4rem', fontWeight:900, letterSpacing:'-.04em', color:'#f5f5f5', marginBottom:6 }}>Analytics</h2>
+          <p style={{ fontSize:'.62rem', color:'#444', letterSpacing:'.1em' }}>Powered by Umami · website 817bbb5a</p>
+        </div>
+        <div style={{ display:'flex', gap:8 }}>
+          {[7,30,90].map(d => (
+            <button key={d} className={`anl-range-btn${range===d?' active':''}`} onClick={() => setRange(d)}>
+              {d}d
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* stat cards */}
+      <div className="anl-grid">
+        {[
+          { label:'Visitors',   val: fmtNum(stats?.uniques?.value),   prev: stats?.uniques?.prev },
+          { label:'Pageviews',  val: fmtNum(stats?.pageviews?.value), prev: stats?.pageviews?.prev },
+          { label:'Bounce Rate',val: stats?.bounces?.value != null
+              ? `${Math.round((stats.bounces.value / Math.max(stats.uniques?.value||1,1))*100)}%`
+              : '—', prev: null },
+          { label:'Avg. Time',  val: stats?.totaltime?.value != null
+              ? `${Math.round(stats.totaltime.value / Math.max(stats.uniques?.value||1,1))}s`
+              : '—', prev: null },
+        ].map(({ label, val, prev }) => {
+          const delta = prev != null && prev !== 0 ? Math.round(((Number(val.replace(/[^0-9]/g,'')) - prev) / prev) * 100) : null;
+          return (
+            <div key={label} className="anl-card">
+              <span className="anl-val">{val ?? '—'}</span>
+              <span className="anl-lbl">{label}</span>
+              {delta !== null && (
+                <span className="anl-delta" style={{ color: delta >= 0 ? '#4ade80' : '#f87171' }}>
+                  {delta >= 0 ? '▲' : '▼'} {Math.abs(delta)}% vs prev period
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* lists row 1: top pages + referrers */}
+      <div className="anl-cols">
+        <div className="anl-list">
+          <div className="anl-list-hd"><span className="anl-list-title">Top Pages</span></div>
+          {pages.length === 0
+            ? <p style={{ padding:'20px', fontSize:'.72rem', color:'#333', textAlign:'center' }}>No data</p>
+            : pages.slice(0,8).map(({ x, y }) => (
+              <div key={x} className="anl-row">
+                <span className="anl-name" title={x}>{x}</span>
+                <div className="anl-bar-wrap"><div className="anl-bar" style={{ width:`${(y/maxPage)*100}%` }} /></div>
+                <span className="anl-cnt">{y}</span>
+              </div>
+            ))}
+        </div>
+        <div className="anl-list">
+          <div className="anl-list-hd"><span className="anl-list-title">Referrers</span></div>
+          {refs.length === 0
+            ? <p style={{ padding:'20px', fontSize:'.72rem', color:'#333', textAlign:'center' }}>No referrer data</p>
+            : refs.slice(0,8).map(({ x, y }) => (
+              <div key={x} className="anl-row">
+                <span className="anl-name" title={x}>{x || 'Direct'}</span>
+                <div className="anl-bar-wrap"><div className="anl-bar" style={{ width:`${(y/maxRef)*100}%` }} /></div>
+                <span className="anl-cnt">{y}</span>
+              </div>
+            ))}
+        </div>
+      </div>
+
+      {/* lists row 2: countries + devices */}
+      <div className="anl-cols">
+        <div className="anl-list">
+          <div className="anl-list-hd"><span className="anl-list-title">Countries</span></div>
+          {countries.length === 0
+            ? <p style={{ padding:'20px', fontSize:'.72rem', color:'#333', textAlign:'center' }}>No data</p>
+            : countries.slice(0,8).map(({ x, y }) => (
+              <div key={x} className="anl-row">
+                <span className="anl-name">{x || 'Unknown'}</span>
+                <div className="anl-bar-wrap"><div className="anl-bar" style={{ width:`${(y/maxCountry)*100}%` }} /></div>
+                <span className="anl-cnt">{y}</span>
+              </div>
+            ))}
+        </div>
+        <div className="anl-list">
+          <div className="anl-list-hd"><span className="anl-list-title">Devices</span></div>
+          {devices.length === 0
+            ? <p style={{ padding:'20px', fontSize:'.72rem', color:'#333', textAlign:'center' }}>No data</p>
+            : devices.slice(0,8).map(({ x, y }) => (
+              <div key={x} className="anl-row">
+                <span className="anl-name" style={{ textTransform:'capitalize' }}>{x || 'Unknown'}</span>
+                <div className="anl-bar-wrap"><div className="anl-bar" style={{ width:`${(y/maxDevice)*100}%` }} /></div>
+                <span className="anl-cnt">{y}</span>
+              </div>
+            ))}
+        </div>
+      </div>
     </div>
   );
 }
