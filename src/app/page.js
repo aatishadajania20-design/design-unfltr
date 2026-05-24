@@ -178,7 +178,7 @@ export default function Home() {
 
         <section className="relative w-full overflow-hidden" style={{ minHeight:"100svh" }}>
           <video
-            src="https://res.cloudinary.com/dymulmhnc/video/upload/v1779619116/old_ktsv8a.mp4"
+            src="https://res.cloudinary.com/dymulmhnc/video/upload/v1779621835/old_rjy1br.mp4"
             autoPlay muted loop playsInline preload="auto"
             style={{
               position:"absolute", inset:0,

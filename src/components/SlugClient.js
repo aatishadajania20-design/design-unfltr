@@ -362,29 +362,39 @@ export default function SlugClient({ project, nextProject, prevProject }) {
           )}
           <div className="slug-hero-overlay" />
 
-          {/* View Full Size — image projects only */}
+          {/* View Full Size — bottom-right, image projects only */}
           {!isVideo && project.image && (
             <button
               onClick={() => setLightboxOpen(true)}
               style={{
-                position: 'absolute', top: 'clamp(14px,2.5vw,24px)', right: 'clamp(14px,2.5vw,24px)',
+                position: 'absolute',
+                bottom: 'clamp(16px,3vw,32px)',
+                right: 'clamp(16px,3vw,32px)',
                 zIndex: 5, display: 'flex', alignItems: 'center', gap: 7,
-                background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.14)', color: 'rgba(255,255,255,0.65)',
-                padding: '8px 16px', fontSize: '0.54rem', letterSpacing: '0.2em',
+                background: 'rgba(0,0,0,0.48)', backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255,255,255,0.16)', color: 'rgba(255,255,255,0.7)',
+                padding: '9px 18px', fontSize: '0.52rem', letterSpacing: '0.2em',
                 textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit',
-                transition: 'border-color 0.22s, color 0.22s, background 0.22s',
+                transition: 'border-color 0.22s, color 0.22s, background 0.22s, transform 0.2s',
                 borderRadius: 2,
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(249,115,22,0.6)'; e.currentTarget.style.color = '#f97316'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = 'rgba(249,115,22,0.65)';
+                e.currentTarget.style.color = '#f97316';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.16)';
+                e.currentTarget.style.color = 'rgba(255,255,255,0.7)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
               aria-label="View image full size"
             >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ flexShrink: 0 }}>
-                <path d="M1 4V1H4M8 1H11V4M11 8V11H8M4 11H1V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+              <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style={{ flexShrink: 0 }}>
+                <path d="M1 4V1H4M8 1H11V4M11 8V11H8M4 11H1V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              View Full Size
+              View Full Image
             </button>
           )}
 
@@ -526,10 +536,12 @@ export default function SlugClient({ project, nextProject, prevProject }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.22 }}
+            transition={{ duration: 0.25 }}
             style={{
               position: 'fixed', inset: 0, zIndex: 10000,
-              background: 'rgba(0,0,0,0.96)',
+              background: 'rgba(4,4,4,0.62)',
+              backdropFilter: 'blur(18px) saturate(0.7)',
+              WebkitBackdropFilter: 'blur(18px) saturate(0.7)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: zoomed ? 'zoom-out' : 'zoom-in',
               fontFamily: "'Neue Haas Grotesk Display Pro','Helvetica Neue',Arial,sans-serif",
