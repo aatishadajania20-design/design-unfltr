@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { videoToThumbnail } from '@/lib/utils';
 import {
   DndContext, closestCenter,
@@ -411,6 +412,7 @@ function Dashboard({ user, tab, setTab, works, clients, loading, onAddWork, onEd
             <span style={{ color: '#444' }}><span style={{ color: '#fff', fontWeight: 900, fontSize: '1.1rem', display: 'block', lineHeight: 1, letterSpacing: '-.03em' }}>{clients.length}</span>Clients</span>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
+            <Link href="/" className="adm-ghost-btn" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>← Site</Link>
             <button className="adm-ghost-btn" onClick={onRefresh} disabled={loading} title="Re-sync from MongoDB">
               {loading ? '…' : '↺'} Sync
             </button>
@@ -1029,232 +1031,392 @@ function ReorderTab({ works, clients, onSaved }) {
   );
 }
 
+// ─── ANALYTICS HELPERS ────────────────────────────────────────────────────────
+function SparkLine({ data = [], sessions = [], height = 80 }) {
+  if (!data || data.length < 2) return <div style={{ height, background: '#0a0a0a', borderRadius: 2 }} />;
+  const W = 1000; const H = height; const PAD = 6;
+  const all = [...data.map(d => d.y || 0), ...sessions.map(d => d.y || 0)];
+  const max = Math.max(...all, 1);
+  const toPath = pts => pts.length < 2 ? '' : pts.reduce((acc, p, i) => {
+    if (i === 0) return `M ${p.x},${p.y}`;
+    const pr = pts[i - 1];
+    const cx = (pr.x + p.x) / 2;
+    return `${acc} C ${cx},${pr.y} ${cx},${p.y} ${p.x},${p.y}`;
+  }, '');
+  const mkPts = arr => arr.map((d, i) => ({
+    x: PAD + (i / (arr.length - 1)) * (W - PAD * 2),
+    y: H - PAD - ((d.y || 0) / max) * (H - PAD * 2),
+  }));
+  const pts1 = mkPts(data);
+  const line1 = toPath(pts1);
+  const fill1 = `${line1} L ${pts1[pts1.length - 1].x},${H} L ${pts1[0].x},${H} Z`;
+  const pts2 = sessions.length >= 2 ? mkPts(sessions) : [];
+  const line2 = toPath(pts2);
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height, display: 'block' }} preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="spk-g1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f97316" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#f97316" stopOpacity="0.02" />
+        </linearGradient>
+      </defs>
+      <path d={fill1} fill="url(#spk-g1)" />
+      <path d={line1} fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      {line2 && <path d={line2} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="5 5" />}
+    </svg>
+  );
+}
+
+function BarList({ items = [], maxVal = 1, color = '#f97316' }) {
+  if (!items.length) return <p style={{ padding: '24px 20px', fontSize: '.72rem', color: '#2a2a2a', textAlign: 'center', letterSpacing: '.06em' }}>No data for this period</p>;
+  return items.slice(0, 10).map(({ x, y }, idx) => (
+    <div key={`${x}-${idx}`} className="anl-row">
+      <span className="anl-name" title={x}>{x || 'Direct / Unknown'}</span>
+      <div className="anl-bar-wrap">
+        <div className="anl-bar" style={{ width: `${((y || 0) / (maxVal || 1)) * 100}%`, background: color }} />
+      </div>
+      <span className="anl-cnt">{(y || 0).toLocaleString()}</span>
+    </div>
+  ));
+}
+
 // ─── ANALYTICS TAB ───────────────────────────────────────────────────────────
 function AnalyticsTab() {
-  const [range, setRange]       = useState(30);
+  const [rangeDays, setRangeDays] = useState(30);
+  const [showCustom, setShowCustom] = useState(false);
+  const [customFrom, setCustomFrom] = useState(() => {
+    const d = new Date(); d.setDate(d.getDate() - 30);
+    return d.toISOString().split('T')[0];
+  });
+  const [customTo, setCustomTo] = useState(() => new Date().toISOString().split('T')[0]);
   const [stats, setStats]       = useState(null);
+  const [pvData, setPvData]     = useState(null);
   const [pages, setPages]       = useState([]);
   const [refs, setRefs]         = useState([]);
   const [countries, setCountries] = useState([]);
   const [devices, setDevices]   = useState([]);
+  const [browsers, setBrowsers] = useState([]);
+  const [osData, setOsData]     = useState([]);
+  const [liveCount, setLiveCount] = useState(null);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
 
   useEffect(() => {
-    let active = true;
-    const endAt   = Date.now();
-    const startAt = endAt - range * 24 * 60 * 60 * 1000;
-    const qs      = `startAt=${startAt}&endAt=${endAt}`;
+    let mounted = true;
+    // Compute timestamps inside effect — Date.now() is impure, safe only outside render
+    let startAt, endAt, pvUnit;
+    if (showCustom && customFrom && customTo) {
+      startAt = new Date(customFrom + 'T00:00:00').getTime();
+      endAt   = new Date(customTo   + 'T23:59:59').getTime();
+      pvUnit  = 'day';
+    } else {
+      endAt   = Date.now();
+      startAt = endAt - rangeDays * 24 * 60 * 60 * 1000;
+      pvUnit  = rangeDays <= 1 ? 'hour' : 'day';
+    }
+    const qs   = `startAt=${startAt}&endAt=${endAt}`;
+    const pvQs = `startAt=${startAt}&endAt=${endAt}&unit=${pvUnit}`;
 
-    // Defer initial setState into microtask (matches existing codebase pattern)
     Promise.resolve()
       .then(() => {
-        if (!active) return null;
+        if (!mounted) return null;
         setLoading(true);
         setError(null);
         return Promise.all([
-          fetch(`/api/analytics?type=stats&${qs}`,    { cache: 'no-store' }).then(r => r.json()),
-          fetch(`/api/analytics?type=url&${qs}`,      { cache: 'no-store' }).then(r => r.json()),
-          fetch(`/api/analytics?type=referrer&${qs}`, { cache: 'no-store' }).then(r => r.json()),
-          fetch(`/api/analytics?type=country&${qs}`,  { cache: 'no-store' }).then(r => r.json()),
-          fetch(`/api/analytics?type=device&${qs}`,   { cache: 'no-store' }).then(r => r.json()),
+          fetch(`/api/analytics?type=stats&${qs}`,     { cache: 'no-store' }).then(r => r.json()),
+          fetch(`/api/analytics?type=pageviews&${pvQs}`,{ cache: 'no-store' }).then(r => r.json()),
+          fetch(`/api/analytics?type=url&${qs}`,        { cache: 'no-store' }).then(r => r.json()),
+          fetch(`/api/analytics?type=referrer&${qs}`,   { cache: 'no-store' }).then(r => r.json()),
+          fetch(`/api/analytics?type=country&${qs}`,    { cache: 'no-store' }).then(r => r.json()),
+          fetch(`/api/analytics?type=device&${qs}`,     { cache: 'no-store' }).then(r => r.json()),
+          fetch(`/api/analytics?type=browser&${qs}`,    { cache: 'no-store' }).then(r => r.json()),
+          fetch(`/api/analytics?type=os&${qs}`,         { cache: 'no-store' }).then(r => r.json()),
+          fetch('/api/analytics?type=active',            { cache: 'no-store' }).then(r => r.json()),
         ]);
       })
       .then(results => {
-        if (!results || !active) return;
-        const [s, p, r, c, d] = results;
-        if (s.error) { setError(s.error); setLoading(false); return; }
-        setStats(s);
+        if (!results || !mounted) return;
+        const [s, pv, p, r, c, d, b, o, act] = results;
+        if (s?.error) { setError(s.error); setLoading(false); return; }
+        setStats(s || null);
+        setPvData(!pv?.error ? pv : null);
         setPages(Array.isArray(p) ? p : []);
         setRefs(Array.isArray(r) ? r : []);
         setCountries(Array.isArray(c) ? c : []);
         setDevices(Array.isArray(d) ? d : []);
+        setBrowsers(Array.isArray(b) ? b : []);
+        setOsData(Array.isArray(o) ? o : []);
+        const lv = Array.isArray(act) ? (act[0]?.y ?? null) : (act?.visitors ?? act?.y ?? null);
+        setLiveCount(typeof lv === 'number' ? lv : null);
         setLoading(false);
       })
-      .catch(e => {
-        if (active) { setError(e.message); setLoading(false); }
-      });
+      .catch(e => { if (mounted) { setError(e.message); setLoading(false); } });
 
-    return () => { active = false; };
-  }, [range]);
+    return () => { mounted = false; };
+  }, [rangeDays, showCustom, customFrom, customTo]);
 
   const ANL_CSS = `
-    .anl-grid  { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px; }
-    @media(max-width:900px) { .anl-grid { grid-template-columns: repeat(2,1fr); } }
-    @media(max-width:480px) { .anl-grid { grid-template-columns: 1fr; } }
-    .anl-card  { background:#0c0c0c; border:1px solid #171717; padding:24px 28px; position:relative; overflow:hidden; }
-    .anl-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:#f97316; transform:scaleX(0); transform-origin:left; transition:transform .3s cubic-bezier(.76,0,.24,1); }
+    /* ── STAT GRID ── */
+    .anl-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+    @media(max-width:1000px){.anl-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:480px){.anl-grid{grid-template-columns:1fr 1fr;}}
+    .anl-card { background:#0a0a0a; border:1px solid #161616; padding:22px 20px; position:relative; overflow:hidden; border-radius:3px; }
+    .anl-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--ac,#f97316); transform:scaleX(0); transform-origin:left; transition:transform .35s cubic-bezier(.76,0,.24,1); }
     .anl-card:hover::before { transform:scaleX(1); }
-    .anl-val   { font-size:2.4rem; font-weight:900; letter-spacing:-.06em; color:#fff; line-height:1; display:block; }
-    .anl-lbl   { font-size:.5rem; letter-spacing:.26em; text-transform:uppercase; color:#383838; margin-top:8px; display:block; }
-    .anl-delta { font-size:.64rem; margin-top:6px; display:block; }
-    .anl-cols  { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
-    @media(max-width:700px) { .anl-cols { grid-template-columns:1fr; } }
-    .anl-list  { background:#0c0c0c; border:1px solid #171717; border-radius:4px; overflow:hidden; }
-    .anl-list-hd { padding:16px 20px; border-bottom:1px solid #141414; }
-    .anl-list-title { font-size:.56rem; letter-spacing:.24em; text-transform:uppercase; color:#555; font-weight:700; }
-    .anl-row   { display:flex; align-items:center; gap:14px; padding:12px 20px; border-bottom:1px solid #0e0e0e; }
+    .anl-card-lbl { font-size:.48rem; letter-spacing:.28em; text-transform:uppercase; color:#333; display:block; margin-bottom:10px; }
+    .anl-card-val { font-size:2.1rem; font-weight:900; letter-spacing:-.05em; color:#fff; line-height:1; display:block; animation:anl-val-in .55s cubic-bezier(.16,1,.3,1) both; }
+    .anl-card-delta { font-size:.56rem; display:block; margin-top:8px; letter-spacing:.04em; }
+    .anl-card-sub { font-size:.56rem; color:#2e2e2e; margin-top:5px; display:block; letter-spacing:.06em; }
+    @keyframes anl-val-in { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── CHART ── */
+    .anl-chart-box { background:#090909; border:1px solid #161616; border-radius:3px; padding:20px 22px; margin-bottom:18px; }
+    .anl-chart-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
+    .anl-chart-title { font-size:.54rem; letter-spacing:.24em; text-transform:uppercase; color:#555; font-weight:700; }
+    .anl-chart-legend { display:flex; gap:14px; }
+    .anl-legend-item { display:flex; align-items:center; gap:6px; font-size:.5rem; letter-spacing:.1em; }
+
+    /* ── METRIC COLS ── */
+    .anl-cols { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+    @media(max-width:720px){.anl-cols{grid-template-columns:1fr;}}
+    .anl-list { background:#0a0a0a; border:1px solid #161616; border-radius:3px; overflow:hidden; }
+    .anl-list-hd { padding:14px 18px; border-bottom:1px solid #111; display:flex; align-items:center; justify-content:space-between; }
+    .anl-list-title { font-size:.54rem; letter-spacing:.22em; text-transform:uppercase; color:#555; font-weight:700; }
+    .anl-row { display:flex; align-items:center; gap:12px; padding:10px 18px; border-bottom:1px solid #0c0c0c; }
     .anl-row:last-child { border-bottom:none; }
-    .anl-row:hover { background:rgba(249,115,22,.03); }
-    .anl-bar-wrap { flex:1; height:4px; background:#141414; border-radius:2px; overflow:hidden; }
-    .anl-bar  { height:100%; background:#f97316; border-radius:2px; transition:width .4s cubic-bezier(.76,0,.24,1); }
-    .anl-cnt  { font-size:.78rem; font-weight:700; color:#e0e0e0; white-space:nowrap; min-width:36px; text-align:right; }
-    .anl-name { font-size:.8rem; color:#888; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px; flex:1; }
-    .anl-range-btn { background:none; border:1px solid #1e1e1e; color:#555; padding:8px 16px; font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; font-family:inherit; border-radius:2px; transition:border-color .18s,color .18s; }
-    .anl-range-btn.active { border-color:#f97316; color:#f97316; }
-    .anl-range-btn:hover:not(.active) { border-color:#333; color:#888; }
+    .anl-row:hover { background:rgba(249,115,22,.025); }
+    .anl-bar-wrap { flex:1; height:3px; background:#141414; border-radius:2px; overflow:hidden; }
+    .anl-bar { height:100%; border-radius:2px; transition:width .5s cubic-bezier(.76,0,.24,1); }
+    .anl-cnt { font-size:.76rem; font-weight:700; color:#ccc; white-space:nowrap; min-width:32px; text-align:right; }
+    .anl-name { font-size:.78rem; color:#666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; min-width:0; max-width:180px; }
+
+    /* ── RANGE BUTTONS ── */
+    .anl-range-btn { background:none; border:1px solid #1a1a1a; color:#444; padding:7px 14px; font-size:.56rem; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; font-family:inherit; border-radius:2px; transition:border-color .18s,color .18s,background .18s; }
+    .anl-range-btn.active { border-color:#f97316; color:#f97316; background:rgba(249,115,22,.06); }
+    .anl-range-btn:hover:not(.active) { border-color:#2a2a2a; color:#666; }
+
+    /* ── LIVE BADGE ── */
+    .anl-live { display:inline-flex; align-items:center; gap:6px; padding:4px 11px; background:rgba(74,222,128,.07); border:1px solid rgba(74,222,128,.18); border-radius:2px; font-size:.5rem; letter-spacing:.18em; text-transform:uppercase; color:#4ade80; }
+    .anl-live-dot { width:5px; height:5px; border-radius:50%; background:#4ade80; animation:adm-pulse 1.5s ease-in-out infinite; }
+
+    /* ── DATE INPUTS ── */
+    .anl-date { background:#0e0e0e; border:1px solid #1e1e1e; color:#d0d0d0; padding:8px 12px; font-size:.8rem; font-family:inherit; border-radius:2px; outline:none; transition:border-color .18s; }
+    .anl-date:focus { border-color:#f97316; }
+
+    /* ── X-AXIS LABELS ── */
+    .anl-x-labels { display:flex; justify-content:space-between; margin-top:6px; }
+    .anl-x-lbl { font-size:.44rem; color:#1e1e1e; letter-spacing:.06em; }
   `;
 
-  const fmtNum = n => (n ?? 0).toLocaleString();
+  const fmtNum = n => (n != null ? Math.round(n).toLocaleString() : '—');
+  const fmtDur = s => {
+    if (s == null || isNaN(s)) return '—';
+    const m = Math.floor(s / 60); const sec = Math.floor(s % 60);
+    return m > 0 ? `${m}m ${String(sec).padStart(2,'0')}s` : `${sec}s`;
+  };
 
+  const bounceRate = (stats?.uniques?.value > 0 && stats?.bounces?.value != null)
+    ? Math.round((stats.bounces.value / stats.uniques.value) * 100) : null;
+  const avgDur = (stats?.uniques?.value > 0 && stats?.totaltime?.value != null)
+    ? stats.totaltime.value / stats.uniques.value : null;
+
+  const pctDelta = (cur, prev) => {
+    if (prev == null || prev === 0 || cur == null) return null;
+    return Math.round(((cur - prev) / prev) * 100);
+  };
+
+  const RANGES = [{ label: '24h', days: 1 }, { label: '7d', days: 7 }, { label: '30d', days: 30 }, { label: '90d', days: 90 }];
+
+  // ── LOADING ──
   if (loading) return (
     <div style={{ animation: 'adm-fade-in .3s ease' }}>
       <style>{ANL_CSS}</style>
-      <div style={{ display:'flex', alignItems:'center', gap:10, padding:'60px 0', justifyContent:'center' }}>
-        {[0,1,2].map(i => (
-          <div key={i} style={{ width:8, height:8, borderRadius:'50%', background: i===1?'#f97316':'#222', animation:`adm-pulse 1.2s ease-in-out ${i*.2}s infinite` }} />
-        ))}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 0', gap: 20 }}>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: i === 1 ? '#f97316' : '#1e1e1e', animation: `adm-pulse 1.2s ease-in-out ${i * 0.2}s infinite` }} />
+          ))}
+        </div>
+        <p style={{ fontSize: '.54rem', color: '#2a2a2a', letterSpacing: '.2em', textTransform: 'uppercase' }}>Fetching Analytics…</p>
       </div>
     </div>
   );
 
+  // ── ERROR ──
   if (error) {
     const isConfig = error.includes('UMAMI_API_TOKEN');
     return (
       <div style={{ animation: 'adm-fade-in .3s ease' }}>
         <style>{ANL_CSS}</style>
-        <div style={{ marginBottom:28 }}>
-          <h2 style={{ fontSize:'1.4rem', fontWeight:900, letterSpacing:'-.04em', color:'#f5f5f5', marginBottom:6 }}>Analytics</h2>
-          <p style={{ fontSize:'.62rem', color:'#444', letterSpacing:'.1em' }}>Powered by Umami · website 817bbb5a</p>
+        <div style={{ marginBottom: 28 }}>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 900, letterSpacing: '-.04em', color: '#f5f5f5', marginBottom: 6 }}>Analytics</h2>
+          <p style={{ fontSize: '.62rem', color: '#444', letterSpacing: '.1em' }}>Powered by Umami · 817bbb5a</p>
         </div>
-        <div style={{ border:'1px solid #1e1e1e', borderRadius:4, padding:'40px 32px', textAlign:'center', maxWidth:520 }}>
-          <p style={{ fontSize:'1.2rem', fontWeight:900, color:'#f5f5f5', marginBottom:14, letterSpacing:'-.03em' }}>
+        <div style={{ border: '1px solid #1a1a1a', borderRadius: 4, padding: '48px 36px', textAlign: 'center', maxWidth: 560 }}>
+          <div style={{ fontSize: '2rem', marginBottom: 16 }}>{isConfig ? '🔑' : '⚠️'}</div>
+          <p style={{ fontSize: '1.1rem', fontWeight: 900, color: '#f5f5f5', marginBottom: 12, letterSpacing: '-.03em' }}>
             {isConfig ? 'API Token Required' : 'Analytics Error'}
           </p>
-          <p style={{ fontSize:'.82rem', color:'#555', lineHeight:1.7, marginBottom: isConfig ? 24 : 0 }}>
-            {isConfig
-              ? 'Add your Umami API token to .env.local to view analytics:'
-              : error}
+          <p style={{ fontSize: '.82rem', color: '#555', lineHeight: 1.75, marginBottom: isConfig ? 24 : 0 }}>
+            {isConfig ? 'Add your Umami API token to .env.local to unlock this dashboard:' : error}
           </p>
           {isConfig && (
-            <code style={{ display:'block', background:'#0a0a0a', border:'1px solid #1e1e1e', padding:'14px 18px', borderRadius:4, fontSize:'.78rem', color:'#f97316', letterSpacing:'.04em', fontFamily:'monospace', textAlign:'left' }}>
-              UMAMI_API_TOKEN=your_token_here
-            </code>
-          )}
-          {isConfig && (
-            <p style={{ fontSize:'.62rem', color:'#2a2a2a', marginTop:18, letterSpacing:'.08em', lineHeight:1.7 }}>
-              Get your token at cloud.umami.is → Settings → API Keys
-            </p>
+            <>
+              <code style={{ display: 'block', background: '#060606', border: '1px solid #1e1e1e', padding: '14px 18px', borderRadius: 4, fontSize: '.78rem', color: '#f97316', letterSpacing: '.04em', fontFamily: 'monospace', textAlign: 'left', marginBottom: 16 }}>
+                UMAMI_API_TOKEN=your_token_here
+              </code>
+              <p style={{ fontSize: '.58rem', color: '#272727', letterSpacing: '.1em', lineHeight: 1.7 }}>
+                Generate at cloud.umami.is → Settings → API Keys
+              </p>
+            </>
           )}
         </div>
       </div>
     );
   }
 
-  const maxPage    = pages[0]?.y || 1;
-  const maxRef     = refs[0]?.y  || 1;
-  const maxCountry = countries[0]?.y || 1;
-  const maxDevice  = devices[0]?.y  || 1;
+  const pvList = pvData?.pageviews || [];
+  const sesList = pvData?.sessions || [];
 
+  // ── DASHBOARD ──
   return (
     <div style={{ animation: 'adm-fade-in .3s ease' }}>
       <style>{ANL_CSS}</style>
 
-      {/* header */}
-      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:28, gap:16, flexWrap:'wrap' }}>
+      {/* ── HEADER ── */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24, gap: 16, flexWrap: 'wrap' }}>
         <div>
-          <h2 style={{ fontSize:'1.4rem', fontWeight:900, letterSpacing:'-.04em', color:'#f5f5f5', marginBottom:6 }}>Analytics</h2>
-          <p style={{ fontSize:'.62rem', color:'#444', letterSpacing:'.1em' }}>Powered by Umami · website 817bbb5a</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6, flexWrap: 'wrap' }}>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 900, letterSpacing: '-.04em', color: '#f5f5f5', margin: 0 }}>Analytics</h2>
+            {liveCount !== null && (
+              <span className="anl-live">
+                <span className="anl-live-dot" />
+                {liveCount} Live Now
+              </span>
+            )}
+          </div>
+          <p style={{ fontSize: '.58rem', color: '#383838', letterSpacing: '.1em' }}>
+            Umami · 817bbb5a · {showCustom ? `${customFrom} → ${customTo}` : `Last ${rangeDays === 1 ? '24 hours' : `${rangeDays} days`}`}
+          </p>
         </div>
-        <div style={{ display:'flex', gap:8 }}>
-          {[7,30,90].map(d => (
-            <button key={d} className={`anl-range-btn${range===d?' active':''}`} onClick={() => setRange(d)}>
-              {d}d
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+          {RANGES.map(({ label, days }) => (
+            <button key={days} className={`anl-range-btn${!showCustom && rangeDays === days ? ' active' : ''}`}
+              onClick={() => { setRangeDays(days); setShowCustom(false); }}>{label}
             </button>
           ))}
+          <button className={`anl-range-btn${showCustom ? ' active' : ''}`} onClick={() => setShowCustom(s => !s)}>
+            Custom
+          </button>
         </div>
       </div>
 
-      {/* stat cards */}
+      {/* ── CUSTOM DATE ── */}
+      {showCustom && (
+        <div style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'center', flexWrap: 'wrap' }}>
+          <input type="date" className="anl-date" value={customFrom} onChange={e => setCustomFrom(e.target.value)} />
+          <span style={{ color: '#2a2a2a', fontSize: '.7rem' }}>→</span>
+          <input type="date" className="anl-date" value={customTo} onChange={e => setCustomTo(e.target.value)} />
+        </div>
+      )}
+
+      {/* ── STAT CARDS ── */}
       <div className="anl-grid">
         {[
-          { label:'Visitors',   val: fmtNum(stats?.uniques?.value),   prev: stats?.uniques?.prev },
-          { label:'Pageviews',  val: fmtNum(stats?.pageviews?.value), prev: stats?.pageviews?.prev },
-          { label:'Bounce Rate',val: stats?.bounces?.value != null
-              ? `${Math.round((stats.bounces.value / Math.max(stats.uniques?.value||1,1))*100)}%`
-              : '—', prev: null },
-          { label:'Avg. Time',  val: stats?.totaltime?.value != null
-              ? `${Math.round(stats.totaltime.value / Math.max(stats.uniques?.value||1,1))}s`
-              : '—', prev: null },
-        ].map(({ label, val, prev }) => {
-          const delta = prev != null && prev !== 0 ? Math.round(((Number(val.replace(/[^0-9]/g,'')) - prev) / prev) * 100) : null;
-          return (
-            <div key={label} className="anl-card">
-              <span className="anl-val">{val ?? '—'}</span>
-              <span className="anl-lbl">{label}</span>
-              {delta !== null && (
-                <span className="anl-delta" style={{ color: delta >= 0 ? '#4ade80' : '#f87171' }}>
-                  {delta >= 0 ? '▲' : '▼'} {Math.abs(delta)}% vs prev period
-                </span>
-              )}
+          {
+            label: 'Unique Visitors', icon: '◈', color: '#f97316',
+            val: fmtNum(stats?.uniques?.value),
+            d: pctDelta(stats?.uniques?.value, stats?.uniques?.prev),
+          },
+          {
+            label: 'Pageviews', icon: '◉', color: '#f97316',
+            val: fmtNum(stats?.pageviews?.value),
+            d: pctDelta(stats?.pageviews?.value, stats?.pageviews?.prev),
+          },
+          {
+            label: 'Bounce Rate', icon: '◎', color: '#a78bfa',
+            val: bounceRate != null ? `${bounceRate}%` : '—',
+            d: null,
+            sub: 'Single-page visits',
+          },
+          {
+            label: 'Avg. Duration', icon: '◷', color: '#60a5fa',
+            val: fmtDur(avgDur),
+            d: null,
+            sub: 'Per unique visitor',
+          },
+        ].map(({ label, val, d, sub, color }) => (
+          <div key={label} className="anl-card" style={{ '--ac': color }}>
+            <span className="anl-card-lbl">{label}</span>
+            <span className="anl-card-val" key={`${label}-${val}`}>{val}</span>
+            {d !== null && (
+              <span className="anl-card-delta" style={{ color: d >= 0 ? '#4ade80' : '#f87171' }}>
+                {d >= 0 ? '↑' : '↓'} {Math.abs(d)}% vs prev period
+              </span>
+            )}
+            {sub && <span className="anl-card-sub">{sub}</span>}
+          </div>
+        ))}
+      </div>
+
+      {/* ── TRAFFIC CHART ── */}
+      {pvList.length > 1 && (
+        <div className="anl-chart-box">
+          <div className="anl-chart-hd">
+            <span className="anl-chart-title">Traffic Trend</span>
+            <div className="anl-chart-legend">
+              <span className="anl-legend-item" style={{ color: '#f97316' }}>
+                <span style={{ display: 'inline-block', width: 16, height: 2, background: '#f97316', borderRadius: 1 }} />
+                Pageviews
+              </span>
+              <span className="anl-legend-item" style={{ color: '#383838' }}>
+                <span style={{ display: 'inline-block', width: 16, height: 0, borderBottom: '2px dashed #383838' }} />
+                Sessions
+              </span>
             </div>
-          );
-        })}
-      </div>
+          </div>
+          <SparkLine data={pvList} sessions={sesList} height={88} />
+          <div className="anl-x-labels">
+            <span className="anl-x-lbl">{pvList[0]?.x || ''}</span>
+            {pvList.length > 4 && <span className="anl-x-lbl">{pvList[Math.floor(pvList.length / 2)]?.x || ''}</span>}
+            <span className="anl-x-lbl">{pvList[pvList.length - 1]?.x || ''}</span>
+          </div>
+        </div>
+      )}
 
-      {/* lists row 1: top pages + referrers */}
+      {/* ── TOP PAGES + REFERRERS ── */}
       <div className="anl-cols">
         <div className="anl-list">
-          <div className="anl-list-hd"><span className="anl-list-title">Top Pages</span></div>
-          {pages.length === 0
-            ? <p style={{ padding:'20px', fontSize:'.72rem', color:'#333', textAlign:'center' }}>No data</p>
-            : pages.slice(0,8).map(({ x, y }) => (
-              <div key={x} className="anl-row">
-                <span className="anl-name" title={x}>{x}</span>
-                <div className="anl-bar-wrap"><div className="anl-bar" style={{ width:`${(y/maxPage)*100}%` }} /></div>
-                <span className="anl-cnt">{y}</span>
-              </div>
-            ))}
+          <div className="anl-list-hd"><span className="anl-list-title">Top Pages</span><span style={{ fontSize: '.5rem', color: '#272727', letterSpacing: '.1em' }}>{pages.length} urls</span></div>
+          <BarList items={pages} maxVal={pages[0]?.y} color="#f97316" />
         </div>
         <div className="anl-list">
-          <div className="anl-list-hd"><span className="anl-list-title">Referrers</span></div>
-          {refs.length === 0
-            ? <p style={{ padding:'20px', fontSize:'.72rem', color:'#333', textAlign:'center' }}>No referrer data</p>
-            : refs.slice(0,8).map(({ x, y }) => (
-              <div key={x} className="anl-row">
-                <span className="anl-name" title={x}>{x || 'Direct'}</span>
-                <div className="anl-bar-wrap"><div className="anl-bar" style={{ width:`${(y/maxRef)*100}%` }} /></div>
-                <span className="anl-cnt">{y}</span>
-              </div>
-            ))}
+          <div className="anl-list-hd"><span className="anl-list-title">Referrers</span><span style={{ fontSize: '.5rem', color: '#272727', letterSpacing: '.1em' }}>{refs.length} sources</span></div>
+          <BarList items={refs} maxVal={refs[0]?.y} color="#f97316" />
         </div>
       </div>
 
-      {/* lists row 2: countries + devices */}
+      {/* ── COUNTRIES + DEVICES ── */}
       <div className="anl-cols">
         <div className="anl-list">
-          <div className="anl-list-hd"><span className="anl-list-title">Countries</span></div>
-          {countries.length === 0
-            ? <p style={{ padding:'20px', fontSize:'.72rem', color:'#333', textAlign:'center' }}>No data</p>
-            : countries.slice(0,8).map(({ x, y }) => (
-              <div key={x} className="anl-row">
-                <span className="anl-name">{x || 'Unknown'}</span>
-                <div className="anl-bar-wrap"><div className="anl-bar" style={{ width:`${(y/maxCountry)*100}%` }} /></div>
-                <span className="anl-cnt">{y}</span>
-              </div>
-            ))}
+          <div className="anl-list-hd"><span className="anl-list-title">Countries</span><span style={{ fontSize: '.5rem', color: '#272727', letterSpacing: '.1em' }}>{countries.length} regions</span></div>
+          <BarList items={countries} maxVal={countries[0]?.y} color="#a78bfa" />
         </div>
         <div className="anl-list">
-          <div className="anl-list-hd"><span className="anl-list-title">Devices</span></div>
-          {devices.length === 0
-            ? <p style={{ padding:'20px', fontSize:'.72rem', color:'#333', textAlign:'center' }}>No data</p>
-            : devices.slice(0,8).map(({ x, y }) => (
-              <div key={x} className="anl-row">
-                <span className="anl-name" style={{ textTransform:'capitalize' }}>{x || 'Unknown'}</span>
-                <div className="anl-bar-wrap"><div className="anl-bar" style={{ width:`${(y/maxDevice)*100}%` }} /></div>
-                <span className="anl-cnt">{y}</span>
-              </div>
-            ))}
+          <div className="anl-list-hd"><span className="anl-list-title">Devices</span><span style={{ fontSize: '.5rem', color: '#272727', letterSpacing: '.1em' }}>{devices.length} types</span></div>
+          <BarList items={devices} maxVal={devices[0]?.y} color="#60a5fa" />
+        </div>
+      </div>
+
+      {/* ── BROWSERS + OS ── */}
+      <div className="anl-cols">
+        <div className="anl-list">
+          <div className="anl-list-hd"><span className="anl-list-title">Browsers</span><span style={{ fontSize: '.5rem', color: '#272727', letterSpacing: '.1em' }}>{browsers.length} detected</span></div>
+          <BarList items={browsers} maxVal={browsers[0]?.y} color="#34d399" />
+        </div>
+        <div className="anl-list">
+          <div className="anl-list-hd"><span className="anl-list-title">Operating Systems</span><span style={{ fontSize: '.5rem', color: '#272727', letterSpacing: '.1em' }}>{osData.length} detected</span></div>
+          <BarList items={osData} maxVal={osData[0]?.y} color="#f472b6" />
         </div>
       </div>
     </div>

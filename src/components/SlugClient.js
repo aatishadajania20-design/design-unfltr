@@ -2,12 +2,29 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import SiteHeader from "@/components/SiteHeader";
 
 export default function SlugClient({ project, nextProject, prevProject }) {
   const revealRefs = useRef([]);
   const videoRef = useRef(null);
   const [videoReady, setVideoReady] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
+  const touchStartY = useRef(null);
+
+  // Lock body scroll when lightbox open
+  useEffect(() => {
+    document.body.style.overflow = lightboxOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [lightboxOpen]);
+
+  // ESC to close lightbox
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') { setLightboxOpen(false); setZoomed(false); } };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
 
   useEffect(() => {
     // Scroll reveals
@@ -345,6 +362,32 @@ export default function SlugClient({ project, nextProject, prevProject }) {
           )}
           <div className="slug-hero-overlay" />
 
+          {/* View Full Size — image projects only */}
+          {!isVideo && project.image && (
+            <button
+              onClick={() => setLightboxOpen(true)}
+              style={{
+                position: 'absolute', top: 'clamp(14px,2.5vw,24px)', right: 'clamp(14px,2.5vw,24px)',
+                zIndex: 5, display: 'flex', alignItems: 'center', gap: 7,
+                background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.14)', color: 'rgba(255,255,255,0.65)',
+                padding: '8px 16px', fontSize: '0.54rem', letterSpacing: '0.2em',
+                textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'inherit',
+                transition: 'border-color 0.22s, color 0.22s, background 0.22s',
+                borderRadius: 2,
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(249,115,22,0.6)'; e.currentTarget.style.color = '#f97316'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; }}
+              aria-label="View image full size"
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ flexShrink: 0 }}>
+                <path d="M1 4V1H4M8 1H11V4M11 8V11H8M4 11H1V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              View Full Size
+            </button>
+          )}
+
           {isVideo && (
             <div className="slug-play-badge">
               <span style={{ width:6, height:6, borderRadius:"50%", background:"#f97316", display:"inline-block", animation:"pulse-dot 1.5s ease-in-out infinite" }} />
@@ -474,6 +517,96 @@ export default function SlugClient({ project, nextProject, prevProject }) {
         </Link>
 
       </main>
+
+      {/* ── FULLSCREEN IMAGE LIGHTBOX ── */}
+      <AnimatePresence>
+        {lightboxOpen && project.image && (
+          <motion.div
+            key="lb-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 10000,
+              background: 'rgba(0,0,0,0.96)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: zoomed ? 'zoom-out' : 'zoom-in',
+              fontFamily: "'Neue Haas Grotesk Display Pro','Helvetica Neue',Arial,sans-serif",
+            }}
+            onClick={() => { if (!zoomed) { setLightboxOpen(false); } else { setZoomed(false); } }}
+            onTouchStart={(e) => { touchStartY.current = e.touches[0].clientY; }}
+            onTouchEnd={(e) => {
+              const dy = e.changedTouches[0].clientY - (touchStartY.current || 0);
+              if (dy > 72) { setLightboxOpen(false); setZoomed(false); }
+            }}
+          >
+            {/* Close button */}
+            <motion.button
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: 0.08 }}
+              onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); setZoomed(false); }}
+              style={{
+                position: 'fixed', top: 20, right: 20,
+                width: 44, height: 44,
+                background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.14)',
+                color: 'rgba(255,255,255,0.6)', cursor: 'pointer', display: 'flex',
+                alignItems: 'center', justifyContent: 'center',
+                fontSize: '1rem', fontFamily: 'inherit', borderRadius: 2, zIndex: 10001,
+                transition: 'background 0.18s, color 0.18s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(249,115,22,0.15)'; e.currentTarget.style.color = '#f97316'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; e.currentTarget.style.color = 'rgba(255,255,255,0.6)'; }}
+              aria-label="Close"
+            >
+              ✕
+            </motion.button>
+
+            {/* Image */}
+            <motion.img
+              key={`lb-img-${zoomed}`}
+              src={project.image}
+              alt={project.title}
+              initial={{ scale: 0.93, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.93, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+              style={{
+                maxWidth: zoomed ? 'none' : '90vw',
+                maxHeight: zoomed ? 'none' : '88vh',
+                width: zoomed ? 'auto' : undefined,
+                height: zoomed ? 'auto' : undefined,
+                objectFit: 'contain',
+                cursor: zoomed ? 'zoom-out' : 'zoom-in',
+                userSelect: 'none',
+                display: 'block',
+                boxShadow: '0 32px 80px rgba(0,0,0,0.8)',
+              }}
+              onClick={(e) => { e.stopPropagation(); setZoomed(z => !z); }}
+              draggable={false}
+            />
+
+            {/* Hint */}
+            {!zoomed && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                style={{
+                  position: 'fixed', bottom: 22, left: '50%', transform: 'translateX(-50%)',
+                  fontSize: '0.5rem', letterSpacing: '0.2em', textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.2)', pointerEvents: 'none',
+                  whiteSpace: 'nowrap', fontFamily: 'inherit',
+                }}
+              >
+                Click to zoom · ESC or swipe down to close
+              </motion.p>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

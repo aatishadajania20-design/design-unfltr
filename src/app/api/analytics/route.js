@@ -6,7 +6,6 @@ export const dynamic = 'force-dynamic';
 const WEBSITE_ID = '817bbb5a-f692-4356-8cb7-3805a3b4f4a9';
 const UMAMI_API = 'https://api.umami.is/v1';
 
-// 30-day window defaults
 function defaultRange() {
   const endAt = Date.now();
   const startAt = endAt - 30 * 24 * 60 * 60 * 1000;
@@ -25,7 +24,8 @@ export async function GET(req) {
   const type = searchParams.get('type') || 'stats';
   const def = defaultRange();
   const startAt = searchParams.get('startAt') || def.startAt;
-  const endAt = searchParams.get('endAt') || def.endAt;
+  const endAt   = searchParams.get('endAt')   || def.endAt;
+  const unit    = searchParams.get('unit')    || 'day';
 
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -34,13 +34,16 @@ export async function GET(req) {
 
   try {
     let url;
-    if (type === 'stats') {
+
+    if (type === 'active') {
+      url = `${UMAMI_API}/websites/${WEBSITE_ID}/active`;
+    } else if (type === 'stats') {
       url = `${UMAMI_API}/websites/${WEBSITE_ID}/stats?startAt=${startAt}&endAt=${endAt}`;
     } else if (type === 'pageviews') {
-      url = `${UMAMI_API}/websites/${WEBSITE_ID}/pageviews?startAt=${startAt}&endAt=${endAt}&unit=day&timezone=UTC`;
+      url = `${UMAMI_API}/websites/${WEBSITE_ID}/pageviews?startAt=${startAt}&endAt=${endAt}&unit=${unit}&timezone=UTC`;
     } else {
-      // url, referrer, country, device, os, browser
-      url = `${UMAMI_API}/websites/${WEBSITE_ID}/metrics?startAt=${startAt}&endAt=${endAt}&type=${type}&limit=10`;
+      // Supported: url, referrer, country, device, browser, os, language
+      url = `${UMAMI_API}/websites/${WEBSITE_ID}/metrics?startAt=${startAt}&endAt=${endAt}&type=${type}&limit=15`;
     }
 
     const res = await fetch(url, { headers, cache: 'no-store' });
