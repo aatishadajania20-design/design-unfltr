@@ -322,7 +322,25 @@ export async function POST() {
         errors:   clientErrors,
       },
     });
-  } catch (e) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+  } catch (err) {
+    const isDnsError =
+      err?.code === 'EREFUSED' ||
+      err?.code === 'ENOTFOUND' ||
+      err?.code === 'ESERVFAIL' ||
+      /querySrv|queryTxt/.test(String(err?.message));
+    if (isDnsError) {
+      return NextResponse.json({
+        ok: false,
+        error: 'DNS_RESOLUTION_FAILED',
+        message: 'Could not reach MongoDB Atlas via DNS. This is a local network issue — try switching DNS to 1.1.1.1 / 8.8.8.8 or use a different network. Production deployment is not affected.',
+        detail: String(err?.message || err),
+      }, { status: 503 });
+    }
+    return NextResponse.json({
+      ok: false,
+      error: 'DB_OPERATION_FAILED',
+      message: 'Database operation failed.',
+      detail: String(err?.message || err),
+    }, { status: 500 });
   }
 }
