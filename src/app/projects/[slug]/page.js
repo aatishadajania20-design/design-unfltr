@@ -98,27 +98,77 @@ export default async function ProjectPage({ params }) {
   const next = allProjects[(idx + 1) % allProjects.length];
   const prev = allProjects[(idx - 1 + allProjects.length) % allProjects.length];
 
-  const projectSchema = {
+  // Derive a stable ISO date: prefer project.year, then createdAt year, then fallback
+  const yearStr =
+    String(project.year || '').match(/\d{4}/)?.[0] ||
+    String(project.createdAt || '').match(/\d{4}/)?.[0];
+  const isoDate = yearStr ? `${yearStr}-01-01` : '2024-01-01';
+
+  const desc = project.desc || `${project.title} — a ${project.category} project by UNFLTR Studio.`;
+
+  // (A) Article — eligible for Google rich results on every project page
+  const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    "@id": `https://unfltrstudio.in/projects/${slug}`,
-    name: project.title,
-    description: project.desc || `${project.title} — a ${project.category} project by UNFLTR Studio.`,
-    ...(project.image ? { image: project.image } : {}),
-    genre: project.category,
+    "@type": "Article",
+    "@id": `https://unfltrstudio.in/projects/${slug}#article`,
+    headline: project.title,
+    description: desc,
+    ...(project.image ? { image: [project.image] } : {}),
+    articleSection: project.category,
     url: `https://unfltrstudio.in/projects/${slug}`,
-    creator: {
-      "@type": "ProfessionalService",
+    mainEntityOfPage: { "@type": "WebPage", "@id": `https://unfltrstudio.in/projects/${slug}` },
+    author: { "@type": "Organization", name: "UNFLTR Studio", url: "https://unfltrstudio.in" },
+    publisher: {
+      "@type": "Organization",
       name: "UNFLTR Studio",
       url: "https://unfltrstudio.in",
+      logo: { "@type": "ImageObject", url: "https://unfltrstudio.in/logo.png", width: 512, height: 512 },
     },
+    datePublished: isoDate,
+    dateModified: isoDate,
+  };
+
+  // (C) BreadcrumbList — always rendered, enables breadcrumb rich results
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://unfltrstudio.in" },
+      { "@type": "ListItem", position: 2, name: "Work", item: "https://unfltrstudio.in/#work-section" },
+      { "@type": "ListItem", position: 3, name: project.title, item: `https://unfltrstudio.in/projects/${slug}` },
+    ],
   };
 
   return (
     <>
+      {/* (A) Article schema — rich-result eligible */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      {/* (B) VideoObject schema — only when project has a video */}
+      {project.video && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "VideoObject",
+              "@id": `https://unfltrstudio.in/projects/${slug}#video`,
+              name: project.title,
+              description: desc,
+              thumbnailUrl: project.image || "https://unfltrstudio.in/og-image.png",
+              contentUrl: project.video,
+              uploadDate: isoDate,
+              publisher: { "@type": "Organization", name: "UNFLTR Studio", url: "https://unfltrstudio.in" },
+            }),
+          }}
+        />
+      )}
+      {/* (C) BreadcrumbList schema — rich-result eligible */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <SlugClient project={project} nextProject={next} prevProject={prev} />
     </>

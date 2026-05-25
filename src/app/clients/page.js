@@ -554,7 +554,7 @@ export default function ClientsPage() {
                 <div className="cl-cell-logo-wrap">
                   <img
                     src={client.logo}
-                    alt={client.name}
+                    alt={`${client.name} — UNFLTR Studio client logo`}
                     className="cl-cell-logo"
                     loading="lazy"
                     draggable={false}

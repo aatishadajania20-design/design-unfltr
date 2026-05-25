@@ -232,6 +232,10 @@ const ORG_SCHEMA = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+      </head>
       <body
         className={`${spaceGrotesk.variable} font-sans bg-black text-white`}
       >

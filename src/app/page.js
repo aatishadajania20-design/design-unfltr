@@ -344,8 +344,8 @@ function ClientsSection() {
         </div>
       </div>
       <div className="cs-marquee-wrap" ref={marqueeRef}>
-        <div className="cs-marquee-row"><div className="cs-track">{row1.map((c,i) => (<div key={i} className="cs-card"><div className="cs-logo-wrap"><img src={c.logo} alt={c.name} className="cs-logo" loading="lazy" /></div><span className="cs-name">{c.name}</span><span className="cs-sep">✦</span></div>))}</div></div>
-        <div className="cs-marquee-row"><div className="cs-track-rev">{row2.map((c,i) => (<div key={i} className="cs-card cs-card-ghost"><div className="cs-logo-wrap"><img src={c.logo} alt={c.name} className="cs-logo" loading="lazy" /></div><span className="cs-name">{c.name}</span><span className="cs-sep" style={{color:"#f97316",opacity:0.2}}>—</span></div>))}</div></div>
+        <div className="cs-marquee-row"><div className="cs-track">{row1.map((c,i) => (<div key={i} className="cs-card"><div className="cs-logo-wrap"><img src={c.logo} alt={`${c.name} — UNFLTR Studio client logo`} className="cs-logo" loading="lazy" /></div><span className="cs-name">{c.name}</span><span className="cs-sep">✦</span></div>))}</div></div>
+        <div className="cs-marquee-row"><div className="cs-track-rev">{row2.map((c,i) => (<div key={i} className="cs-card cs-card-ghost"><div className="cs-logo-wrap"><img src={c.logo} alt={`${c.name} — UNFLTR Studio client logo`} className="cs-logo" loading="lazy" /></div><span className="cs-name">{c.name}</span><span className="cs-sep" style={{color:"#f97316",opacity:0.2}}>—</span></div>))}</div></div>
       </div>
       <div className="cs-explore-strip"><Link href="/clients" className="brutal-link">View More Brands<span className="brutal-link-arrow">→</span></Link></div>
       <div className="cs-stat-bar" ref={statsRef}>

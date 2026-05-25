@@ -322,7 +322,7 @@ export default function PortfolioGrid() {
                       style={{ position: "absolute", inset: 0 }}
                     />
                   ) : thumbnail ? (
-                    <img src={thumbnail} alt={project.title} />
+                    <img src={thumbnail} alt={`${project.title} — ${project.category} project by UNFLTR Studio`} />
                   ) : null}
 
                   {/* pill badge on video cards */}
