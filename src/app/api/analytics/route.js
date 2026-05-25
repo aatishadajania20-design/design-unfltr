@@ -3,8 +3,12 @@ import { requireAuth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
-const WEBSITE_ID = '817bbb5a-f692-4356-8cb7-3805a3b4f4a9';
-const UMAMI_API = 'https://api.umami.is/v1';
+function buildBase() {
+  const url = process.env.UMAMI_API_URL;
+  // UMAMI_API_URL=https://cloud.umami.is  →  https://cloud.umami.is/api
+  // Falls back to the proven Umami Cloud v1 endpoint if var is absent
+  return url ? `${url}/api` : 'https://api.umami.is/v1';
+}
 
 function defaultRange() {
   const endAt = Date.now();
@@ -16,9 +20,13 @@ export async function GET(req) {
   if (!await requireAuth())
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const token = process.env.UMAMI_API_TOKEN;
+  // Prefer UMAMI_API_SECRET; fall back to legacy UMAMI_API_TOKEN
+  const token = process.env.UMAMI_API_SECRET || process.env.UMAMI_API_TOKEN;
   if (!token)
     return NextResponse.json({ error: 'UMAMI_API_TOKEN not configured' }, { status: 503 });
+
+  const websiteId = process.env.UMAMI_WEBSITE_ID || '817bbb5a-f692-4356-8cb7-3805a3b4f4a9';
+  const base = buildBase();
 
   const { searchParams } = new URL(req.url);
   const type = searchParams.get('type') || 'stats';
@@ -36,14 +44,14 @@ export async function GET(req) {
     let url;
 
     if (type === 'active') {
-      url = `${UMAMI_API}/websites/${WEBSITE_ID}/active`;
+      url = `${base}/websites/${websiteId}/active`;
     } else if (type === 'stats') {
-      url = `${UMAMI_API}/websites/${WEBSITE_ID}/stats?startAt=${startAt}&endAt=${endAt}`;
+      url = `${base}/websites/${websiteId}/stats?startAt=${startAt}&endAt=${endAt}`;
     } else if (type === 'pageviews') {
-      url = `${UMAMI_API}/websites/${WEBSITE_ID}/pageviews?startAt=${startAt}&endAt=${endAt}&unit=${unit}&timezone=UTC`;
+      url = `${base}/websites/${websiteId}/pageviews?startAt=${startAt}&endAt=${endAt}&unit=${unit}&timezone=UTC`;
     } else {
-      // Supported: url, referrer, country, device, browser, os, language
-      url = `${UMAMI_API}/websites/${WEBSITE_ID}/metrics?startAt=${startAt}&endAt=${endAt}&type=${type}&limit=15`;
+      // Supported metric types: url, referrer, country, device, browser, os, language
+      url = `${base}/websites/${websiteId}/metrics?startAt=${startAt}&endAt=${endAt}&type=${type}&limit=15`;
     }
 
     const res = await fetch(url, { headers, cache: 'no-store' });

@@ -43,6 +43,16 @@ export default function AboutPage() {
   const cellRefs = useRef([]);
   const [visibleStats, setVisibleStats] = useState(false);
   const statsRef = useRef(null);
+  const [clientCount, setClientCount] = useState("37+");
+
+  useEffect(() => {
+    fetch('/api/client-count')
+      .then(r => r.json())
+      .then(({ count }) => {
+        if (typeof count === 'number' && count > 0) setClientCount(`${count}+`);
+      })
+      .catch(() => {}); // keep "37+" fallback on any error
+  }, []);
 
   useEffect(() => {
     // Hero entrance
@@ -248,7 +258,7 @@ export default function AboutPage() {
             <div key={s.lbl} className="ab-stat-cell">
               <span className={`ab-stat-val${visibleStats ? " animate" : ""}`}
                 style={{ animationDelay: visibleStats ? `${i * 90}ms` : "0ms" }}>
-                {s.val}
+                {s.lbl === "Clients Served" ? clientCount : s.val}
               </span>
               <span className="ab-stat-lbl">{s.lbl}</span>
             </div>
