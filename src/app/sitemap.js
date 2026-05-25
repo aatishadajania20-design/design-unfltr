@@ -14,14 +14,14 @@ export default async function sitemap() {
       url: `${base}/projects/${w.slug}`,
       lastModified: w.updatedAt ?? new Date(),
       changeFrequency: "monthly",
-      priority: 0.7,
+      priority: 0.8,
     }));
   } catch {
     workEntries = projects.map((p) => ({
       url: `${base}/projects/${p.slug}`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.7,
+      priority: 0.8,
     }));
   }
 

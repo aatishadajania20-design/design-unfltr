@@ -29,13 +29,15 @@ export async function generateMetadata({ params }) {
     ? [{ url: project.image, alt: project.title }]
     : [{ url: "https://unfltrstudio.in/og-image.png", alt: "UNFLTR Studio" }];
 
-  const desc =
+  const rawDesc =
     project.desc ||
     `${project.title} — a ${project.category} project by UNFLTR Studio.`;
+  const desc = rawDesc.length > 160 ? rawDesc.slice(0, 157) + "..." : rawDesc;
 
   return {
     title: project.title,
     description: desc,
+    robots: { index: true, follow: true },
     alternates: {
       canonical: `https://unfltrstudio.in/projects/${slug}`,
     },
@@ -96,5 +98,29 @@ export default async function ProjectPage({ params }) {
   const next = allProjects[(idx + 1) % allProjects.length];
   const prev = allProjects[(idx - 1 + allProjects.length) % allProjects.length];
 
-  return <SlugClient project={project} nextProject={next} prevProject={prev} />;
+  const projectSchema = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "@id": `https://unfltrstudio.in/projects/${slug}`,
+    name: project.title,
+    description: project.desc || `${project.title} — a ${project.category} project by UNFLTR Studio.`,
+    ...(project.image ? { image: project.image } : {}),
+    genre: project.category,
+    url: `https://unfltrstudio.in/projects/${slug}`,
+    creator: {
+      "@type": "ProfessionalService",
+      name: "UNFLTR Studio",
+      url: "https://unfltrstudio.in",
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema) }}
+      />
+      <SlugClient project={project} nextProject={next} prevProject={prev} />
+    </>
+  );
 }
