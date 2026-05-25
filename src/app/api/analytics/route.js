@@ -5,9 +5,9 @@ export const dynamic = 'force-dynamic';
 
 function buildBase() {
   const url = process.env.UMAMI_API_URL;
-  // UMAMI_API_URL=https://cloud.umami.is  →  https://cloud.umami.is/api
-  // Falls back to the proven Umami Cloud v1 endpoint if var is absent
-  return url ? `${url}/api` : 'https://api.umami.is/v1';
+  // cloud.umami.is is the hosted SaaS; its REST API lives at api.umami.is/v1, not /api
+  if (!url || url.includes('cloud.umami.is')) return 'https://api.umami.is/v1';
+  return `${url}/api`;
 }
 
 function defaultRange() {
@@ -60,6 +60,20 @@ export async function GET(req) {
       return NextResponse.json({ error: `Umami API ${res.status}: ${text}` }, { status: res.status });
     }
     const data = await res.json();
+
+    if (type === 'stats') {
+      if (process.env.NODE_ENV === 'development') console.log('[analytics/stats] raw Umami response:', data);
+      // v1 API returns flat numbers + a comparison object; UI expects { value, prev } with key 'uniques'
+      const cmp = data.comparison || {};
+      const n = (cur, prev) => ({ value: cur ?? 0, prev: prev ?? 0 });
+      return NextResponse.json({
+        pageviews: n(data.pageviews, cmp.pageviews),
+        uniques:   n(data.visitors ?? data.uniques, cmp.visitors ?? cmp.uniques),
+        bounces:   n(data.bounces,   cmp.bounces),
+        totaltime: n(data.totaltime, cmp.totaltime),
+      });
+    }
+
     return NextResponse.json(data);
   } catch (e) {
     return NextResponse.json({ error: e.message }, { status: 500 });
