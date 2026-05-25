@@ -3,6 +3,60 @@ import projects from "@/data/projects";
 import Link from "next/link";
 import { serializeDoc } from "@/lib/utils";
 
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+
+  let project = null;
+  try {
+    const { connectDB } = await import("@/lib/db");
+    const { default: Work } = await import("@/lib/models/Work");
+    await connectDB();
+    const doc = await Work.findOne({ slug }).lean();
+    if (doc) project = serializeDoc(doc);
+  } catch {
+    // fall through to static
+  }
+  if (!project) project = projects.find((p) => p.slug === slug) ?? null;
+
+  if (!project) {
+    return {
+      title: "Project Not Found",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const ogImage = project.image
+    ? [{ url: project.image, alt: project.title }]
+    : [{ url: "https://unfltrstudio.in/og-image.png", alt: "UNFLTR Studio" }];
+
+  const desc =
+    project.desc ||
+    `${project.title} — a ${project.category} project by UNFLTR Studio.`;
+
+  return {
+    title: project.title,
+    description: desc,
+    alternates: {
+      canonical: `https://unfltrstudio.in/projects/${slug}`,
+    },
+    openGraph: {
+      title: `${project.title} — UNFLTR Studio`,
+      description: desc,
+      url: `https://unfltrstudio.in/projects/${slug}`,
+      type: "article",
+      images: ogImage,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${project.title} — UNFLTR Studio`,
+      description: desc,
+      images: project.image
+        ? [project.image]
+        : ["https://unfltrstudio.in/og-image.png"],
+    },
+  };
+}
+
 async function getFromDB(slug) {
   try {
     const { connectDB } = await import('@/lib/db');
